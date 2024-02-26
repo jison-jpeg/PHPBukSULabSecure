@@ -23,20 +23,6 @@
                             Please enter a subject code.
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <label for="subjectName" class="form-label">College</label>
-                        <input type="text" class="form-control" name="subjectName" placeholder="Name of the subject" required>
-                        <div class="invalid-feedback">
-                            Please enter a subject name.
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="subjectCode" class="form-label">Department</label>
-                        <input type="text" class="form-control" name="subjectCode" placeholder="ex. IT123" required>
-                        <div class="invalid-feedback">
-                            Please enter a subject code.
-                        </div>
-                    </div>
                     <div class="col-md-12">
                         <label for="subjectDescription" class="form-label">Description</label>
                         <div class="col-sm-12">

@@ -363,6 +363,12 @@ h6 {
   background-color: rgba(255, 255, 255, 0.6);
 }
 
+
+.recent {
+  margin-top: 3rem;
+
+}
+
 /* Alerts */
 .alert-heading {
   font-weight: 500;

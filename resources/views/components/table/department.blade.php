@@ -1,8 +1,7 @@
-<div class="card ">
+<div class="mt-2">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-title">Users</h5>
-            <button type="button" class="btn btn-primary">Export</button>
+            <h5 class="card-title">Department Lists</h5>
         </div>
         <!-- Table with hoverable rows -->
         <div class="table-responsive">
@@ -10,29 +9,17 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Role</th>
-                        <th scope="col">College</th>
-                        <th scope="col">Department</th>
-                        <th scope="col">Phone</th>
-                        <th scope="col">Birthdate</th>
+                        <th scope="col">Department Name</th>
+                        <th scope="col">Description</th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $user)
+                    @foreach ($departments as $department)
                     <tr>
                         <th scope="row">{{ $loop->iteration }}</th>
-                        <td>{{ $user->last_name }}, {{ $user->first_name}} {{ $user->middle_name }}</td>
-                        <td>{{ $user->username}}</td>
-                        <td>{{ $user->email}}</td>
-                        <td>{{ $user->role}}</td>
-                        <td>{{ $user->college}}</td>
-                        <td>{{ $user->department}}</td>
-                        <td>{{ $user->phone}}</td>
-                        <td>{{ $user->birthdate}}</td>
+                        <td>{{ $department->departmentName }}</td>
+                        <td>{{ $department->departmentDescription }}</td>
                         <td>
                             <div class="d-flex justify-content-center">
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"

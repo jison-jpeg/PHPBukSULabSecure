@@ -328,6 +328,7 @@ strong {
 small {
     font-size: 0.875em;
 }
+
 .mark,
 mark {
     padding: 0.1875em;
@@ -7990,13 +7991,19 @@ fieldset:disabled .btn {
 .ms-2 {
     margin-left: 0.5rem !important;
 }
+.ms-2-6 {
+    margin-left: 0.6rem !important;
+}
 .ms-3 {
-    margin-left: 1rem !important;
+    margin-left: 1.25rem !important;
 }
 .ms-4 {
-    margin-left: 1.5rem !important;
+    margin-left: 1rem !important;
 }
 .ms-5 {
+    margin-left: 1.5rem !important;
+}
+.ms-6 {
     margin-left: 3rem !important;
 }
 .ms-auto {

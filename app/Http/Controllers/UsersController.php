@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Mail\CredentialsMail;
 use App\Models\User;
+use App\Models\College;
+use App\Models\Department;
+
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,9 +21,11 @@ class UsersController extends Controller
     function viewUsers()
     {
         $users = User::all();
+        $colleges = College::all();
+        $departments = Department::all();
         // $users = User::onlyTrashed()->get();
 
-        return view('pages.user', compact('users'));
+        return view('pages.user', compact('users', 'colleges', 'departments'));
     }
 
     //GET ARCHIVED USERS
@@ -46,7 +51,9 @@ class UsersController extends Controller
             'last_name' => 'required',
             'email' => 'required|email|unique:users',
             'username' => 'required|unique:users',
-            'role' => 'required', // We can add more validations
+            'role' => 'required',
+            'college' => 'required',
+            'department' => 'required',
         ]);
 
         $plainPassword = Str::random(10);
@@ -55,6 +62,7 @@ class UsersController extends Controller
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
+            'college' => $request->college,
             'department' => $request->department,
             'email' => $request->email,
             'phone' => $request->phone,

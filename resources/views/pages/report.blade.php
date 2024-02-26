@@ -16,7 +16,7 @@
 
             {{-- Left side columns --}}
             <div class="col-lg-12">
-                @include('components.table.instructors')
+                @include('components.table.faculties')
             </div>
 
             {{-- </div> --}}

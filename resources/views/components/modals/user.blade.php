@@ -30,24 +30,35 @@
                             Please enter a valid last name.
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="email" class="form-label">Institutional Email</label>
                         <input type="email" class="form-control" name="email" required>
                         <div class="invalid-feedback">
                             Please provide a unique and valid institutional email address.
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="username" class="form-label">Username</label>
                         <input type="text" class="form-control" name="username" required>
                         <div class="invalid-feedback">
                             Please provide a unique and valid username.
                         </div>
                     </div>
-                    {{-- <div class="col-md-4">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" name="password">
-                    </div> --}}
+                    <div class="col-md-4">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-select" id="role" required="" name="role">
+                            <option selected="" disabled="" value="">Choose...</option>
+                            <option value="admin">Admin</option>
+                            <option value="support">Support</option>
+                            <option value="dean">Dean</option>
+                            <option value="chairperson">Chairperson</option>
+                            <option value="instructor">Instructor</option>
+                            <option value="part-time instructor">Part-time Instructor</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a role.
+                        </div>
+                    </div>
                     <div class="col-md-3 col-sm-6">
                         <label for="phone" class="form-label">Phone</label>
                         <input type="tel" class="form-control" name="phone" placeholder="09123456789"
@@ -64,31 +75,22 @@
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
-                        <label for="role" class="form-label">Role</label>
-                        <select class="form-select" id="role" required="" name="role">
+                        <label for="college" class="form-label">College</label>
+                        <select class="form-select" id="college" required="" name="college">
                             <option selected="" disabled="" value="">Choose...</option>
-                            <option value="admin">Admin</option>
-                            <option value="support">Support</option>
-                            <option value="dean">Dean</option>
-                            <option value="chairperson">Chairperson</option>
-                            <option value="instructor">Instructor</option>
-                            <option value="part-time instructor">Part-time Instructor</option>
+                            @foreach ($colleges as $college)
+                                <option value="{{ $college->id }}">{{ $college->collegeName }}</option>
+                            @endforeach
                         </select>
                         <div class="invalid-feedback">
-                            Please select a role.
+                            Please select a college.
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
                         <label for="department" class="form-label">Department</label>
                         <select class="form-select" id="department" required="" name="department">
                             <option selected="" disabled="" value="">Choose...</option>
-                            <option value="COA">College of Administration</option>
-                            <option value="CAS">College of Arts and Sciences</option>
-                            <option value="COB">College of Business</option>
-                            <option value="COE">College of Education</option>
-                            <option value="COL">College of Law</option>
-                            <option value="CON">College of Nursing</option>
-                            <option value="COT">College of Technologies</option>
+                            <option value="department">Lists of departments</option>
                         </select>
                         <div class="invalid-feedback">
                             Please select a department.

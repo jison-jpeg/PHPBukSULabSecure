@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('role');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('college');
             $table->string('department');
             $table->date('birthdate');
             $table->string('phone')->nullable();

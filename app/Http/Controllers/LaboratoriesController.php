@@ -38,7 +38,7 @@ class LaboratoriesController extends Controller
             'building' => $request->building,
             'laboratoryType' => $request->laboratoryType,
             'occupancyStatus' => $request->occupancyStatus ?? 'Available',
-            'lockStatus' => $request->lockStatus ?? 'Unlocked',
+            'lockStatus' => $request->lockStatus ?? 'Locked',
         ]);
 
         if (!$laboratory) {

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('pageTitle', 'Instructors')
+@section('pageTitle', 'faculties')
 @section('content')
     <div class="pagetitle">
         <nav>
@@ -16,7 +16,7 @@
 
             {{-- Left side columns --}}
             <div class="col-lg-12">
-                @include('components.table.instructors')
+                @include('components.table.faculties')
             </div>
 
             {{-- </div> --}}

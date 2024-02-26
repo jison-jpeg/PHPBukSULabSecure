@@ -3,10 +3,13 @@
 use App\Http\Controllers\AttendanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthManager;
+use App\Http\Controllers\CollegeManagementController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\facultiesController;
 use App\Http\Controllers\LaboratoriesController;
+use App\Http\Controllers\SubjectController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -38,11 +41,11 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     // Instructor Routes
-    Route::group(['prefix' => 'instructors'], function () {
-        Route::get('/', [UsersController::class, 'viewInstructors'])->name('instructors');
-        Route::post('/', [UsersController::class, 'instructorsPost'])->name('instructors.post');
-        Route::put('/{id}', [UsersController::class, 'instructorsPut'])->name('instructors.put');
-        Route::delete('/{id}', [UsersController::class, 'instructorsDelete'])->name('instructors.delete');
+    Route::group(['prefix' => 'faculties'], function () {
+        Route::get('/', [facultiesController::class, 'viewfaculties'])->name('faculties');
+        // Route::post('/', [facultiesController::class, 'facultiesPost'])->name('faculties.post');
+        // Route::put('/{id}', [facultiesController::class, 'facultiesPut'])->name('faculties.put');
+        // Route::delete('/{id}', [facultiesController::class, 'facultiesDelete'])->name('faculties.delete');
     });
 
     // Student Routes
@@ -62,5 +65,28 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix'=> 'laboratories'], function () {
         Route::get('/', [LaboratoriesController::class,'viewLaboratories'])->name('laboratories');
         Route::post('/', [LaboratoriesController::class,'laboratoriesPost'])->name('laboratories.post');
+    });
+
+    // Subjects Route
+    Route::group(['prefix' => 'subjects'], function () {
+        Route::get('/', [SubjectController::class, 'viewSubjects'])->name('subjects');
+        Route::post('/', [SubjectController::class, 'subjectsPost'])->name('subjects.post');
+    });
+
+    // College Management Route
+    Route::group(['prefix' => 'colleges'], function () {
+        Route::get('/', [CollegeManagementController::class, 'viewSubjectsAndDepartments'])->name('colleges');
+        Route::post('/', [CollegeManagementController::class, 'collegesPost'])->name('colleges.post');
+        Route::post('/departments', [CollegeManagementController::class, 'departmentsPost'])->name('departments.post');
+    });
+
+    // Schedules Route
+    // Route::group(['prefix' => 'schedules'], function () {
+    //     Route::get('/', [LaboratoriesController::class, 'viewSchedules'])->name('schedules');
+    //     Route::post('/', [LaboratoriesController::class, 'schedulesPost'])->name('schedules.post');
+    // });
+
+    Route::get('/schedules', function () {
+        return view('pages.schedule');
     });
 });
