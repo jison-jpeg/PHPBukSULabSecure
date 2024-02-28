@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
 @section('pageTitle')
-    @if(Request::is('students'))
+    @if (Request::is('students'))
         Student Management
-    @else
+    @elseif (Request::is('faculties'))
+        Faculty Management
+    @else 
         User Management
     @endif
 @endsection
@@ -19,15 +21,33 @@
         </nav>
     </div>
 
-    <div class="mt-3 mb-3">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-            Add User
-        </button>
-    </div>
+    @if (Request::is('students'))
+        <div class="mt-3 mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                Add Student
+            </button>
+        </div>
+    @elseif (Request::is('faculties'))
+        <div class="mt-3 mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                Add Faculty
+            </button>
+        </div>
+    @else
+        <div class="mt-3 mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                Add User
+            </button>
+        </div>
+    @endif
+
+
 
     {{-- Include modal based on route --}}
-    @if(Request::is('students'))
+    @if (Request::is('students'))
         @include('components.modals.student')
+    @elseif (Request::is('faculties'))
+        @include('components.modals.faculty')
     @else
         @include('components.modals.user')
     @endif

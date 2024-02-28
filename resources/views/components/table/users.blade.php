@@ -31,8 +31,8 @@
                         <td>{{ $user->role}}</td>
                         <td>{{ $user->college ? $user->college->collegeName : 'N/A' }}</td> <!-- Check if college is null -->
                         <td>{{ $user->department ? $user->department->departmentName : 'N/A' }}</td> <!-- Check if department is null -->
-                        <td>{{ $user->phone}}</td>
-                        <td>{{ $user->birthdate}}</td>
+                        <td>{{ $user->phone ? $user->phone: 'N/A'  }}</td>
+                        <td>{{ $user->birthdate ? $user->birthdate: 'N/A'}}</td>
                         <td>
                             <div class="d-flex justify-content-center">
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"

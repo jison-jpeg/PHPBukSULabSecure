@@ -7,7 +7,7 @@ use App\Http\Controllers\CollegeManagementController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\GoogleController;
-use App\Http\Controllers\facultiesController;
+use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\LaboratoriesController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
@@ -43,8 +43,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Instructor Routes
     Route::group(['prefix' => 'faculties'], function () {
-        Route::get('/', [facultiesController::class, 'viewfaculties'])->name('faculties');
-        // Route::post('/', [facultiesController::class, 'facultiesPost'])->name('faculties.post');
+        Route::get('/', [FacultyController::class, 'viewFaculties'])->name('faculties');
+        Route::post('/', [FacultyController::class, 'facultiesPost'])->name('faculties.post');
         // Route::put('/{id}', [facultiesController::class, 'facultiesPut'])->name('faculties.put');
         // Route::delete('/{id}', [facultiesController::class, 'facultiesDelete'])->name('faculties.delete');
     });

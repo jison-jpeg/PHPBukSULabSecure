@@ -9,22 +9,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class StudentController extends Controller
+class FacultyController extends Controller
 {
-    // GET STUDENTS
-    function viewStudents()
+    // GET FACULTIES
+    public function viewFaculties()
     {
         $colleges = College::all();
         $departments = Department::all();
 
-        // Retrieve only users with the role of "student"
-        $users = User::where('role', 'student')->with(['college', 'department'])->get();
+        // Retrieve only users with the role of "instructor"
+        $users = User::where('role', 'instructor')->with(['college', 'department'])->get();
 
         return view('pages.user', compact('users', 'colleges', 'departments'));
     }
 
-    // CREATE STUDENTS
-    function studentsPost(Request $request)
+    // CREATE FACULTIES
+    public function facultiesPost(Request $request)
     {
         $request->validate([
             'first_name' => 'required',
@@ -44,7 +44,7 @@ class StudentController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'username' => $username,
-            'role' => $request->role ?? 'student', // Set default role to "student"
+            'role' => $request->role ?? 'instructor', // Set default role to "instructor"
             'college_id' => $request->college_id,
             'department_id' => $request->department_id,
             'birthdate' => $request->birthdate,
@@ -53,10 +53,12 @@ class StudentController extends Controller
         ]);
 
         if (!$user) {
-            return redirect(route('students'))->with("error", "Error creating student. Please try again.");
+            return redirect(route('faculties'))->with("error", "Error creating faculty. Please try again.");
         } else {
-            // Send an email to the student with their credentials
-            return redirect(route('students'))->with("success", "Student created successfully");
+            // Send an email to the faculty with their credentials
+            return redirect(route('faculties'))->with("success", "Faculty created successfully");
         }
     }
+
 }
+
