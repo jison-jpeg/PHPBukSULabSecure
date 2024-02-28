@@ -23,7 +23,7 @@ class UsersController extends Controller
         $users = User::all();
         $colleges = College::all();
         $departments = Department::all();
-        // $users = User::onlyTrashed()->get();
+        $users = User::with(['college', 'department'])->get();
 
         return view('pages.user', compact('users', 'colleges', 'departments'));
     }
@@ -52,8 +52,8 @@ class UsersController extends Controller
             'email' => 'required|email|unique:users',
             'username' => 'required|unique:users',
             'role' => 'required',
-            'college' => 'required',
-            'department' => 'required',
+            'college_id' => 'required',
+            'department_id' => 'required',
         ]);
 
         $plainPassword = Str::random(10);
@@ -62,8 +62,8 @@ class UsersController extends Controller
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
-            'college' => $request->college,
-            'department' => $request->department,
+            'college_id' => $request->college_id,
+            'department_id' => $request->department_id,
             'email' => $request->email,
             'phone' => $request->phone,
             'role' => $request->role,

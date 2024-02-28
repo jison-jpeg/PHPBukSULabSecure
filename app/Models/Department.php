@@ -9,9 +9,22 @@ class Department extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
-        'departmentName', 
+        'departmentName',
         'departmentDescription',
-        'college_id'
+        'college_id',
     ];
+
+    /**
+     * Get the college that owns the department.
+     */
+    public function college()
+    {
+        return $this->belongsTo(College::class);
+    }
 }

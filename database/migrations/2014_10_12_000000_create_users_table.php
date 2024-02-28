@@ -20,10 +20,10 @@ return new class extends Migration
             $table->string('role');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('college');
-            $table->string('department');
             $table->date('birthdate');
             $table->string('phone')->nullable();
+            $table->foreignId('college_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('department_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
@@ -35,6 +35,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['college_id']);
+            $table->dropForeign(['department_id']);
+            $table->dropColumn(['college_id', 'department_id']);
+        });
     }
 };

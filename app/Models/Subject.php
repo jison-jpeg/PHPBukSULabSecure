@@ -14,7 +14,24 @@ class Subject extends Model
     protected $fillable = [
         'subjectName',
         'subjectCode',
+        'college_id',
+        'department_id',
         'subjectDescription',
     ];
+
+    public function college()
+    {
+        return $this->belongsTo(College::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(User::class);
+    }
 
 }

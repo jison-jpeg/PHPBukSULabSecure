@@ -23,18 +23,28 @@
                             Please enter a subject code.
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <label for="subjectName" class="form-label">College</label>
-                        <input type="text" class="form-control" name="subjectName" placeholder="Name of the subject" required>
+                    <div class="col-md-6 col-sm-6">
+                        <label for="college_id" class="form-label">College</label>
+                        <select class="form-select" id="college_id" required="" name="college_id">
+                            <option selected="" disabled="" value="">Choose...</option>
+                            @foreach ($colleges as $college)
+                                <option value="{{ $college->id }}">{{ $college->collegeName }}</option>
+                            @endforeach
+                        </select>
                         <div class="invalid-feedback">
-                            Please enter a subject name.
+                            Please select a college.
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <label for="subjectCode" class="form-label">Department</label>
-                        <input type="text" class="form-control" name="subjectCode" placeholder="ex. IT123" required>
+                    <div class="col-md-6 col-sm-6">
+                        <label for="department_id" class="form-label">Department</label>
+                        <select class="form-select" id="department_id" required="" name="department_id">
+                            <option selected="" disabled="" value="">Choose...</option>
+                            @foreach ($departments as $department)
+                                <option value="{{ $department->id }}">{{ $department->departmentName }}</option>
+                            @endforeach
+                        </select>
                         <div class="invalid-feedback">
-                            Please enter a subject code.
+                            Please select a department.
                         </div>
                     </div>
                     <div class="col-md-12">

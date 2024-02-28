@@ -3,11 +3,11 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add User</h5>
+                <h5 class="modal-title">Add Student</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="row g-3 needs-validation" action="{{ route('users.post') }}" method="POST" novalidate>
+                <form class="row g-3 needs-validation" action="{{ route('students.post') }}" method="POST" novalidate>
                     @csrf
                     <div class="col-md-4">
                         <label for="first_name" class="form-label">First Name</label>
@@ -37,47 +37,10 @@
                             Please provide a unique and valid institutional email address.
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" name="username" required>
-                        <div class="invalid-feedback">
-                            Please provide a unique and valid username.
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="role" class="form-label">Role</label>
-                        <select class="form-select" id="role" required="" name="role">
-                            <option selected="" disabled="" value="">Choose...</option>
-                            <option value="admin">Admin</option>
-                            <option value="support">Support</option>
-                            <option value="dean">Dean</option>
-                            <option value="chairperson">Chairperson</option>
-                            <option value="instructor">Instructor</option>
-                            <option value="part-time instructor">Part-time Instructor</option>
-                        </select>
-                        <div class="invalid-feedback">
-                            Please select a role.
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <label for="phone" class="form-label">Phone</label>
-                        <input type="tel" class="form-control" name="phone" placeholder="09123456789"
-                            pattern="[0-9]{11}" required>
-                        <div class="invalid-feedback">
-                            Please provide a valid phone number with 11 digits.
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <label for="birthdate" class="form-label">Birthdate</label>
-                        <input type="date" class="form-control" name="birthdate" required>
-                        <div class="invalid-feedback">
-                            Please provide a birthdate.
-                        </div>
-                    </div>
 
                     {{-- @livewire('userdropdown') --}}
 
-                    <div class="col-md-3 col-sm-6">
+                    <div class="col-md-4 col-sm-6">
                         <label for="college_id" class="form-label">College</label>
                         <select class="form-select" id="college_id" required="" name="college_id">
                             <option selected="" disabled="" value="">Choose...</option>
@@ -89,7 +52,7 @@
                             Please select a college.
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-6">
+                    <div class="col-md-4 col-sm-6">
                         <label for="department_id" class="form-label">Department</label>
                         <select class="form-select" id="department_id" required="" name="department_id">
                             <option selected="" disabled="" value="">Choose...</option>

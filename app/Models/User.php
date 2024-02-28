@@ -26,8 +26,8 @@ class User extends Authenticatable
         'username',
         'role',
         'email',
-        'college',
-        'department',
+        'college_id',
+        'department_id',
         'birthdate',
         'phone',
         'password',
@@ -52,4 +52,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get the college that owns the user.
+     */
+    public function college()
+    {
+        return $this->belongsTo(College::class);
+    }
+
+    /**
+     * Get the department that owns the user.
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

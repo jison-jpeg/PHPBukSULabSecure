@@ -29,8 +29,8 @@
                         <td>{{ $user->username}}</td>
                         <td>{{ $user->email}}</td>
                         <td>{{ $user->role}}</td>
-                        <td>{{ $user->college}}</td>
-                        <td>{{ $user->department}}</td>
+                        <td>{{ $user->college ? $user->college->collegeName : 'N/A' }}</td> <!-- Check if college is null -->
+                        <td>{{ $user->department ? $user->department->departmentName : 'N/A' }}</td> <!-- Check if department is null -->
                         <td>{{ $user->phone}}</td>
                         <td>{{ $user->birthdate}}</td>
                         <td>

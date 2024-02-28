@@ -1,5 +1,13 @@
 @extends('layouts.app')
-@section('pageTitle', 'User Management')
+
+@section('pageTitle')
+    @if(Request::is('students'))
+        Student Management
+    @else
+        User Management
+    @endif
+@endsection
+
 @section('content')
     <div class="pagetitle">
         <nav>
@@ -16,7 +24,13 @@
             Add User
         </button>
     </div>
-    @include('components.modals.user')
+
+    {{-- Include modal based on route --}}
+    @if(Request::is('students'))
+        @include('components.modals.student')
+    @else
+        @include('components.modals.user')
+    @endif
 
     @if ($errors->any())
         @foreach ($errors->all() as $error)
@@ -29,21 +43,10 @@
 
     <section class="section dashboard">
         <div class="row">
-
             {{-- Left side columns --}}
             <div class="col-lg-12">
                 @include('components.table.users')
             </div>
-
-            {{-- </div> --}}
-            {{-- End Left side columns --}}
-
-            {{-- Right side columns --}}
-            {{-- <div class="col-lg-4">
-            </div> --}}
-            {{-- End Right side columns --}}
-
-
         </div>
     </section>
 @endsection

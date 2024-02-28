@@ -9,6 +9,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\facultiesController;
 use App\Http\Controllers\LaboratoriesController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 
 Route::get('/', function () {
@@ -50,10 +51,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Student Routes
     Route::group(['prefix' => 'students'], function () {
-        Route::get('/', [UsersController::class, 'viewStudents'])->name('students');
-        Route::post('/', [UsersController::class, 'studentsPost'])->name('students.post');
-        Route::put('/{id}', [UsersController::class, 'studentsPut'])->name('students.put');
-        Route::delete('/{id}', [UsersController::class, 'studentsDelete'])->name('students.delete');
+        Route::get('/', [StudentController::class, 'viewStudents'])->name('students');
+        Route::post('/', [StudentController::class, 'studentsPost'])->name('students.post');
+        Route::put('/{id}', [StudentController::class, 'studentsPut'])->name('students.put');
+        Route::delete('/{id}', [StudentController::class, 'studentsDelete'])->name('students.delete');
     });
 
     // Attendance Routes

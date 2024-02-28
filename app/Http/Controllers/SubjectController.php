@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\College;
+use App\Models\Department;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 
@@ -11,7 +13,9 @@ class SubjectController extends Controller
     function viewSubjects()
     {
         $subjects = Subject::all();
-        return view('pages.subject', compact('subjects'));
+        $colleges = College::all();
+        $departments = Department::all();
+        return view('pages.subject', compact('subjects' , 'colleges', 'departments'));
     }
     
     // CREATE SUBJECTS
@@ -20,6 +24,8 @@ class SubjectController extends Controller
         $request->validate([
             'subjectName' => 'required',
             'subjectCode' => 'required',
+            'college_id' => 'required',
+            'department_id' => 'required',
             'subjectDescription' => 'nullable',
         ]);
 
@@ -34,6 +40,8 @@ class SubjectController extends Controller
         $subject = Subject::create([
             'subjectName' => $request->subjectName,
             'subjectCode' => $request->subjectCode,
+            'college_id' => $request->college_id,
+            'department_id' => $request->department_id,
             'subjectDescription' => $request->subjectDescription ?? 'N/A',
         ]);
 

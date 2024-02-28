@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('subjectName');
             $table->string('subjectCode');
             $table->text('subjectDescription')->nullable();
+            $table->foreignId('college_id')->constrained()->onDelete('cascade');
+            $table->foreignId('department_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
