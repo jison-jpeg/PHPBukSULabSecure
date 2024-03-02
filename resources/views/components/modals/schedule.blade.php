@@ -7,8 +7,31 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="row g-3" action="" method="POST" novalidate>
-                    @csrf
+                <form class="row g-3  needs-validation" novalidate>
+                    <div class="col-md-6">
+                        <label for="college_id" class="form-label">College</label>
+                        <select class="form-select" id="position" required="" name="position">
+                            <option selected="" disabled="" value="">Choose...</option>
+                            <option value="College 1">College 1</option>
+                            <option value="College 2">College 2</option>
+                            <option value="College 3">College 3</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a subject.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="department_id" class="form-label">Department</label>
+                        <select class="form-select" id="position" required="" name="position">
+                            <option selected="" disabled="" value="">Choose...</option>
+                            <option value="Subject 1">Subject 1</option>
+                            <option value="Subject 2">Subject 2</option>
+                            <option value="Subject 3">Subject 3</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a subject.
+                        </div>
+                    </div>
                     <div class="col-md-3">
                         <label for="subject_name" class="form-label">Subject Name</label>
                         <select class="form-select" id="position" required="" name="position">
@@ -25,7 +48,7 @@
                         <label for="address" class="form-label">Section Code</label>
                         <input type="text" class="form-control" name="address" placeholder="ex. T321" required>
                         <div class="invalid-feedback">
-                            Please enter a section code. <?php echo htmlspecialchars("(ex. T321)"); ?>
+                            Please enter a section code.
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -36,6 +59,30 @@
                         </div>
                     </div>
                     <div class="col-md-3">
+                        <label for="room" class="form-label">Room</label>
+                        <select class="form-select" id="position" required="" name="position" required>
+                            <option selected="" disabled="" value="">Choose...</option>
+                            <option value="Comlab 1">Comlab 1</option>
+                            <option value="Comlab 2">Comlab 2</option>
+                            <option value="Comlab 3">Comlab 3</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a room.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="room" class="form-label">Room</label>
+                        <select class="form-select" id="position" required="" name="position" required>
+                            <option selected="" disabled="" value="">Choose...</option>
+                            <option value="Comlab 1">Comlab 1</option>
+                            <option value="Comlab 2">Comlab 2</option>
+                            <option value="Comlab 3">Comlab 3</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a room.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
                         <label for="room" class="form-label">Room</label>
                         <select class="form-select" id="position" required="" name="position" required>
                             <option selected="" disabled="" value="">Choose...</option>

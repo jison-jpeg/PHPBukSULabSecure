@@ -9,6 +9,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\LaboratoriesController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 
@@ -41,6 +42,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/{id}', [UsersController::class, 'usersDelete'])->name('users.delete');
     });
 
+    // Profile Routes
+    Route::group(['prefix' => 'profile'], function () {
+        Route::get('/', [ProfileController::class, 'viewProfile'])->name('profile');
+        Route::put('/', [ProfileController::class, 'profilePut'])->name('profile.put');
+        Route::put('/password', [ProfileController::class, 'passwordPut'])->name('password.put');
+    });
+
     // Instructor Routes
     Route::group(['prefix' => 'faculties'], function () {
         Route::get('/', [FacultyController::class, 'viewFaculties'])->name('faculties');
@@ -63,9 +71,9 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     // Laboratories Route
-    Route::group(['prefix'=> 'laboratories'], function () {
-        Route::get('/', [LaboratoriesController::class,'viewLaboratories'])->name('laboratories');
-        Route::post('/', [LaboratoriesController::class,'laboratoriesPost'])->name('laboratories.post');
+    Route::group(['prefix' => 'laboratories'], function () {
+        Route::get('/', [LaboratoriesController::class, 'viewLaboratories'])->name('laboratories');
+        Route::post('/', [LaboratoriesController::class, 'laboratoriesPost'])->name('laboratories.post');
     });
 
     // Subjects Route

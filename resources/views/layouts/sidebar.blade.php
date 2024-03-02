@@ -48,7 +48,7 @@
 
         <li class="nav-item">
             <a class="nav-link {{ request()->is('colleges') ? '' : 'collapsed' }}" href="{{ url('/colleges') }}">
-                <i class="bi bi-person-workspace"></i>
+                <i class="bi bi-bank"></i>
                 <span>College Management</span>
             </a>
         </li>
@@ -56,7 +56,7 @@
         <li class="nav-item">
             <a class="nav-link {{ request()->is('faculties') ? '' : 'collapsed' }}"
                 href="{{ url('/faculties') }}">
-                <i class="bi bi-person-workspace"></i>
+                <i class="bi bi-mortarboard"></i>
                 <span>Faculty Management</span>
             </a>
         </li>
@@ -70,7 +70,7 @@
 
         <li class="nav-item">
             <a class="nav-link {{ request()->is('subjects') ? '' : 'collapsed' }}" href="{{ url('/subjects') }}">
-                <i class="bi bi-person-workspace"></i>
+                <i class="bi bi-book"></i>
                 <span>Subject Management</span>
             </a>
         </li>
