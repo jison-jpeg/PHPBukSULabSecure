@@ -176,7 +176,9 @@
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
                         <h6>{{ session('user')->first_name }} {{ session('user')->middle_name }} {{ session('user')->last_name }}</h6>
-                        <span>{{ ucwords(session('user')->role) }}</span>
+                        {{-- <span>{{ ucwords(session('user')->role) }}</span> --}}
+                        <span class="badge rounded-pill bg-primary">{{(session('user')->role) }}</span>
+
                     </li>
                     <li>
                         <hr class="dropdown-divider">

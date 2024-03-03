@@ -10,6 +10,7 @@ use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\LaboratoriesController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 
@@ -84,18 +85,14 @@ Route::group(['middleware' => 'auth'], function () {
 
     // College Management Route
     Route::group(['prefix' => 'colleges'], function () {
-        Route::get('/', [CollegeManagementController::class, 'viewSubjectsAndDepartments'])->name('colleges');
-        Route::post('/', [CollegeManagementController::class, 'collegesPost'])->name('colleges.post');
+        Route::get('/', [CollegeManagementController::class, 'viewColleges'])->name('colleges');
+        Route::post('/', [CollegeManagementController::class, 'createCollege'])->name('colleges.create');
         Route::post('/departments', [CollegeManagementController::class, 'departmentsPost'])->name('departments.post');
     });
 
     // Schedules Route
-    // Route::group(['prefix' => 'schedules'], function () {
-    //     Route::get('/', [LaboratoriesController::class, 'viewSchedules'])->name('schedules');
-    //     Route::post('/', [LaboratoriesController::class, 'schedulesPost'])->name('schedules.post');
-    // });
-
-    Route::get('/schedules', function () {
-        return view('pages.schedule');
+    Route::group(['prefix' => 'schedules'], function () {
+        Route::get('/', [ScheduleController::class, 'viewSchedules'])->name('schedules');
+        Route::post('/', [ScheduleController::class, 'createSchedule'])->name('schedules.post');
     });
 });

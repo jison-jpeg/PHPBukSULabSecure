@@ -80,6 +80,7 @@ class UsersController extends Controller
             return redirect(route('users'))->with("success", "User added successfully!");
         }
     }
+    
 
     //UPDATE USERS
     function usersPut(Request $request, $id)

@@ -1,4 +1,4 @@
-{{-- Add Subject Modal --}}
+{{-- Add College Modal --}}
 <div class="modal fade" id="addCollegeModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="row g-3" action="{{ route('colleges.post') }}" method="POST" novalidate>
+                <form class="row g-3 needs-validation" action="{{ route('colleges.create') }}" method="POST" novalidate>
                     @csrf
                     <div class="col-md-12">
                         <label for="collegeName" class="form-label">College Name</label>
@@ -22,10 +22,6 @@
                             <textarea class="form-control" style="height: 100px" name="collegeDescription" id="collegeDescription" placeholder="ex. This is a description about this college."></textarea>
                         </div>
                     </div>
-                    {{-- <div class="col-md-4">
-                        <label for="address" class="form-label">Section Code</label>
-                        <input type="text" class="form-control" name="address" placeholder="ex. T321">
-                    </div> --}}
                     <div class="modal-footer">
                         <button type="reset" class="btn btn-secondary">Reset</button>
                         <button type="submit" class="btn btn-primary">Confirm</button>

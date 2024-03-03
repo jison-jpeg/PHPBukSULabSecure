@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\College;
 use App\Models\Department;
-use App\Models\Subject;
 use Illuminate\Http\Request;
 
 class CollegeManagementController extends Controller
@@ -13,19 +12,12 @@ class CollegeManagementController extends Controller
     function viewColleges()
     {
         $colleges = College::all();
-        return view('pages.collegemngt', compact('colleges'));
-    }
-
-    // GET SUBJECTS AND DEPARTMENTS
-    function viewSubjectsAndDepartments()
-    {
-        $colleges = College::all();
         $departments = Department::all();
         return view('pages.collegemngt', compact('colleges', 'departments'));
     }
 
     // CREATE COLLEGES
-    function collegesPost(Request $request)
+    function createCollege(Request $request)
     {
         $request->validate([
             'collegeName' => 'required',
