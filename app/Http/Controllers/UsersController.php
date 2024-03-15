@@ -47,6 +47,7 @@ class UsersController extends Controller
     function usersPost(Request $request)
     {
         $request->validate([
+            'rfid_number' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users',
@@ -59,6 +60,7 @@ class UsersController extends Controller
         $plainPassword = Str::random(10);
 
         $user = User::create([
+            'rfid_number' => $request->rfid_number,
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
