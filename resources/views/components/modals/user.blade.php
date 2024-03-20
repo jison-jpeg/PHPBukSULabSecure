@@ -11,7 +11,7 @@
                     @csrf
                     <div class="col-md-3">
                         <label for="rfid_number" class="form-label">RFID No.</label>
-                        <input type="text" class="form-control" name="rfid_number" required>
+                        <input type="text" class="form-control" name="rfid_number" placeholder="Scanning..." readonly>
                         <div class="invalid-feedback">
                             Please enter an 8-digit valid and unique RFID number.
                         </div>

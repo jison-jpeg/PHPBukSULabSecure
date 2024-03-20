@@ -3,6 +3,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <title>@yield('pageTitle', 'Pagetitle') - BukSULab Secure</title>
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
     <meta content="" name="description">
     <meta content="" name="keywords">
 

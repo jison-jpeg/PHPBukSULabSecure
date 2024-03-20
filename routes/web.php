@@ -9,7 +9,9 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\LaboratoriesController;
+use App\Http\Controllers\LogsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RFIDController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
@@ -95,4 +97,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', [ScheduleController::class, 'viewSchedules'])->name('schedules');
         Route::post('/', [ScheduleController::class, 'createSchedule'])->name('schedules.post');
     });
+
+    // Logs Route
+    Route::group(['prefix' => 'logs'], function () {
+        Route::get('/', [LogsController::class, 'viewLogs'])->name('logs');
+    });
+
+    // RFID Route
+    Route::post('/rfid-data', 'RFIDController@receiveData');
+
 });

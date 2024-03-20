@@ -6,7 +6,7 @@ use App\Mail\CredentialsMail;
 use App\Models\User;
 use App\Models\College;
 use App\Models\Department;
-
+use App\Models\Logs;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,6 +60,7 @@ class UsersController extends Controller
         $plainPassword = Str::random(10);
 
         $user = User::create([
+            
             'rfid_number' => $request->rfid_number,
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
@@ -79,10 +80,19 @@ class UsersController extends Controller
         } else {
             //Send email with user data
             Mail::to($request->email)->send(new CredentialsMail($user, $plainPassword));
+
+            //Create log
+            Logs::create([
+                'date_time' => now(),
+                'user_id' => Auth::id(),
+                'name' => $user->getFullName(),
+                'description' => "An admin created an account.ID: $user->id",
+                'action' => 'Create',
+            ]);
             return redirect(route('users'))->with("success", "User added successfully!");
         }
     }
-    
+
 
     //UPDATE USERS
     function usersPut(Request $request, $id)

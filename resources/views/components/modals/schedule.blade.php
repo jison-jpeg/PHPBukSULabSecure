@@ -77,7 +77,7 @@
                         <select class="form-select" id="laboratory_id" required="" name="laboratory_id" required>
                             <option selected="" disabled="" value="">Choose...</option>
                             @foreach ($laboratories as $laboratory)
-                                <option value="{{ $laboratory->id }}">{{ $laboratory->roomNumber }}</option>
+                                <option value="{{ $laboratory->id }}">Comlab {{ $laboratory->roomNumber }}</option>
                             @endforeach
                         </select>
                         <div class="invalid-feedback">
@@ -103,27 +103,27 @@
                         <div class="d-md-flex justify-content-md-between flex-wrap">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="days[]" id="monday"
-                                    value="M">
+                                    value="Mon">
                                 <label class="form-check-label" for="monday">Monday</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="days[]" id="tuesday"
-                                    value="T">
+                                    value="Tue">
                                 <label class="form-check-label" for="tuesday">Tuesday</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="days[]" id="wednesday"
-                                    value="W">
+                                    value="Wed">
                                 <label class="form-check-label" for="wednesday">Wednesday</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="days[]" id="thursday"
-                                    value="TH">
+                                    value="Thu">
                                 <label class="form-check-label" for="thursday">Thursday</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="days[]" id="friday"
-                                    value="F">
+                                    value="Fri">
                                 <label class="form-check-label" for="friday">Friday</label>
                             </div>
                         </div>

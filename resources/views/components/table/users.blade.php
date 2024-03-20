@@ -16,7 +16,7 @@
                         <th scope="col">Role</th>
                         <th scope="col">College</th>
                         <th scope="col">Department</th>
-                        @if (request()->is('student') || request()->is('faculties'))
+                        @if (!request()->is('student') && !request()->is('faculties'))
                         @else
                             <th scope="col">Phone</th>
                             <th scope="col">Birthdate</th>
@@ -57,7 +57,7 @@
                             <!-- Check if college is null -->
                             <td>{{ $user->department ? $user->department->departmentName : 'N/A' }}</td>
                             <!-- Check if department is null -->
-                            @if (request()->is('student') || request()->is('faculties'))
+                            @if (!request()->is('student') && !request()->is('faculties'))
                             @else
                                 <td>{{ $user->phone ? $user->phone : 'N/A' }}</td>
                                 <td>{{ $user->birthdate ? $user->birthdate : 'N/A' }}</td>

@@ -75,4 +75,34 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Department::class);
     }
+
+    /**
+     * Get the logs for the user.
+     */
+    public function logs()
+    {
+        return $this->hasMany(Logs::class);
+    }
+
+    /**
+     * Get the user's full name.
+     *
+     * @return string
+     */
+
+    public function getFullName()
+    {
+        return "{$this->last_name} {$this->first_name} {$this->middle_name}";
+    }
+
+    /**
+     * Get the user's ID formatted as an instructor ID.
+     *
+     * @return string
+     */
+    public function getInstructorIdAttribute()
+    {
+        return "f-" . str_pad($this->id, 5, '0', STR_PAD_LEFT);
+    }
+    
 }

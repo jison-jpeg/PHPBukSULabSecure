@@ -34,13 +34,14 @@
             </a>
         </li>
 
+        {{-- @if(Auth::user()->role !== 'admin') --}}
         <li class="nav-item">
             <a class="nav-link {{ request()->is('attendance') ? '' : 'collapsed' }}" href="{{ url('/attendance') }}">
                 <i class="bi bi-clipboard2-check"></i>
                 <span>Attendance</span>
             </a>
         </li>
-
+        {{-- @endif --}}
 
 
 
@@ -99,12 +100,14 @@
             </a>
         </li>
 
+        @if(Auth::user()->role !== 'admin')
         <li class="nav-item">
             <a class="nav-link {{ request()->is('reports') ? '' : 'collapsed' }}" href="{{ url('/reports') }}">
                 <i class="bi bi-graph-up-arrow"></i>
                 <span>Reports</span>
             </a>
         </li>
+        @endif
 
         <li class="nav-item">
             <a class="nav-link {{ request()->is('contact') ? '' : 'collapsed' }}" href="{{ url('/contact') }}">
