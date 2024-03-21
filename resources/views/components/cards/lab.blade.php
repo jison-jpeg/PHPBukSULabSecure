@@ -1,39 +1,51 @@
 <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xxl-5">
-    @foreach($laboratories as $lab)
-
-    <div class="col">
-        <div class="card-link">
-            <div class="card lab-card">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>OPTIONS</h6>
-                        </li>
-                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                        <li>
-                            <a class="dropdown-item text-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal">Remove Comlab {{ $lab->roomNumber }}</a>
-                        </li>
-                    </ul>
-                </div>
-                <a class="card-body" href="/room">
-                    <div class="card-badge"><span class="badge rounded-pill bg-{{ $lab->occupancyStatus == 'Available' ? 'success' : 'danger' }}">{{ $lab->occupancyStatus }}</span></div>
-                    <div class="d-flex align-items-center">
-                        
-                        <div class="ps-0 mb-5">
-                            <span class="text-muted small pt-2">{{ $lab->laboratoryType }}</span>
-                            <h6>COMLAB {{ $lab->roomNumber }}</h6>
-                            <span class="text-muted small pt-2">{{ $lab->building }}</span>
+    @foreach ($laboratories as $lab)
+        <div class="col">
+            <div class="card-link">
+                <div class="card lab-card">
+                    <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>OPTIONS</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="#">Edit</a></li>
+                            <li>
+                                <a class="dropdown-item text-danger" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal">Remove Comlab {{ $lab->roomNumber }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <a class="card-body" href="/room">
+                        <div class="card-badge"><span
+                                class="badge rounded-pill bg-{{ $lab->occupancyStatus == 'Available' ? 'success' : 'danger' }}">{{ $lab->occupancyStatus }}</span>
                         </div>
-                    </div>
-                    <div class="row mt-5">
-                        <div class="col-12"><span>Recent</span></div>
-                        <div class="col-12"><span class="text-muted small">Mr. Sales Aribe</span></div>
-                    </div>
-                </a>
+                        <div class="d-flex align-items-center">
+
+                            <div class="ps-0 mb-5">
+                                <span class="text-muted small pt-2">{{ $lab->laboratoryType }}</span>
+                                <h6>COMLAB {{ $lab->roomNumber }}</h6>
+                                <span class="text-muted small pt-2">{{ $lab->building }}</span>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-12">
+                                <span>{{ $lab->label }}:</span>
+                            </div>
+                            <div class="col-12">
+                                <span class="text-muted small">
+                                    {{ Str::limit($lab->recentUser, 18, '...') }}
+                                </span>
+                            </div>
+                            <div class="col-12">
+                                <span class="text-muted small">
+                                    {{ $lab->recentTime }}
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
     @endforeach
 </div>

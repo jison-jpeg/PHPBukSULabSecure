@@ -14,6 +14,7 @@ class Logs extends Model
     protected $fillable = [
         'date_time',
         'user_id',
+        'laboratory_id',
         'name',
         'description',
         'action',
