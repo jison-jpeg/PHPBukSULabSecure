@@ -32,36 +32,37 @@ class ScheduleController extends Controller
             'college_id' => 'required|exists:colleges,id',
             'department_id' => 'required|exists:departments,id',
             'subject_id' => 'required|exists:subjects,id',
+            'sectionCode' => 'required|string',
             'user_id' => 'required|exists:users,id',
             'laboratory_id' => 'required|exists:laboratories,id',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
-            'days' => 'required|array|min:1',
-            'sectionCode' => 'required|string',
-        ]);
+            'days' => 'required|array',
+            'days.*' => 'in:Mon,Tue,Wed,Thu,Fri,Sat,Sun',
+            ]);
     
-        // Check if schedule already exists for the laboratory on the selected day(s)
-        $existingSchedules = Schedule::where('laboratory_id', $request->laboratory_id)
-            ->whereIn('days', $request->days)
-            ->get();
+        // // Check if schedule already exists for the laboratory on the selected day(s)
+        // $existingSchedules = Schedule::where('laboratory_id', $request->laboratory_id)
+        //     ->whereIn('days', $request->days)
+        //     ->get();
     
-        // Check for overlapping time slots
-        foreach ($existingSchedules as $existingSchedule) {
-            if ($request->start_time < $existingSchedule->end_time && $request->end_time > $existingSchedule->start_time) {
-                return redirect(route('schedules'))->with("error", "Schedule overlaps with existing schedule.");
-            }
-        }
+        // // Check for overlapping time slots
+        // foreach ($existingSchedules as $existingSchedule) {
+        //     if ($request->start_time < $existingSchedule->end_time && $request->end_time > $existingSchedule->start_time) {
+        //         return redirect(route('schedules'))->with("error", "Schedule overlaps with existing schedule.");
+        //     }
+        // }
     
         $schedule = Schedule::create([
             'college_id' => $request->college_id,
             'department_id' => $request->department_id,
             'subject_id' => $request->subject_id,
+            'sectionCode' => $request->sectionCode,
             'user_id' => $request->user_id,
             'laboratory_id' => $request->laboratory_id,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'days' => implode(',', $request->days),
-            'sectionCode' => $request->sectionCode,
         ]);
     
         if (!$schedule) {

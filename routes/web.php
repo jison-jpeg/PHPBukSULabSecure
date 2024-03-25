@@ -71,6 +71,8 @@ Route::group(['middleware' => 'auth'], function () {
     // Attendance Routes
     Route::group(['prefix' => 'attendance'], function () {
         Route::get('/', [AttendanceController::class, 'viewAttendance'])->name('attendance');
+        Route::post('/record-attendance', [AttendanceController::class, 'recordAttendance'])->name('record-attendance')->withoutMiddleware('auth');
+
     });
 
     // Laboratories Route
@@ -104,6 +106,5 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     // RFID Route
-    Route::post('/rfid-data', 'RFIDController@receiveData');
 
 });

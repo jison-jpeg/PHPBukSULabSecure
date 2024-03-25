@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Assign New Schedule</h5>
+                <h5 class="modal-title">Add New Schedule</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -100,12 +100,43 @@
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">Days</label><br>
-                        @foreach(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as $day)
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="days[]" value="{{ $day }}" id="{{ $day }}">
-                                <label class="form-check-label" for="{{ $day }}">{{ $day }}</label>
+                        <div class="d-md-flex justify-content-md-between flex-wrap">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="days[]" id="monday"
+                                    value="Mon">
+                                <label class="form-check-label" for="monday">Monday</label>
                             </div>
-                        @endforeach
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="days[]" id="tuesday"
+                                    value="Tue">
+                                <label class="form-check-label" for="tuesday">Tuesday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="days[]" id="wednesday"
+                                    value="Wed">
+                                <label class="form-check-label" for="wednesday">Wednesday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="days[]" id="thursday"
+                                    value="Thu">
+                                <label class="form-check-label" for="thursday">Thursday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="days[]" id="friday"
+                                    value="Fri">
+                                <label class="form-check-label" for="friday">Friday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="days[]" id="saturday"
+                                    value="Sat">
+                                <label class="form-check-label" for="saturday">Saturday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="days[]" id="sunday"
+                                    value="Sun">
+                                <label class="form-check-label" for="sunday">Sunday</label>
+                            </div>
+                        </div>
                         <div class="invalid-feedback">
                             Please select at least one day.
                         </div>

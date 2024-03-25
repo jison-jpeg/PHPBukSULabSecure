@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
             $table->dateTime('date_time'); // Changed to dateTime
-            $table->bigInteger('user_id')->unsigned()->constrained()->onDelete('cascade'); 
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('name'); // Name field added
             $table->string('description');
             $table->string('action');

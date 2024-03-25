@@ -10,11 +10,15 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Subject</th>
-                        <th scope="col">Schedule</th>
-                        <th scope="col">Instructor</th>
+                        <th>College</th>
+                        <th>Department</th>
+                        <th scope="col">Subject Name</th>
                         <th scope="col">Section Code</th>
+                        <th scope="col">Instructor</th>
+                        <th scope="col">Days</th>
                         <th scope="col">Room</th>
+                        <th scope="col">Start Time</th>
+                        <th scope="col">End Time</th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>
                 </thead>
@@ -22,11 +26,15 @@
                     @foreach ($schedules as $schedule)
                         <tr>
                             <th scope="row">{{ $schedule->subject->subjectCode }}</th>
+                            <td>{{ $schedule->college->collegeName }}</td>
+                            <td>{{ $schedule->department->departmentName }}</td>
                             <td>{{ $schedule->subject->subjectName }}</td>
-                            <td>{{ date('h:i A', strtotime($schedule->start_time)) }} - {{ date('h:i A', strtotime($schedule->end_time)) }} {{ implode(', ', explode(',', $schedule->days)) }}</td>
-                            <td>{{ $schedule->user->full_name }}</td>
                             <td>{{ $schedule->sectionCode }}</td>
-                            <td>Comlab 2</td>
+                            <td>{{ $schedule->user->full_name }}</td>
+                            <td>{{ $schedule->days }}</td>
+                            <td>Comlab {{ $schedule->laboratory->roomNumber }}</td>
+                            <td>{{ $schedule->start_time }}</td>
+                            <td>{{ $schedule->end_time }}</td>
                             <td>
                                 <div class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"

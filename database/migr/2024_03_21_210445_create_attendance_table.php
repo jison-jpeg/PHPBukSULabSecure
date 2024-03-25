@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attendances', function (Blueprint $table) {
+        Schema::create('attendance', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned()->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('laboratory_id')->references('id')->on('laboratories')->onDelete('cascade');
-            $table->bigInteger('subject_id')->unsigned()->constrained()->onDelete('cascade');
+            $table->foreignId('subject_id')->references('id')->on('subjects')->onDelete('cascade');
             $table->foreignId('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
-            $table->time('time_in');
-            $table->time('time_out');
-            $table->string('percentage')->default('0');
+            $table->string('time_in');
+            $table->string('time_out');
+            $table->string('remarks')->default('0');
             $table->string('status');
             $table->timestamps();
         });

@@ -10,15 +10,20 @@ class Schedule extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'laboratory_id',
         'college_id',
         'department_id',
         'subject_id',
         'sectionCode',
-        'days',
+        'user_id',
+        'laboratory_id',
         'start_time',
         'end_time',
+        'days',
+    ];
+
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
     ];
 
     public function user()
@@ -44,6 +49,10 @@ class Schedule extends Model
     public function subject()
     {
         return $this->belongsTo(Subject::class);
+    }
+    public function daysArray()
+    {
+        return explode(',', $this->days);
     }
 
 }

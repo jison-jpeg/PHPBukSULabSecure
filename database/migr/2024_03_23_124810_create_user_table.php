@@ -4,31 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->id();
-            $table->string('departmentName');
-            $table->string('departmentDescription');
-            $table->foreignId('college_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
-        });
-
-        Schema::create('subjects', function (Blueprint $table) {
-            $table->id();
-            $table->string('subjectName');
-            $table->string('subjectCode');
-            $table->string('sectionCode');
-            $table->text('subjectDescription')->nullable();
-            $table->foreignId('college_id')->constrained()->onDelete('cascade');
-            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade'); 
-            $table->timestamps();
-        });
-
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('first_name');
@@ -50,13 +32,9 @@ return new class extends Migration {
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('subjects');
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('user');
     }
 };

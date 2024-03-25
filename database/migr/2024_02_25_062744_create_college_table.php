@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('logs', function (Blueprint $table) {
+        Schema::create('colleges', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('date_time'); // Changed to dateTime
-            $table->bigInteger('user_id')->unsigned()->constrained()->onDelete('cascade'); 
-            $table->string('name'); // Name field added
-            $table->string('description');
-            $table->string('action');
+            $table->string('collegeName');
+            $table->string('collegeDescription');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('logs'); // Changed table name to logs
+        Schema::dropIfExists('college');
     }
 };
