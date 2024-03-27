@@ -15,14 +15,12 @@ use App\Http\Controllers\RFIDController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TestController;
 
 Route::get('/', function () {
     return redirect('/login');
 });
 
-// Route::get('/register', function () {
-//     return view('register');
-// });
 
 Route::group(['middleware' => 'web'], function () {
     Route::get('/login', [AuthManager::class, 'login'])->name('login')->middleware('guest');
@@ -103,6 +101,8 @@ Route::group(['middleware' => 'auth'], function () {
     // Logs Route
     Route::group(['prefix' => 'logs'], function () {
         Route::get('/', [LogsController::class, 'viewLogs'])->name('logs');
+        Route::get('/latest', [LogsController::class, 'latestLog']);
+
     });
 
     // RFID Route

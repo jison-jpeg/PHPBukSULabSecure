@@ -48,6 +48,18 @@ return [
             ],
         ],
 
+        'websocket' => [
+            'driver' => 'websocket',
+            'host' => env('LWS_HOST', '127.0.0.1'),
+            'port' => env('LWS_PORT', 6001),
+            'path' => env('LWS_PATH', '/app'),
+            'secured' => env('LWS_SECURED', false),
+            'client' => env('LWS_CLIENT', 'http'),
+            'scheme' => env('LWS_SCHEME', 'http'),
+            'local_cert' => null,
+            'local_pk' => null,
+        ],
+
         'ably' => [
             'driver' => 'ably',
             'key' => env('ABLY_KEY'),
