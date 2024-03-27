@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class LogsController extends Controller
 {
+
     // GET LOGS
     function viewLogs()
     {

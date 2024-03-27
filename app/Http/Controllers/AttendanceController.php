@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\Laboratory;
+use App\Models\Logs;
 use App\Models\Schedule;
 use App\Models\Subject;
 use App\Models\User;
@@ -31,22 +32,20 @@ class AttendanceController extends Controller
     {
         // Extract RFID data from the request
         $rfidNumber = $request->input('rfid_number');
-        $confirm = $request->input('confirm', false); // Check if time-out confirmation is required
 
         // Check if the RFID number exists in the database
         $user = User::where('rfid_number', $rfidNumber)->first();
 
         if (!$user) {
-            return response()->json(['error' => 'User with RFID number not found'], 404);
+            return response()->json(['error' => 'User not found!'], 404);
         }
 
         // Check if the user has a schedule for the current time
-        // Implement your logic to find the schedule based on time and day
         $schedule = Schedule::where('user_id', $user->id)
-                            ->where('days', 'like', '%' . now()->format('D') . '%')
-                            ->whereTime('start_time', '<=', now())
-                            ->whereTime('end_time', '>=', now())
-                            ->first();
+            ->where('days', 'like', '%' . now()->format('D') . '%')
+            ->whereTime('start_time', '<=', now())
+            ->whereTime('end_time', '>=', now())
+            ->first();
 
         if (!$schedule) {
             return response()->json(['error' => 'No schedule found for the user at this time'], 404);
@@ -54,30 +53,28 @@ class AttendanceController extends Controller
 
         // Check if there is an existing attendance record for the user and schedule
         $existingAttendance = Attendance::where('user_id', $user->id)
-                                        ->where('schedule_id', $schedule->id)
-                                        ->first();
+            ->where('schedule_id', $schedule->id)
+            ->first();
 
         if ($existingAttendance) {
-            if (!$confirm) {
-                return response()->json(['error' => 'Time-out confirmation required'], 400);
-            } else {
-                // Record time-out confirmation
-                $existingAttendance->time_out = now();
-                $existingAttendance->status = 'PRESENT'; // Update status to 'PRESENT'
-                $existingAttendance->save();
-
-                // Calculate the percentage of attendance based on the total working hours for the schedule and the time spent in the office by the user for the day of the schedule
-                $totalWorkingHours = $schedule->end_time->diffInMinutes($schedule->start_time) / 60;
-                $timeInOffice = $existingAttendance->time_in->diffInMinutes($existingAttendance->time_out) / 60;
-
-                // Ensure the percentage doesn't exceed 100%
-                $percentage = min(($timeInOffice / $totalWorkingHours) * 100, 100);
-
-                $existingAttendance->percentage = $percentage;
-                $existingAttendance->save();
-
-                return response()->json(['message' => 'Attendance time-out confirmed successfully']);
+            // If attendance already recorded and has both time in and time out
+            if ($existingAttendance->time_in && $existingAttendance->time_out) {
+                // Log the Check Out Action
+                Logs::create([
+                    'date_time' => now(),
+                    'user_id' => $user->id,
+                    'laboratory_id' => $existingAttendance->laboratory_id,
+                    'name' => $user->getFullName(),
+                    'description' => 'A User exited the laboratory: ' . $existingAttendance->laboratory->roomNumber . ' for subject: ' . $existingAttendance->subject->subjectName,
+                    'action' => 'OUT'
+                ]);
+                
+                return response()->json(['message' => 'Attendance already completed for this subject']);
             }
+
+            // If attendance already recorded but missing time out, update time out
+            $existingAttendance->update(['time_out' => now()]);
+            return response()->json(['message' => 'Attendance updated successfully']);
         }
 
         // Get laboratory and subject for the schedule
@@ -93,6 +90,16 @@ class AttendanceController extends Controller
         $attendance->time_in = now();
         $attendance->status = 'PRESENT';
         $attendance->save();
+
+        // Log the Check In Action
+        Logs::create([
+            'date_time' => now(),
+            'user_id' => $user->id,
+            'laboratory_id' => $laboratory->id,
+            'name' => $user->getFullName(),
+            'description' => 'A User Accessed the Laboratory: ' . $laboratory->roomNumber . ' for subject: ' . $subject->subjectName,
+            'action' => 'IN'
+        ]);
 
         // Check if attendance was successfully recorded
         if (!$attendance->exists) {

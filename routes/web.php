@@ -11,11 +11,9 @@ use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\LaboratoriesController;
 use App\Http\Controllers\LogsController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RFIDController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
-use App\Http\Controllers\TestController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -104,7 +102,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/latest', [LogsController::class, 'latestLog']);
 
     });
-
-    // RFID Route
+    
 
 });
