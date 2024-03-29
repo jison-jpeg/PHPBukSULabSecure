@@ -35,13 +35,6 @@ class UsersController extends Controller
         return view('archivedUsers', compact('users'));
     }
 
-    //GET EMPLOYEES
-    function viewEmployees()
-    {
-        $users = User::all();
-        return view('employees', compact('users'));
-    }
-
 
     //CREATE USERS
     function usersPost(Request $request)
@@ -60,7 +53,7 @@ class UsersController extends Controller
         $plainPassword = Str::random(10);
 
         $user = User::create([
-            
+
             'rfid_number' => $request->rfid_number,
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
@@ -93,65 +86,71 @@ class UsersController extends Controller
         }
     }
 
-
     //UPDATE USERS
     function usersPut(Request $request, $id)
     {
-        $user = User::findOrFail($id);
-
-        $validatedData = $request->validate([
-            'first_name' => 'nullable|string',
-            'middle_name' => 'nullable|string',
-            'last_name' => 'nullable|string',
-            'email' => 'nullable|email|unique:users,email,' . $id,
-            'phonenumber' => 'nullable|string',
-            'role' => 'nullable|string',
-            'birthdate' => 'nullable|date',
-            'username' => 'nullable|string|unique:users,username,' . $id,
-            'password' => 'nullable|string', // We can add more validations
+        $request->validate([
+            'rfid_number' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email',
+            'username' => 'required',
+            'role' => 'required',
+            'college_id' => 'required',
+            'department_id' => 'required',
         ]);
 
-        // Remove fields with null values from the validated data
-        $validatedData = array_filter($validatedData, function ($value) {
-            return !is_null($value);
-        });
+        $user = User::find($id);
 
-        // Hash password if provided
-        if (isset($validatedData['password'])) {
-            $validatedData['password'] = Hash::make($validatedData['password']);
+        $user->rfid_number = $request->rfid_number;
+        $user->first_name = $request->first_name;
+        $user->middle_name = $request->middle_name;
+        $user->last_name = $request->last_name;
+        $user->college_id = $request->college_id;
+        $user->department_id = $request->department_id;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->role = $request->role;
+        $user->birthdate = $request->birthdate;
+        $user->username = $request->username;
+
+        if ($user->save()) {
+            //Create log
+            Logs::create([
+                'date_time' => now(),
+                'user_id' => Auth::id(),
+                'name' => $user->getFullName(),
+                'description' => "An admin updated an account.ID: $user->id",
+                'action' => 'Update',
+            ]);
+            return redirect(route('users'))->with("success", "User updated successfully!");
+        } else {
+            return redirect(route('users'))->with("error", "User update failed!");
         }
-        $user->update($validatedData);
-        return redirect(route('users'))->with("success", "User updated successfully!");
     }
 
-    //SOFT DELETE USERS
+    //DELETE USERS
     function usersDelete($id)
     {
-        $user = User::withTrashed()->findOrFail($id);
+        $user = User::find($id);
 
-        // Restore the user
-        $user->delete();
+        // User cannot delete own account
+        if ($user->id == Auth::id()) {
+            return redirect(route('users'))->with("error", "You cannot delete your own account!");
+        }
 
-        return redirect(route('users'))->with("success", "User restored  successfully!");
-    }
-
-    //RESTORE USERS
-    function usersRestore($id)
-    {
-        $user = User::withTrashed()->findOrFail($id);
-
-        // Restore the user
-        $user->restore();
-
-        return back()->with("success", "User restored successfully!");
-    }
-
-
-
-    //GET ADMINS
-    function get_admins()
-    {
-        $admins = User::where('position', 'tenant admin')->get();
-        return response()->json($admins);
+        if ($user->delete()) {
+            //Create log
+            Logs::create([
+                'date_time' => now(),
+                'user_id' => Auth::id(),
+                'name' => $user->getFullName(),
+                'description' => "An admin deleted an account.ID: $user->id",
+                'action' => 'Delete',
+            ]);
+            return redirect(route('users'))->with("success", "User deleted successfully!");
+        } else {
+            return redirect(route('users'))->with("error", "User deletion failed!");
+        }
     }
 }

@@ -65,12 +65,12 @@
                             <td>
                                 <div class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#updateModal">
+                                        data-bs-target="#updateModal{{ $user->id }}">
                                         Edit
                                     </button>
                                     <div class="mx-1"></div>
                                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal">
+                                        data-bs-target="#deleteModal{{ $user->id }}">
                                         Delete
                                     </button>
                                     {{-- <div class="mx-1"></div>
