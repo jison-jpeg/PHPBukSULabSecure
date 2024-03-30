@@ -58,91 +58,130 @@ class AttendanceController extends Controller
             return response()->json(['error' => 'No schedule found for the user at this time'], 404);
         }
 
-        // Handle entrance event
-        if ($action === 'entrance') {
-            // Check if there is an existing attendance record for the user and schedule on the current day
-            $existingAttendanceToday = Attendance::where('user_id', $user->id)
-                ->where('schedule_id', $schedule->id)
-                ->whereDate('created_at', now()->format('Y-m-d'))
-                ->first();
+// Handle entrance event
+if ($action === 'entrance') {
+    // Check if there is an existing active attendance record for the user and schedule on the current day
+    $existingAttendanceToday = Attendance::where('user_id', $user->id)
+        ->where('schedule_id', $schedule->id)
+        ->whereNull('time_out') // Only consider active attendances
+        ->whereDate('created_at', now()->format('Y-m-d'))
+        ->first();
 
-            // Check if the user in the laboratory
-            if ($existingAttendanceToday && $existingAttendanceToday->time_out === null) {
-                return response()->json(['error' => 'User already entered the laboratory'], 400);
-            } else if ($existingAttendanceToday && $existingAttendanceToday->time_out !== null) {
-                return response()->json(['error' => 'User already exited the laboratory'], 400);
-            }
+    if ($existingAttendanceToday) {
+        // If the user re-enters without completing their attendance, do not create a new record
+        // Update time in only for temporary exits
+        if ($existingAttendanceToday->status === 'TEMPORARILY_OUT') {
+            $existingAttendanceToday->time_in = now();
+            $existingAttendanceToday->save();
 
-            // Record attendance with time-in
-            $attendance = new Attendance();
-            $attendance->user_id = $user->id;
-            $attendance->laboratory_id = $laboratoryId;
-            $attendance->subject_id = $schedule->subject_id;
-            $attendance->schedule_id = $schedule->id;
-            $attendance->time_in = now();
-            $attendance->status = 'PRESENT';
-            $attendance->save();
-
-            // Log the entrance action
+            // Log the re-entry action
             Logs::create([
                 'date_time' => now(),
                 'user_id' => $user->id,
                 'laboratory_id' => $laboratoryId,
                 'name' => $user->getFullName(),
-                'description' => 'User entered the laboratory: ' . $laboratoryId . ' for subject: ' . $schedule->subject->subjectName,
+                'description' => 'User re-entered the laboratory: ' . $laboratoryId . ' for subject: ' . $schedule->subject->subjectName,
                 'action' => 'IN'
             ]);
 
-            // Update laboratory occupancy status if role is not student
-            if ($user->role !== 'student') {
-                Laboratory::where('id', $laboratoryId)->update(['occupancyStatus' => 'On-Going']);
-            }
-
-            return response()->json(['message' => 'Attendance recorded successfully']);
-        }
-        // Handle exit event
-        else if ($action === 'exit') {
-            // Check if there is an existing attendance record for the user and schedule on the current day
-            $existingAttendanceToday = Attendance::where('user_id', $user->id)
-                ->where('schedule_id', $schedule->id)
-                ->whereDate('created_at', now()->format('Y-m-d'))
-                ->first();
-
-            // Check if the user has not entered the laboratory
-            if (!$existingAttendanceToday) {
-                return response()->json(['error' => 'User has not entered the laboratory'], 400);
-            }
-
-            if ($existingAttendanceToday->time_out) {
-                return response()->json(['error' => 'Attendance already completed for this subject'], 400);
-            }
-
-            // Check if the laboratory for time-in matches the provided laboratory ID
-            if ($existingAttendanceToday->laboratory_id != $laboratoryId) {
-                return response()->json(['error' => 'You cannot logout to another laboratory'], 400);
-            }
-
-            // Update attendance with time-out
-            $existingAttendanceToday->time_out = now();
-            $existingAttendanceToday->save();
-
-            // Log the exit action
-            Logs::create([
-                'date_time' => now(),
-                'user_id' => $user->id,
-                'laboratory_id' => $laboratoryId,
-                'name' => $user->getFullName(),
-                'description' => 'User exited the laboratory: ' . $laboratoryId . ' for subject: ' . $schedule->subject->subjectName,
-                'action' => 'OUT'
-            ]);
-
-            // Update laboratory occupancy status if role is not student
-            if ($user->role !== 'student') {
-                Laboratory::where('id', $laboratoryId)->update(['occupancyStatus' => 'Available']);
-            }
-
             return response()->json(['message' => 'Attendance updated successfully']);
+        } else {
+            // If the user re-enters after completing their attendance, allow re-entry
+            // No need to create a new record
+            return response()->json(['message' => 'User already inside the laboratory']);
         }
+    }
+
+    // Record attendance with time-in
+    $attendance = new Attendance();
+    $attendance->user_id = $user->id;
+    $attendance->laboratory_id = $laboratoryId;
+    $attendance->subject_id = $schedule->subject_id;
+    $attendance->schedule_id = $schedule->id;
+    $attendance->time_in = now();
+    $attendance->status = 'PRESENT';
+    $attendance->save();
+
+    // Log the entrance action
+    Logs::create([
+        'date_time' => now(),
+        'user_id' => $user->id,
+        'laboratory_id' => $laboratoryId,
+        'name' => $user->getFullName(),
+        'description' => 'User entered the laboratory: ' . $laboratoryId . ' for subject: ' . $schedule->subject->subjectName,
+        'action' => 'IN'
+    ]);
+
+    // Update laboratory occupancy status if role is not student
+    if ($user->role !== 'student') {
+        Laboratory::where('id', $laboratoryId)->update(['occupancyStatus' => 'On-Going']);
+    }
+
+    return response()->json(['message' => 'Attendance recorded successfully']);
+}
+
+
+// Handle exit event
+else if ($action === 'exit') {
+    // Check if there is an existing attendance record for the user and schedule on the current day
+    $existingAttendanceToday = Attendance::where('user_id', $user->id)
+        ->where('schedule_id', $schedule->id)
+        ->whereDate('created_at', now()->format('Y-m-d'))
+        ->first();
+
+    // Check if the user has not entered the laboratory
+    if (!$existingAttendanceToday) {
+        return response()->json(['error' => 'User has not entered the laboratory'], 400);
+    }
+
+    // Check if the laboratory for time-in matches the provided laboratory ID
+    if ($existingAttendanceToday->laboratory_id != $laboratoryId) {
+        return response()->json(['error' => 'You cannot logout to another laboratory'], 400);
+    }
+
+    // Introduce a timeout threshold (in minutes)
+    $timeoutThreshold = 15; // Adjust this value as needed
+    
+    // Check if the user's absence duration is within the timeout threshold
+    $timeIn = Carbon::parse($existingAttendanceToday->time_in);
+    $timeOut = now();
+    $absenceDuration = $timeOut->diffInMinutes($timeIn);
+
+    if ($absenceDuration <= $timeoutThreshold) {
+        // Log the temporary exit action
+        Logs::create([
+            'date_time' => $timeOut,
+            'user_id' => $user->id,
+            'laboratory_id' => $laboratoryId,
+            'name' => $user->getFullName(),
+            'description' => 'User temporarily exited the laboratory: ' . $laboratoryId . ' for subject: ' . $schedule->subject->subjectName,
+            'action' => 'OUT_TEMPORARY'
+        ]);
+
+        return response()->json(['message' => 'Temporary exit recorded successfully']);
+    } else {
+        // If the absence duration exceeds the timeout threshold, consider it as a complete exit
+        $existingAttendanceToday->time_out = $timeOut;
+        $existingAttendanceToday->save();
+
+        // Log the complete exit action
+        Logs::create([
+            'date_time' => $timeOut,
+            'user_id' => $user->id,
+            'laboratory_id' => $laboratoryId,
+            'name' => $user->getFullName(),
+            'description' => 'User exited the laboratory: ' . $laboratoryId . ' for subject: ' . $schedule->subject->subjectName,
+            'action' => 'OUT'
+        ]);
+
+        // Update laboratory occupancy status if role is not student
+        if ($user->role !== 'student') {
+            Laboratory::where('id', $laboratoryId)->update(['occupancyStatus' => 'Available']);
+        }
+
+        return response()->json(['message' => 'Complete exit recorded successfully']);
+    }
+}
 
         return response()->json(['error' => 'Invalid action'], 400);
     }
