@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessAttendance;
 use App\Models\Attendance;
 use App\Models\User;
 use App\Models\Schedule;
@@ -68,26 +69,17 @@ class AttendanceController extends Controller
 
         return response()->json(['error' => 'Invalid action'], 400);
     }
-
+   
     private function handleEntrance($user, $laboratory, $schedule)
     {
-        // Determine the status based on arrival time
-        $arrivalTime = now();
-        $scheduledStartTime = Carbon::parse($schedule->start_time);
-
-        $status = 'PRESENT';
-        if ($arrivalTime->gt($scheduledStartTime)) {
-            $status = 'LATE';
-        }
-
         // Record new attendance
         Attendance::create([
             'user_id' => $user->id,
             'laboratory_id' => $laboratory->id,
             'subject_id' => $schedule->subject_id,
             'schedule_id' => $schedule->id,
-            'time_in' => $arrivalTime,
-            'status' => $status,
+            'time_in' => now(),
+            'status' => 'PRESENT',
         ]);
 
         return response()->json(['message' => 'Attendance recorded successfully']);
@@ -113,18 +105,8 @@ class AttendanceController extends Controller
         // Update the latest attendance record with the exit time
         $latestAttendance->update(['time_out' => now()]);
 
-        // Calculate the total time available for attendance (in minutes)
-        $totalTimeAvailable = $latestAttendance->schedule->end_time->diffInMinutes($latestAttendance->schedule->start_time);
-
-        // Calculate the actual time attended by the user (in minutes)
-        $timeAttended = Carbon::parse($latestAttendance->time_in)->diffInMinutes($latestAttendance->time_out);
-
-        // Calculate the percentage of time attended
-        $attendancePercentage = ($timeAttended / $totalTimeAvailable) * 100;
-
-        // Update the attendance record with the percentage
-        $latestAttendance->update(['percentage' => $attendancePercentage]);
-
         return response()->json(['message' => 'Exit recorded successfully']);
     }
+
+    // Sum the total in and out of the user of the schedule of their subject of the current day
 }
