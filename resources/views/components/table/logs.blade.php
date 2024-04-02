@@ -19,16 +19,23 @@
                 </thead>
                 <tbody>
                     @foreach ($logs as $log)
-                    <tr>
+                        <tr>
                             <td>{{ $log->created_at }}</td>
                             <td>COMLAB {{ $log->laboratory_id }}</td>
                             <td>{{ $log->user_id }}</td>
-                            <td>{{ $log->user->last_name }}, {{ $log->user->first_name }} {{ $log->user->middle_name }}
+                            <td>
+                                @if ($log->user)
+                                    {{ $log->user->last_name }}, {{ $log->user->first_name }}
+                                    {{ $log->user->middle_name }}
+                                @else
+                                    User not found
+                                @endif
                             </td>
                             <td>{{ $log->description }}</td>
                             <td>{{ $log->action }}</td>
                         </tr>
-                        @endforeach
+                    @endforeach
+
                 </tbody>
             </table>
         </div>

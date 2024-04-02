@@ -78,22 +78,22 @@
 
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label">College</div>
-                      <div class="col-lg-9 col-md-8">{{ $user->college->collegeName }}</div>
+                      <div class="col-lg-9 col-md-8">{{ $user->college->collegeName ?? 'N/A' }}</div>
                     </div>
 
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label">Department</div>
-                      <div class="col-lg-9 col-md-8">{{ $user->department->departmentName }}</div>
+                      <div class="col-lg-9 col-md-8">{{ $user->department->departmentName ?? 'N/A' }}</div>
                     </div>
   
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label">Phone</div>
-                      <div class="col-lg-9 col-md-8">{{ $user->phone }}</div>
+                      <div class="col-lg-9 col-md-8">{{ $user->phone ?? 'N/A' }}</div>
                     </div>
   
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label">Birthdate</div>
-                      <div class="col-lg-9 col-md-8">{{ $user->birthdate }}</div>
+                      <div class="col-lg-9 col-md-8">{{ $user->birthdate ?? 'N/A' }}</div>
                     </div>
   
                   </div>

@@ -11,11 +11,9 @@ use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\LaboratoriesController;
 use App\Http\Controllers\LogsController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RFIDController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
-use App\Http\Controllers\TestController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -39,7 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', [UsersController::class, 'viewUsers'])->name('users');
         Route::post('/', [UsersController::class, 'usersPost'])->name('users.post');
-        Route::put('/{id}', [UsersController::class, 'usersPut'])->name('users.put');
+        Route::put('/{id}', [UsersController::class, 'usersPut'])->name('users.update');
         Route::delete('/{id}', [UsersController::class, 'usersDelete'])->name('users.delete');
     });
 
@@ -104,7 +102,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/latest', [LogsController::class, 'latestLog']);
 
     });
-
-    // RFID Route
+    
 
 });
