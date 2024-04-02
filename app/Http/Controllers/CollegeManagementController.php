@@ -44,6 +44,54 @@ class CollegeManagementController extends Controller
         }
     }
 
+    // UPDATE COLLEGE
+    function collegePut(Request $request, $id)
+    {
+        $request->validate([
+            'collegeName' => 'required',
+            'collegeDescription' => 'required',
+        ]);
+
+        $college = College::find($id);
+
+        $college->collegeName = $request->collegeName;
+        $college->collegeDescription = $request->collegeDescription;
+
+        if ($college->save()) {
+            // //Create log
+            // Logs::create([
+            //     'date_time' => now(),
+            //     'user_id' => Auth::id(),
+            //     'name' => $user->getFullName(),
+            //     'description' => "An admin updated an account.ID: $user->id",
+            //     'action' => 'Update',
+            // ]);
+            return redirect(route('colleges'))->with("success", "College updated successfully!");
+        } else {
+            return redirect(route('colleges'))->with("error", "College update failed!");
+        }
+    }
+
+    //DELETE COLLEGE
+    function collegeDelete($id)
+    {
+        $college = College::find($id);
+
+        if ($college->delete()) {
+            // //Create log
+            // Logs::create([
+            //     'date_time' => now(),
+            //     'user_id' => Auth::id(),
+            //     'name' => $user->getFullName(),
+            //     'description' => "An admin deleted an account.ID: $user->id",
+            //     'action' => 'Delete',
+            // ]);
+            return redirect(route('colleges'))->with("success", "College deleted successfully!");
+        } else {
+            return redirect(route('colleges'))->with("error", "College deletion failed!");
+        }
+    }
+
     // CREATE DEPARTMENTS
     function departmentsPost(Request $request)
     {
@@ -71,6 +119,54 @@ class CollegeManagementController extends Controller
             return redirect(route('colleges'))->with("error", "Error creating department. Please try again.");
         } else {
             return redirect(route('colleges'))->with("success", "Department created successfully");
+        }
+    }
+
+    // UPDATE DEPARTMENT
+    function departmentPut(Request $request, $id)
+    {
+        $request->validate([
+            'departmentName' => 'required',
+            'departmentDescription' => 'nullable',
+        ]);
+
+        $department = Department::find($id);
+
+        $department->departmentName = $request->departmentName;
+        $department->departmentDescription = $request->departmentDescription;
+
+        if ($department->save()) {
+            // //Create log
+            // Logs::create([
+            //     'date_time' => now(),
+            //     'user_id' => Auth::id(),
+            //     'name' => $user->getFullName(),
+            //     'description' => "An admin updated an account.ID: $user->id",
+            //     'action' => 'Update',
+            // ]);
+            return redirect(route('colleges'))->with("success", "Department updated successfully!");
+        } else {
+            return redirect(route('colleges'))->with("error", "Department update failed!");
+        }
+    }
+
+    //DELETE COLLEGE
+    function departmentDelete($id)
+    {
+        $department = Department::find($id);
+
+        if ($department->delete()) {
+            // //Create log
+            // Logs::create([
+            //     'date_time' => now(),
+            //     'user_id' => Auth::id(),
+            //     'name' => $user->getFullName(),
+            //     'description' => "An admin deleted an account.ID: $user->id",
+            //     'action' => 'Delete',
+            // ]);
+            return redirect(route('colleges'))->with("success", "Department deleted successfully!");
+        } else {
+            return redirect(route('colleges'))->with("error", "Department deletion failed!");
         }
     }
 }

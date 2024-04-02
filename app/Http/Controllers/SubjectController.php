@@ -53,4 +53,60 @@ class SubjectController extends Controller
             return redirect(route('subjects'))->with("success", "Subject created successfully");
         }
     }
+
+    // UPDATE SUBJECT
+    function subjectsPut(Request $request, $id)
+    {
+        $request->validate([
+            'subjectName' => 'required',
+            'subjectCode' => 'required',
+            'sectionCode' => 'required',
+            'college_id' => 'required',
+            'department_id' => 'required',
+            'subjectDescription' => 'nullable',
+        ]);
+
+        $subject = Subject::find($id);
+
+        $subject->subjectName = $request->subjectName;
+        $subject->subjectCode = $request->subjectCode;
+        $subject->sectionCode = $request->sectionCode;
+        $subject->college_id = $request->college_id;
+        $subject->department_id = $request->department_id;
+        $subject->subjectDescription = $request->subjectDescription;
+
+        if ($subject->save()) {
+            // //Create log
+            // Logs::create([
+            //     'date_time' => now(),
+            //     'user_id' => Auth::id(),
+            //     'name' => $user->getFullName(),
+            //     'description' => "An admin updated an account.ID: $user->id",
+            //     'action' => 'Update',
+            // ]);
+            return redirect(route('subjects'))->with("success", "Subject updated successfully!");
+        } else {
+            return redirect(route('subjects'))->with("error", "Subject update failed!");
+        }
+    }
+
+    //DELETE SUBJECT
+    function subjectsDelete($id)
+    {
+        $subject = Subject::find($id);
+
+        if ($subject->delete()) {
+            // //Create log
+            // Logs::create([
+            //     'date_time' => now(),
+            //     'user_id' => Auth::id(),
+            //     'name' => $user->getFullName(),
+            //     'description' => "An admin deleted an account.ID: $user->id",
+            //     'action' => 'Delete',
+            // ]);
+            return redirect(route('subjects'))->with("success", "Subject deleted successfully!");
+        } else {
+            return redirect(route('subjects'))->with("error", "Subject deletion failed!");
+        }
+    }
 }

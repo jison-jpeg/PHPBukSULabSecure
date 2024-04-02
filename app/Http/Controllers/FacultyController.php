@@ -61,5 +61,59 @@ class FacultyController extends Controller
         }
     }
 
-}
+    //UPDATE FACULTIES
+    function facultiesPut(Request $request, $id)
+    {
+        $request->validate([
+            'first_name' => 'required',
+            'middle_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email',
+            'college_id' => 'required',
+            'department_id' => 'required',
+        ]);
 
+        $user = User::find($id);
+
+        $user->first_name = $request->first_name;
+        $user->middle_name = $request->middle_name;
+        $user->last_name = $request->last_name;
+        $user->email = $request->email;
+        $user->college_id = $request->college_id;
+        $user->department_id = $request->department_id;
+
+        if ($user->save()) {
+            // //Create log
+            // Logs::create([
+            //     'date_time' => now(),
+            //     'user_id' => Auth::id(),
+            //     'name' => $user->getFullName(),
+            //     'description' => "An admin updated an account.ID: $user->id",
+            //     'action' => 'Update',
+            // ]);
+            return redirect(route('faculties'))->with("success", "Faculty updated successfully!");
+        } else {
+            return redirect(route('faculties'))->with("error", "Faculty update failed!");
+        }
+    }
+
+    //DELETE USERS
+    function facultiesDelete($id)
+    {
+        $user = User::find($id);
+
+        if ($user->delete()) {
+            // //Create log
+            // Logs::create([
+            //     'date_time' => now(),
+            //     'user_id' => Auth::id(),
+            //     'name' => $user->getFullName(),
+            //     'description' => "An admin deleted an account.ID: $user->id",
+            //     'action' => 'Delete',
+            // ]);
+            return redirect(route('faculties'))->with("success", "Faculty deleted successfully!");
+        } else {
+            return redirect(route('faculties'))->with("error", "Faculty deletion failed!");
+        }
+    }
+}

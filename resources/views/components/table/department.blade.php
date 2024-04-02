@@ -23,22 +23,22 @@
                         <td>
                             <div class="d-flex justify-content-center">
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#updateModal">
+                                    data-bs-target="#updateDepartmentModal{{ $department->id }}">
                                     Edit
                                 </button>
                                 <div class="mx-1"></div>
                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal">
+                                    data-bs-target="#deleteDepartmentModal{{ $department->id }}">
                                     Delete
                                 </button>
                                 {{-- <div class="mx-1"></div>
                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#archiveModal">
+                                    data-bs-target="#archiveDepartmentModal">
                                     Archive
                                 </button>
                                 <div class="mx-1"></div>
                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#restoreModal">
+                                    data-bs-target="#restoreDepartmentModal">
                                     Restore
                                 </button> --}}
                             </div>
