@@ -17,8 +17,9 @@ return new class extends Migration
             $table->foreignId('laboratory_id')->references('id')->on('laboratories')->onDelete('cascade');
             $table->bigInteger('subject_id')->unsigned()->constrained()->onDelete('cascade');
             $table->foreignId('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
-            $table->time('time_in');
-            $table->time('time_out');
+            $table->time('time_in')->nullable();
+            $table->time('time_out')->nullable();
+            $table->string('time_attended')->nullable();
             $table->string('percentage')->default('0');
             $table->string('status');
             $table->timestamps();

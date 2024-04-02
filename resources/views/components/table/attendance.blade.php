@@ -17,12 +17,13 @@
                         <th scope="col">Time In</th>
                         <th scope="col">Time Out</th>
                         <th scope="col">Date</th>
+                        <th scope="col">Time Attended</th>
                         <th scope="col">Percentage</th>
                         <th scope="col">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($attendances as $key => $attendance)
+                    @foreach ($uniqueAttendances as $key => $attendance)
                         <tr>
                             <th scope="row">{{ $key + 1 }}</th>
                             <td>{{ $attendance->id }}</td>
@@ -31,12 +32,13 @@
                             <td>{{ $attendance->subject->subjectName }}</td>
                             <td>{{ $attendance->time_in }}</td>
                             <td>{{ $attendance->time_out }}</td>
-                            <td>{{ $attendance->created_at->format('m-d-Y') }}</td>
+                            <td>{{ $attendance->date }}</td>
+                            <td>{{ $attendance->time_attended }}</td>
 
                             <td>
                                 <div class="progress mt-1-5">
                                     <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25"
-                                        aria-valuemin="0" aria-valuemax="100">{{ $attendance->percentage  }}</div>
+                                        aria-valuemin="0" aria-valuemax="100">{{ $attendance->percentage }}</div>
                                 </div>
                             </td>
                             <td>
@@ -45,6 +47,7 @@
                             </td>
                         </tr>
                     @endforeach
+
                 </tbody>
             </table>
         </div>

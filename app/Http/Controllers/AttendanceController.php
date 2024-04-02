@@ -2,21 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\ProcessAttendance;
 use App\Models\Attendance;
-use App\Models\User;
-use App\Models\Schedule;
 use App\Models\Laboratory;
-use App\Models\Subject;
+use App\Models\Schedule;
+use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
 {
+    // View Attendance
+    public function viewAttendance()
+    {
+        // Fetch unique attendance records for each subject on the same date
+        $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date, TIMEDIFF(MAX(time_out), MIN(time_in)) as time_attended')
+            ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
+            ->get();
+
+        return view('pages.attendance', compact('uniqueAttendances'));
+    }
+
+    // Record Attendance
     public function recordAttendance(Request $request)
     {
-        // Validate the incoming request
+        // Validate Request Data
         $validator = Validator::make($request->all(), [
             'rfid_number' => 'required|string',
             'laboratory_id' => 'required|exists:laboratories,id',
@@ -27,86 +37,79 @@ class AttendanceController extends Controller
             return response()->json(['error' => $validator->errors()->first()], 400);
         }
 
-        // Extract input data
+        // Extract Input Data
         $rfidNumber = $request->input('rfid_number');
         $laboratoryId = $request->input('laboratory_id');
         $action = $request->input('action');
 
-        // Find user by RFID number
+        // Find User by RFID Number
         $user = User::where('rfid_number', $rfidNumber)->first();
-
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
 
-        // Find the laboratory
+        // Find the Laboratory
         $laboratory = Laboratory::find($laboratoryId);
-
         if (!$laboratory) {
             return response()->json(['error' => 'Laboratory not found'], 404);
         }
 
-        // Find schedule for the user at current time
-        $schedule = Schedule::where('user_id', $user->id)
-            ->where('days', 'like', '%' . now()->format('D') . '%')
-            ->whereTime('start_time', '<=', now())
-            ->whereTime('end_time', '>=', now())
+        // Check if User is already inside the Laboratory
+        $currentAttendance = Attendance::where('user_id', $user->id)
+            ->where('laboratory_id', $laboratoryId)
+            ->whereNull('time_out')
             ->first();
 
-        if (!$schedule) {
-            return response()->json(['error' => 'No schedule found for the user at this time'], 404);
-        }
-
-        // Handle entrance event
         if ($action === 'entrance') {
-            return $this->handleEntrance($user, $laboratory, $schedule);
-        }
+            if ($currentAttendance) {
+                return response()->json(['error' => 'User is already inside the laboratory'], 400);
+            }
 
-        // Handle exit event
-        if ($action === 'exit') {
-            return $this->handleExit($user);
-        }
+            // Find Schedule for the User at Current Time
+            $schedule = Schedule::where('user_id', $user->id)
+                ->where('days', 'like', '%' . now()->format('D') . '%')
+                ->whereTime('start_time', '<=', now())
+                ->whereTime('end_time', '>=', now())
+                ->first();
+            
+            if (!$schedule) {
+                return response()->json(['error' => 'No schedule found for the user at this time'], 404);
+            }
 
-        return response()->json(['error' => 'Invalid action'], 400);
+            // Record New Attendance
+            $attendance = Attendance::create([
+                'user_id' => $user->id,
+                'laboratory_id' => $laboratory->id,
+                'subject_id' => $schedule->subject_id,
+                'schedule_id' => $schedule->id,
+                'time_in' => now(),
+                'status' => 'PRESENT',
+            ]);
+
+            // Calculate time attended
+            $totalScheduledMinutes = Carbon::parse($schedule->start_time)->diffInMinutes($schedule->end_time);
+            $attendance->time_attended = Carbon::parse(now())->diffInMinutes($schedule->start_time);
+            $attendance->percentage = ($attendance->time_attended / $totalScheduledMinutes) * 100;
+            $attendance->save();
+
+            return response()->json(['message' => 'Attendance recorded successfully']);
+        } elseif ($action === 'exit') {
+            if (!$currentAttendance) {
+                return response()->json(['error' => 'User is not inside the laboratory'], 400);
+            }
+
+            // Update the Current Attendance Record with the Exit Time
+            $currentAttendance->update(['time_out' => now()]);
+
+            // Calculate time attended
+            $totalScheduledMinutes = Carbon::parse($currentAttendance->schedule->start_time)->diffInMinutes($currentAttendance->schedule->end_time);
+            $currentAttendance->time_attended += Carbon::parse(now())->diffInMinutes($currentAttendance->time_in);
+            $currentAttendance->percentage = ($currentAttendance->time_attended / $totalScheduledMinutes) * 100;
+            $currentAttendance->save();
+
+            return response()->json(['message' => 'Exit recorded successfully']);
+        } else {
+            return response()->json(['error' => 'Invalid action'], 400);
+        }
     }
-   
-    private function handleEntrance($user, $laboratory, $schedule)
-    {
-        // Record new attendance
-        Attendance::create([
-            'user_id' => $user->id,
-            'laboratory_id' => $laboratory->id,
-            'subject_id' => $schedule->subject_id,
-            'schedule_id' => $schedule->id,
-            'time_in' => now(),
-            'status' => 'PRESENT',
-        ]);
-
-        return response()->json(['message' => 'Attendance recorded successfully']);
-    }
-
-
-    private function handleExit($user)
-    {
-        // Find the latest attendance record for the user
-        $latestAttendance = Attendance::where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->first();
-
-        if (!$latestAttendance) {
-            return response()->json(['error' => 'User has not entered'], 400);
-        }
-
-        // If the latest attendance has already been marked out, return an error
-        if ($latestAttendance->time_out !== null) {
-            return response()->json(['error' => 'User has already exited'], 400);
-        }
-
-        // Update the latest attendance record with the exit time
-        $latestAttendance->update(['time_out' => now()]);
-
-        return response()->json(['message' => 'Exit recorded successfully']);
-    }
-
-    // Sum the total in and out of the user of the schedule of their subject of the current day
 }
