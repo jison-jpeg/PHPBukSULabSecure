@@ -37,8 +37,17 @@
 
                             <td>
                                 <div class="progress mt-1-5">
-                                    <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25"
+                                    <div class="progress-bar 
+                                    @if ($attendance->percentage < 33)
+                                        bg-danger
+                                    @elseif ($attendance->percentage < 66)
+                                        bg-warning
+                                    @else
+                                        bg-success
+                                    @endif
+                                    " role="progressbar" style="width: {{ $attendance->percentage }}%" aria-valuenow="{{ $attendance->percentage }}"
                                         aria-valuemin="0" aria-valuemax="100">{{ $attendance->percentage }}</div>
+                                </div>
                                 </div>
                             </td>
                             <td>

@@ -7,8 +7,8 @@ use App\Models\Laboratory;
 use App\Models\Schedule;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
 {
@@ -19,10 +19,39 @@ class AttendanceController extends Controller
         $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date, TIMEDIFF(MAX(time_out), MIN(time_in)) as time_attended')
             ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
             ->get();
-
+    
+        // Calculate the percentage of attendance and determine status for each subject
+        foreach ($uniqueAttendances as $attendance) {
+            $schedule = Schedule::where('user_id', $attendance->user_id)
+                ->where('subject_id', $attendance->subject_id)
+                ->where('days', 'like', '%' . Carbon::parse($attendance->date)->format('D') . '%')
+                ->first();
+    
+            if ($schedule) {
+                $totalScheduledMinutes = Carbon::parse($schedule->start_time)->diffInMinutes($schedule->end_time);
+                $totalAttendedMinutes = Carbon::parse($attendance->time_attended)->format('i') + Carbon::parse($attendance->time_attended)->format('H') * 60;
+                $attendance->percentage = number_format(($totalAttendedMinutes / $totalScheduledMinutes) * 100, 2);
+    
+                // Determine the status based on arrival time
+                $scheduledStartTime = Carbon::parse($schedule->start_time);
+                $arrivalTime = Carbon::parse($attendance->time_in);
+    
+                if ($arrivalTime->lte($scheduledStartTime)) {
+                    $attendance->status = 'Present';
+                } elseif ($arrivalTime->diffInMinutes($scheduledStartTime) <= 15) {
+                    $attendance->status = 'Late';
+                } else {
+                    $attendance->status = 'Very Late';
+                }
+            } else {
+                $attendance->percentage = 0; // If no schedule found, set percentage to 0
+                $attendance->status = 'Absent'; // If no schedule found, user is absent
+            }
+        }
+    
         return view('pages.attendance', compact('uniqueAttendances'));
     }
-
+    
     // Record Attendance
     public function recordAttendance(Request $request)
     {
@@ -77,7 +106,7 @@ class AttendanceController extends Controller
             }
 
             // Record New Attendance
-            $attendance = Attendance::create([
+            Attendance::create([
                 'user_id' => $user->id,
                 'laboratory_id' => $laboratory->id,
                 'subject_id' => $schedule->subject_id,
@@ -85,12 +114,6 @@ class AttendanceController extends Controller
                 'time_in' => now(),
                 'status' => 'PRESENT',
             ]);
-
-            // Calculate time attended
-            $totalScheduledMinutes = Carbon::parse($schedule->start_time)->diffInMinutes($schedule->end_time);
-            $attendance->time_attended = Carbon::parse(now())->diffInMinutes($schedule->start_time);
-            $attendance->percentage = ($attendance->time_attended / $totalScheduledMinutes) * 100;
-            $attendance->save();
 
             return response()->json(['message' => 'Attendance recorded successfully']);
         } elseif ($action === 'exit') {
@@ -101,15 +124,11 @@ class AttendanceController extends Controller
             // Update the Current Attendance Record with the Exit Time
             $currentAttendance->update(['time_out' => now()]);
 
-            // Calculate time attended
-            $totalScheduledMinutes = Carbon::parse($currentAttendance->schedule->start_time)->diffInMinutes($currentAttendance->schedule->end_time);
-            $currentAttendance->time_attended += Carbon::parse(now())->diffInMinutes($currentAttendance->time_in);
-            $currentAttendance->percentage = ($currentAttendance->time_attended / $totalScheduledMinutes) * 100;
-            $currentAttendance->save();
-
             return response()->json(['message' => 'Exit recorded successfully']);
         } else {
             return response()->json(['error' => 'Invalid action'], 400);
         }
     }
+
+    // Sum the Total In and Out of the User of the Schedule of Their Subject of the Current Day
 }
