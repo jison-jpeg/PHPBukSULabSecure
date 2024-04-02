@@ -115,14 +115,14 @@ class UsersController extends Controller
         $user->username = $request->username;
 
         if ($user->save()) {
-            //Create log
-            Logs::create([
-                'date_time' => now(),
-                'user_id' => Auth::id(),
-                'name' => $user->getFullName(),
-                'description' => "An admin updated an account.ID: $user->id",
-                'action' => 'Update',
-            ]);
+            // //Create log
+            // Logs::create([
+            //     'date_time' => now(),
+            //     'user_id' => Auth::id(),
+            //     'name' => $user->getFullName(),
+            //     'description' => "An admin updated an account.ID: $user->id",
+            //     'action' => 'Update',
+            // ]);
             return redirect(route('users'))->with("success", "User updated successfully!");
         } else {
             return redirect(route('users'))->with("error", "User update failed!");

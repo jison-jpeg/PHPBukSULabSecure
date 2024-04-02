@@ -48,12 +48,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/password', [ProfileController::class, 'passwordPut'])->name('password.put');
     });
 
-    // Instructor Routes
+    // Faculty Routes
     Route::group(['prefix' => 'faculties'], function () {
         Route::get('/', [FacultyController::class, 'viewFaculties'])->name('faculties');
         Route::post('/', [FacultyController::class, 'facultiesPost'])->name('faculties.post');
-        // Route::put('/{id}', [facultiesController::class, 'facultiesPut'])->name('faculties.put');
-        // Route::delete('/{id}', [facultiesController::class, 'facultiesDelete'])->name('faculties.delete');
+        Route::put('/{id}', [FacultyController::class, 'facultiesPut'])->name('faculties.put');
+        Route::delete('/{id}', [FacultyController::class, 'facultiesDelete'])->name('faculties.delete');
     });
 
     // Student Routes
@@ -81,13 +81,20 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'subjects'], function () {
         Route::get('/', [SubjectController::class, 'viewSubjects'])->name('subjects');
         Route::post('/', [SubjectController::class, 'subjectsPost'])->name('subjects.post');
+        Route::put('/{id}', [SubjectController::class, 'subjectsPut'])->name('subjects.update');
+        Route::delete('/{id}', [SubjectController::class, 'subjectsDelete'])->name('subjects.delete');
     });
 
     // College Management Route
     Route::group(['prefix' => 'colleges'], function () {
         Route::get('/', [CollegeManagementController::class, 'viewColleges'])->name('colleges');
         Route::post('/', [CollegeManagementController::class, 'createCollege'])->name('colleges.create');
+        Route::put('/{id}', [CollegeManagementController::class, 'collegePut'])->name('college.update');
+        Route::delete('/{id}', [CollegeManagementController::class, 'collegeDelete'])->name('college.delete');
+        // Department Management Route
         Route::post('/departments', [CollegeManagementController::class, 'departmentsPost'])->name('departments.post');
+        Route::put('/departments/{id}', [CollegeManagementController::class, 'departmentPut'])->name('departments.update');
+        Route::delete('/departments/{id}', [CollegeManagementController::class, 'departmentDelete'])->name('departments.delete');
     });
 
     // Schedules Route
