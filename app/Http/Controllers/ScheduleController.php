@@ -71,6 +71,54 @@ class ScheduleController extends Controller
             return redirect(route('schedules'))->with("success", "Schedule created successfully");
         }
     }
+
+    // UPDATE SCHEDULES
+    function updateSchedule(Request $request, $id)
+    {
+        $request->validate([
+            'college_id' => 'required|exists:colleges,id',
+            'department_id' => 'required|exists:departments,id',
+            'subject_id' => 'required|exists:subjects,id',
+            'sectionCode' => 'required|string',
+            'user_id' => 'required|exists:users,id',
+            'laboratory_id' => 'required|exists:laboratories,id',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'days' => 'required|array',
+            'days.*' => 'in:Mon,Tue,Wed,Thu,Fri,Sat,Sun',
+        ]);
+    
+        // // Check if schedule already exists for the laboratory on the selected day(s)
+        // $existingSchedules = Schedule::where('laboratory_id', $request->laboratory_id)
+        //     ->whereIn('days', $request->days)
+        //     ->get();
+    
+        // // Check for overlapping time slots
+        // foreach ($existingSchedules as $existingSchedule) {
+        //     if ($request->start_time < $existingSchedule->end_time && $request->end_time > $existingSchedule->start_time) {
+        //         return redirect(route('schedules'))->with("error", "Schedule overlaps with existing schedule.");
+        //     }
+        // }
+    
+        $schedule = Schedule::find($id);
+        $schedule->college_id = $request->college_id;
+        $schedule->department_id = $request->department_id;
+        $schedule->subject_id = $request->subject_id;
+        $schedule->sectionCode = $request->sectionCode;
+        $schedule->user_id = $request->user_id;
+        $schedule->laboratory_id = $request->laboratory_id;
+        $schedule->start_time = $request->start_time;
+        $schedule->end_time = $request->end_time;
+        $schedule->days = implode(',', $request->days);
+        $schedule->save();
+    
+        if (!$schedule) {
+            return redirect(route('schedules'))->with("error", "Error updating schedule. Please try again.");
+        } else {
+            return redirect(route('schedules'))->with("success", "Schedule updated successfully");
+        }
+    }
+            
     
 
 }

@@ -37,8 +37,8 @@
                             <td>{{ $schedule->end_time }}</td>
                             <td>
                                 <div class="d-flex justify-content-center">
-                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#updateModal">
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#editModal{{$schedule->id}}">
                                         Edit
                                     </button>
                                     <div class="mx-1"></div>

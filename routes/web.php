@@ -60,7 +60,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'students'], function () {
         Route::get('/', [StudentController::class, 'viewStudents'])->name('students');
         Route::post('/', [StudentController::class, 'studentsPost'])->name('students.post');
-        Route::put('/{id}', [StudentController::class, 'studentsPut'])->name('students.put');
+        Route::put('/{id}', [StudentController::class, 'studentsPut'])->name('students.update');
         Route::delete('/{id}', [StudentController::class, 'studentsDelete'])->name('students.delete');
     });
 
@@ -101,7 +101,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'schedules'], function () {
         Route::get('/', [ScheduleController::class, 'viewSchedules'])->name('schedules');
         Route::post('/', [ScheduleController::class, 'createSchedule'])->name('schedules.post');
+        Route::put('/{id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
     });
+    
 
     // Logs Route
     Route::group(['prefix' => 'logs'], function () {

@@ -106,4 +106,30 @@ class LaboratoriesController extends Controller
             return redirect(route('laboratories'))->with("success", "Laboratory created successfully");
         }
     }
+
+    // UPDATE LABORATORY
+    function laboratoriesPut(Request $request, $id)
+    {
+        $request->validate([
+            'roomNumber' => 'required',
+            'building' => 'required',
+            'laboratoryType' => 'required',
+            'occupancyStatus' => 'nullable',
+            'lockStatus' => 'nullable',
+        ]);
+
+        $laboratory = Laboratory::find($id);
+
+        $laboratory->roomNumber = $request->roomNumber;
+        $laboratory->building = $request->building;
+        $laboratory->laboratoryType = $request->laboratoryType;
+        $laboratory->occupancyStatus = $request->occupancyStatus;
+        $laboratory->lockStatus = $request->lockStatus;
+
+        if ($laboratory->save()) {
+            return redirect(route('laboratories'))->with("success", "Laboratory updated successfully");
+        } else {
+            return redirect(route('laboratories'))->with("error", "Error updating laboratory. Please try again.");
+        }
+    }
 }
