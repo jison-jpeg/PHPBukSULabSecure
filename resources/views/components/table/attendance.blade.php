@@ -46,7 +46,7 @@
                                         bg-success
                                     @endif
                                     " role="progressbar" style="width: {{ $attendance->percentage }}%" aria-valuenow="{{ $attendance->percentage }}"
-                                        aria-valuemin="0" aria-valuemax="100">{{ $attendance->percentage }}</div>
+                                        aria-valuemin="0" aria-valuemax="100">{{ $attendance->percentage }}%</div>
                                 </div>
                                 </div>
                             </td>

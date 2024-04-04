@@ -30,7 +30,9 @@ class AttendanceController extends Controller
             if ($schedule) {
                 $totalScheduledMinutes = Carbon::parse($schedule->start_time)->diffInMinutes($schedule->end_time);
                 $totalAttendedMinutes = Carbon::parse($attendance->time_attended)->format('i') + Carbon::parse($attendance->time_attended)->format('H') * 60;
-                $attendance->percentage = number_format(($totalAttendedMinutes / $totalScheduledMinutes) * 100, 2);
+                
+                // Calculate attendance percentage and ensure it does not exceed 100%
+                $attendance->percentage = min(100, number_format(($totalAttendedMinutes / $totalScheduledMinutes) * 100, 2));
     
                 // Determine the status based on arrival time
                 $scheduledStartTime = Carbon::parse($schedule->start_time);
