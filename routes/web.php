@@ -104,6 +104,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', [ScheduleController::class, 'viewSchedules'])->name('schedules');
         Route::post('/', [ScheduleController::class, 'createSchedule'])->name('schedules.post');
         Route::put('/{id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
+        Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
     });
     
 

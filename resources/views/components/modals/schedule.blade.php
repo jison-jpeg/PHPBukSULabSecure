@@ -227,7 +227,7 @@
                         <div class="col-md-6">
                             <label for="start_time" class="form-label">Start Time</label>
                             <input type="time" class="form-control" name="start_time"
-                                value="{{ $schedule->start_time }}" required>
+                                value="{{ date('H:i', strtotime($schedule->start_time)) }}" required>
                             <div class="invalid-feedback">
                                 Please enter a start time.
                             </div>
@@ -235,7 +235,7 @@
                         <div class="col-md-6">
                             <label for="end_time" class="form-label">End Time</label>
                             <input type="time" class="form-control" name="end_time"
-                                value="{{ $schedule->end_time }}" required>
+                                value="{{ date('H:i', strtotime($schedule->end_time)) }}" required>
                             <div class="invalid-feedback">
                                 Please enter an end time.
                             </div>
@@ -267,3 +267,28 @@
     </div>
 @endforeach
 {{-- End Edit Schedule --}}
+
+{{-- Delete Schedule --}}
+@foreach ($schedules as $schedule)
+    <div class="modal fade" id="deleteModal{{ $schedule->id }}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Schedule</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Are you sure you want to delete this schedule for <br><strong>{{ $schedule->subject->subjectName }}</strong> ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{{ route('schedules.delete', $schedule->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach

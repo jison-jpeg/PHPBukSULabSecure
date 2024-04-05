@@ -33,8 +33,8 @@
                             <td>{{ $schedule->user->full_name }}</td>
                             <td>{{ $schedule->days }}</td>
                             <td>Comlab {{ $schedule->laboratory->roomNumber }}</td>
-                            <td>{{ $schedule->start_time }}</td>
-                            <td>{{ $schedule->end_time }}</td>
+                            <td>{{ date('h:i A', strtotime($schedule->start_time)) }}</td>
+                            <td>{{ date('H:i A', strtotime($schedule->end_time)) }}</td>
                             <td>
                                 <div class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
@@ -43,7 +43,7 @@
                                     </button>
                                     <div class="mx-1"></div>
                                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal">
+                                        data-bs-target="#deleteModal{{$schedule->id}}">
                                         Delete
                                     </button>
                                     {{-- <div class="mx-1"></div>

@@ -39,20 +39,20 @@ class ScheduleController extends Controller
             'end_time' => 'required|date_format:H:i|after:start_time',
             'days' => 'required|array',
             'days.*' => 'in:Mon,Tue,Wed,Thu,Fri,Sat,Sun',
-            ]);
-    
+        ]);
+
         // // Check if schedule already exists for the laboratory on the selected day(s)
         // $existingSchedules = Schedule::where('laboratory_id', $request->laboratory_id)
         //     ->whereIn('days', $request->days)
         //     ->get();
-    
+
         // // Check for overlapping time slots
         // foreach ($existingSchedules as $existingSchedule) {
         //     if ($request->start_time < $existingSchedule->end_time && $request->end_time > $existingSchedule->start_time) {
         //         return redirect(route('schedules'))->with("error", "Schedule overlaps with existing schedule.");
         //     }
         // }
-    
+
         $schedule = Schedule::create([
             'college_id' => $request->college_id,
             'department_id' => $request->department_id,
@@ -64,7 +64,7 @@ class ScheduleController extends Controller
             'end_time' => $request->end_time,
             'days' => implode(',', $request->days),
         ]);
-    
+
         if (!$schedule) {
             return redirect(route('schedules'))->with("error", "Error creating schedule. Please try again.");
         } else {
@@ -87,19 +87,19 @@ class ScheduleController extends Controller
             'days' => 'required|array',
             'days.*' => 'in:Mon,Tue,Wed,Thu,Fri,Sat,Sun',
         ]);
-    
+
         // // Check if schedule already exists for the laboratory on the selected day(s)
         // $existingSchedules = Schedule::where('laboratory_id', $request->laboratory_id)
         //     ->whereIn('days', $request->days)
         //     ->get();
-    
+
         // // Check for overlapping time slots
         // foreach ($existingSchedules as $existingSchedule) {
         //     if ($request->start_time < $existingSchedule->end_time && $request->end_time > $existingSchedule->start_time) {
         //         return redirect(route('schedules'))->with("error", "Schedule overlaps with existing schedule.");
         //     }
         // }
-    
+
         $schedule = Schedule::find($id);
         $schedule->college_id = $request->college_id;
         $schedule->department_id = $request->department_id;
@@ -111,14 +111,23 @@ class ScheduleController extends Controller
         $schedule->end_time = $request->end_time;
         $schedule->days = implode(',', $request->days);
         $schedule->save();
-    
+
         if (!$schedule) {
             return redirect(route('schedules'))->with("error", "Error updating schedule. Please try again.");
         } else {
             return redirect(route('schedules'))->with("success", "Schedule updated successfully");
         }
     }
-            
-    
 
+    // DELETE SCHEDULES
+    function deleteSchedule($id)
+    {
+        $schedule = Schedule::find($id);
+        if (!$schedule) {
+            return redirect(route('schedules'))->with("error", "Schedule not found.");
+        }
+
+        $schedule->delete();
+        return redirect(route('schedules'))->with("success", "Schedule deleted successfully");
+    }
 }

@@ -12,16 +12,10 @@ class LaboratoriesController extends Controller
     // GET LABORATORIES
     function viewLaboratories()
     {
-        $laboratories = Laboratory::all();
-        // Sort laboratories by room number (assuming roomNumber holds the name)
         $laboratories = Laboratory::orderByRaw('CAST(roomNumber AS UNSIGNED)')->paginate(10);
 
-
-        // Fetch recent logs for each laboratory
         foreach ($laboratories as $lab) {
-            // Check if occupancy status is "On-Going"
             if ($lab->occupancyStatus == "On-Going") {
-                // Fetch the current user instead of the recent log
                 $recentLog  = Logs::where('laboratory_id', $lab->id)
                     ->where('action', 'IN')
                     ->latest()
@@ -29,19 +23,15 @@ class LaboratoriesController extends Controller
 
                 if ($recentLog) {
                     $lab->recentUser = optional($recentLog->user)->getFullName();
-
-                    // Calculate time elapsed
-                    $timeAccessed = Carbon::parse($recentLog->date_time)->setTimezone('Asia/Manila');
-                    $elapsedTime = $timeAccessed->diffForHumans(null, false, true, 1);
+                    $elapsedTime = Carbon::parse($recentLog->created_at)->setTimezone('Asia/Manila')->diffForHumans(null, false, true, 1);
                     $lab->recentTime = $elapsedTime;
                 } else {
-                    $lab->recentUser = "N/A"; // No recent log found
+                    $lab->recentUser = "N/A";
                     $lab->recentTime = "N/A";
                 }
 
                 $lab->label = "Current";
             } else {
-                // Fetch the recent log
                 $recentOutLog = Logs::where('laboratory_id', $lab->id)
                     ->where('action', 'OUT')
                     ->latest()
@@ -49,13 +39,10 @@ class LaboratoriesController extends Controller
 
                 if ($recentOutLog) {
                     $lab->recentUser = optional($recentOutLog->user)->getFullName();
-
-                    // Calculate time elapsed
-                    $timeAccessed = Carbon::parse($recentOutLog->date_time)->setTimezone('Asia/Manila');
-                    $elapsedTime = $timeAccessed->diffForHumans(null, false, true, 1);
+                    $elapsedTime = Carbon::parse($recentOutLog->created_at)->setTimezone('Asia/Manila')->diffForHumans(null, false, true, 1);
                     $lab->recentTime = $elapsedTime;
                 } else {
-                    $lab->recentUser = "N/A"; // No recent log found
+                    $lab->recentUser = "N/A";
                     $lab->recentTime = "N/A";
                 }
 
@@ -66,13 +53,6 @@ class LaboratoriesController extends Controller
         return view('pages.laboratory', compact('laboratories'));
     }
 
-
-    function formatUserName($userName)
-    {
-        // Truncate long names and add "..." at the end
-        return strlen($userName) > 10 ? substr($userName, 0, 10) . "..." : $userName;
-    }
-
     // CREATE LABORATORIES
     function laboratoriesPost(Request $request)
     {
@@ -80,29 +60,31 @@ class LaboratoriesController extends Controller
             'roomNumber' => 'required',
             'building' => 'required',
             'laboratoryType' => 'required',
-            'occupancyStatus' => 'nullable',
-            'lockStatus' => 'nullable',
         ]);
 
-        // Check if a laboratory with the given room number already exists
         $existingLaboratory = Laboratory::where('roomNumber', $request->roomNumber)->first();
 
         if ($existingLaboratory) {
             return redirect(route('laboratories'))->with("error", "Laboratory with this room number already exists.");
         }
 
-        // If no existing laboratory found, proceed to create a new one
         $laboratory = Laboratory::create([
             'roomNumber' => $request->roomNumber,
             'building' => $request->building,
             'laboratoryType' => $request->laboratoryType,
             'occupancyStatus' => $request->occupancyStatus ?? 'Available',
-            'lockStatus' => $request->lockStatus ?? 'Locked',
+            'lockStatus' => $request->lockStatus ?? false,
         ]);
 
         if (!$laboratory) {
             return redirect(route('laboratories'))->with("error", "Error creating laboratory. Please try again.");
         } else {
+            // Log the creation of the laboratory
+            Logs::create([
+                'description' => 'Laboratory created: ' . $laboratory->roomNumber,
+                'action' => 'CREATE',
+            ]);
+            
             return redirect(route('laboratories'))->with("success", "Laboratory created successfully");
         }
     }
@@ -120,16 +102,44 @@ class LaboratoriesController extends Controller
 
         $laboratory = Laboratory::find($id);
 
+        if (!$laboratory) {
+            return redirect(route('laboratories'))->with("error", "Laboratory not found.");
+        }
+
+        // Log the changes before updating
+        Logs::create([
+            'description' => 'Laboratory updated: ' . $laboratory->roomNumber,
+            'action' => 'UPDATE',
+        ]);
+
         $laboratory->roomNumber = $request->roomNumber;
         $laboratory->building = $request->building;
         $laboratory->laboratoryType = $request->laboratoryType;
-        $laboratory->occupancyStatus = $request->occupancyStatus;
-        $laboratory->lockStatus = $request->lockStatus;
+        $laboratory->occupancyStatus = $request->occupancyStatus ?? 'Available';
+        $laboratory->lockStatus = $request->lockStatus ?? false;
 
         if ($laboratory->save()) {
             return redirect(route('laboratories'))->with("success", "Laboratory updated successfully");
         } else {
             return redirect(route('laboratories'))->with("error", "Error updating laboratory. Please try again.");
+        }
+    }
+
+    // DELETE LABORATORY
+    function laboratoriesDelete($id)
+    {
+        $laboratory = Laboratory::find($id);
+
+        if ($laboratory->delete()) {
+            // Log the deletion of the laboratory
+            Logs::create([
+                'description' => 'Laboratory deleted: ' . $laboratory->roomNumber,
+                'action' => 'DELETE',
+            ]);
+            
+            return redirect(route('laboratories'))->with("success", "Laboratory deleted successfully");
+        } else {
+            return redirect(route('laboratories'))->with("error", "Error deleting laboratory. Please try again.");
         }
     }
 }
