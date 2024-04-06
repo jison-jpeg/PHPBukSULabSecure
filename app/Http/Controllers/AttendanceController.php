@@ -13,58 +13,64 @@ use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
 {
-    // View Attendance
-    public function viewAttendance()
-    {
-        // Fetch unique attendance records for each subject on the same date
-        $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date, TIMEDIFF(MAX(time_out), MIN(time_in)) as time_attended')
-            ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
-            ->get();
+// View Attendance
+public function viewAttendance()
+{
+    // Fetch unique attendance records for each subject on the same date
+    $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date, TIMEDIFF(MAX(time_out), MIN(time_in)) as time_attended')
+        ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
+        ->get();
 
-        // Format time in and time out to 12-hour format
-        foreach ($uniqueAttendances as $attendance) {
-            $attendance->time_in = date('h:i A', strtotime($attendance->time_in));
-            // Check if time_out is null
-            if ($attendance->time_out) {
-                $attendance->time_out = date('h:i A', strtotime($attendance->time_out));
+    // Set the status of each attendance record based on the time arrival. If user is late in 15 minutes, set the status to LATE
+    foreach ($uniqueAttendances as $attendance) {
+        $timeIn = Carbon::parse($attendance->time_in);
+        $schedule = Schedule::where('subject_id', $attendance->subject_id)
+            ->where('days', 'like', '%' . Carbon::parse($attendance->date)->format('D') . '%')
+            ->first();
+
+        if ($schedule) {
+            $scheduleTime = Carbon::parse($schedule->start_time);
+            $lateTime = $scheduleTime->copy()->addMinutes(15);
+
+            if ($timeIn->gt($lateTime)) {
+                $attendance->status = 'LATE';
             } else {
-                $attendance->time_out = ''; // Set to empty string or any default value
+                $attendance->status = 'PRESENT';
             }
+        } else {
+            $attendance->status = 'ABSENT';
         }
-
-        // Calculate the percentage of attendance and determine status for each subject
-        foreach ($uniqueAttendances as $attendance) {
-            $schedule = Schedule::where('user_id', $attendance->user_id)
-                ->where('subject_id', $attendance->subject_id)
-                ->where('days', 'like', '%' . Carbon::parse($attendance->date)->format('D') . '%')
-                ->first();
-
-            if ($schedule) {
-                $totalScheduledMinutes = Carbon::parse($schedule->start_time)->diffInMinutes($schedule->end_time);
-                $totalAttendedMinutes = Carbon::parse($attendance->time_attended)->format('i') + Carbon::parse($attendance->time_attended)->format('H') * 60;
-
-                // Calculate attendance percentage and ensure it does not exceed 100%
-                $attendance->percentage = min(100, number_format(($totalAttendedMinutes / $totalScheduledMinutes) * 100, 2));
-
-                // Determine the status based on arrival time
-                $scheduledStartTime = Carbon::parse($schedule->start_time);
-                $arrivalTime = Carbon::parse($attendance->time_in);
-
-                if ($arrivalTime->lte($scheduledStartTime)) {
-                    $attendance->status = 'Present';
-                } elseif ($arrivalTime->diffInMinutes($scheduledStartTime) <= 15) {
-                    $attendance->status = 'Late';
-                } else {
-                    $attendance->status = 'Very Late';
-                }
-            } else {
-                $attendance->percentage = 0; // If no schedule found, set percentage to 0
-                $attendance->status = 'Absent'; // If no schedule found, user is absent
-            }
-        }
-
-        return view('pages.attendance', compact('uniqueAttendances'));
     }
+
+    // Calculate the total percent attended for each attendance record in every subject
+    foreach ($uniqueAttendances as $attendance) {
+        $totalTime = Carbon::parse($attendance->time_attended);
+        $totalMinutes = $totalTime->hour * 60 + $totalTime->minute;
+        $totalMinutes = $totalMinutes > 0 ? $totalMinutes : 1;
+
+        $schedule = Schedule::where('subject_id', $attendance->subject_id)
+            ->where('days', 'like', '%' . Carbon::parse($attendance->date)->format('D') . '%')
+            ->first();
+
+        if ($schedule) {
+            $totalScheduleTime = Carbon::parse($schedule->end_time)->diffInMinutes(Carbon::parse($schedule->start_time));
+            $attendance->percentage = round(($totalMinutes / $totalScheduleTime) * 100, 2);
+
+            // set the maximum percentage to 100
+            if ($attendance->percentage > 100) {
+                $attendance->percentage = 100;
+            }
+
+        } else {
+            $attendance->percentage = 0;
+        }
+    }
+    
+
+    return view('pages.attendance', compact('uniqueAttendances'));
+}
+
+
 
     // Record Attendance
     public function recordAttendance(Request $request)
@@ -108,23 +114,23 @@ class AttendanceController extends Controller
                 return response()->json(['error' => 'User is already inside the laboratory'], 400);
             }
 
-            // Find Schedule for the User at Current Time
-            $schedule = Schedule::where('user_id', $user->id)
-                ->where('days', 'like', '%' . now()->format('D') . '%')
+            // Find matching schedule based on user's section code
+            $matchingSchedule = Schedule::where('sectionCode', $user->section_code)
+                ->where('days', 'like', '%' . now()->format('D') . '%') // Assuming now()->format('D') returns the day abbreviation like "Sat"
                 ->whereTime('start_time', '<=', now())
                 ->whereTime('end_time', '>=', now())
                 ->first();
 
-            if (!$schedule) {
-                return response()->json(['error' => 'No schedule found for the user at this time'], 404);
+            if (!$matchingSchedule) {
+                return response()->json(['error' => 'No matching schedule found for the user at this time'], 404);
             }
 
             // Record New Attendance
             Attendance::create([
                 'user_id' => $user->id,
                 'laboratory_id' => $laboratory->id,
-                'subject_id' => $schedule->subject_id,
-                'schedule_id' => $schedule->id,
+                'subject_id' => $matchingSchedule->subject_id,
+                'schedule_id' => $matchingSchedule->id,
                 'time_in' => now(),
                 'status' => 'PRESENT',
             ]);
@@ -171,6 +177,4 @@ class AttendanceController extends Controller
             return response()->json(['error' => 'Invalid action'], 400);
         }
     }
-
-    // Sum the Total In and Out of the User of the Schedule of Their Subject of the Current Day
 }

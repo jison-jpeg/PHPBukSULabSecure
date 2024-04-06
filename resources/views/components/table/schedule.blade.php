@@ -9,14 +9,14 @@
             <table class="table table-hover datatable">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
                         <th>College</th>
                         <th>Department</th>
-                        <th scope="col">Subject Name</th>
+                        <th scope="col">Subject Code</th>
                         <th scope="col">Section Code</th>
+                        <th scope="col">Subject Name</th>
                         <th scope="col">Instructor</th>
-                        <th scope="col">Days</th>
                         <th scope="col">Room</th>
+                        <th scope="col">Days</th>
                         <th scope="col">Start Time</th>
                         <th scope="col">End Time</th>
                         <th scope="col" class="text-center">Action</th>
@@ -25,14 +25,14 @@
                 <tbody>
                     @foreach ($schedules as $schedule)
                         <tr>
-                            <th>{{ $schedule->subject->subjectCode }}</th>
                             <td>{{ $schedule->college->collegeName }}</td>
                             <td>{{ $schedule->department->departmentName }}</td>
+                            <td>{{ $schedule->subject->subjectCode }}</td>
+                            <th>{{ $schedule->sectionCode }}</th>
                             <td>{{ $schedule->subject->subjectName }}</td>
-                            <td>{{ $schedule->sectionCode }}</td>
                             <td>{{ $schedule->user->full_name }}</td>
-                            <td>{{ $schedule->days }}</td>
                             <td>Comlab {{ $schedule->laboratory->roomNumber }}</td>
+                            <td>{{ $schedule->days }}</td>
                             <td>{{ date('h:i A', strtotime($schedule->start_time)) }}</td>
                             <td>{{ date('H:i A', strtotime($schedule->end_time)) }}</td>
                             <td>

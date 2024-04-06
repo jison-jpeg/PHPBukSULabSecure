@@ -29,6 +29,7 @@ class User extends Authenticatable
         'email',
         'college_id',
         'department_id',
+        'section_code',
         'birthdate',
         'phone',
         'password',
@@ -76,7 +77,14 @@ class User extends Authenticatable
         return $this->belongsTo(Department::class);
     }
 
-    
+    /**
+     * Get the subjects for the user.
+     */
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class);
+    }
+
 
     /**
      * Get the logs for the user.
@@ -106,5 +114,4 @@ class User extends Authenticatable
     {
         return "f-" . str_pad($this->id, 5, '0', STR_PAD_LEFT);
     }
-    
 }

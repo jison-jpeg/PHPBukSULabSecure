@@ -48,6 +48,7 @@ class UsersController extends Controller
             'role' => 'required',
             'college_id' => 'required',
             'department_id' => 'required',
+            
         ]);
 
         $plainPassword = Str::random(10);
