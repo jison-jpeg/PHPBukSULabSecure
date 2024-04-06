@@ -70,111 +70,110 @@ public function viewAttendance()
     return view('pages.attendance', compact('uniqueAttendances'));
 }
 
+// Record Attendance
+public function recordAttendance(Request $request)
+{
+    // Validate Request Data
+    $validator = Validator::make($request->all(), [
+        'rfid_number' => 'required|string',
+        'laboratory_id' => 'required|exists:laboratories,id',
+        'action' => 'required|in:entrance,exit',
+    ]);
 
+    if ($validator->fails()) {
+        return response()->json(['error' => $validator->errors()->first()], 400);
+    }
 
-    // Record Attendance
-    public function recordAttendance(Request $request)
-    {
-        // Validate Request Data
-        $validator = Validator::make($request->all(), [
-            'rfid_number' => 'required|string',
-            'laboratory_id' => 'required|exists:laboratories,id',
-            'action' => 'required|in:entrance,exit',
-        ]);
+    // Extract Input Data
+    $rfidNumber = $request->input('rfid_number');
+    $laboratoryId = $request->input('laboratory_id');
+    $action = $request->input('action');
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()->first()], 400);
+    // Find User by RFID Number
+    $user = User::where('rfid_number', $rfidNumber)->first();
+    if (!$user) {
+        return response()->json(['error' => 'User not found'], 404);
+    }
+
+    // Find the Laboratory
+    $laboratory = Laboratory::find($laboratoryId);
+    if (!$laboratory) {
+        return response()->json(['error' => 'Laboratory not found'], 404);
+    }
+
+    // Check if User is already inside the Laboratory
+    $currentAttendance = Attendance::where('user_id', $user->id)
+        ->where('laboratory_id', $laboratoryId)
+        ->whereNull('time_out')
+        ->first();
+
+    if ($action === 'entrance') {
+        if ($currentAttendance) {
+            return response()->json(['error' => 'User is already inside the laboratory'], 400);
         }
 
-        // Extract Input Data
-        $rfidNumber = $request->input('rfid_number');
-        $laboratoryId = $request->input('laboratory_id');
-        $action = $request->input('action');
-
-        // Find User by RFID Number
-        $user = User::where('rfid_number', $rfidNumber)->first();
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
-        }
-
-        // Find the Laboratory
-        $laboratory = Laboratory::find($laboratoryId);
-        if (!$laboratory) {
-            return response()->json(['error' => 'Laboratory not found'], 404);
-        }
-
-        // Check if User is already inside the Laboratory
-        $currentAttendance = Attendance::where('user_id', $user->id)
-            ->where('laboratory_id', $laboratoryId)
-            ->whereNull('time_out')
+        // Find matching schedule based on current time
+        $matchingSchedule = Schedule::where('days', 'like', '%' . now()->format('D') . '%') // Assuming now()->format('D') returns the day abbreviation like "Sat"
+            ->whereTime('start_time', '<=', now())
+            ->whereTime('end_time', '>=', now())
             ->first();
 
-        if ($action === 'entrance') {
-            if ($currentAttendance) {
-                return response()->json(['error' => 'User is already inside the laboratory'], 400);
-            }
-
-            // Find matching schedule based on user's section code
-            $matchingSchedule = Schedule::where('sectionCode', $user->section_code)
-                ->where('days', 'like', '%' . now()->format('D') . '%') // Assuming now()->format('D') returns the day abbreviation like "Sat"
-                ->whereTime('start_time', '<=', now())
-                ->whereTime('end_time', '>=', now())
-                ->first();
-
-            if (!$matchingSchedule) {
-                return response()->json(['error' => 'No matching schedule found for the user at this time'], 404);
-            }
-
-            // Record New Attendance
-            Attendance::create([
-                'user_id' => $user->id,
-                'laboratory_id' => $laboratory->id,
-                'subject_id' => $matchingSchedule->subject_id,
-                'schedule_id' => $matchingSchedule->id,
-                'time_in' => now(),
-                'status' => 'PRESENT',
-            ]);
-
-            // Log the Entrance Action
-            Logs::create([
-                'user_id' => $user->id,
-                'laboratory_id' => $laboratory->id,
-                'name' => $user->getFullName(),
-                'description' => 'User entered the laboratory ' . $laboratory->roomNumber,
-                'action' => 'IN',
-            ]);
-
-            // Update the occupancy status of the laboratory if the user's role is not student
-            if ($user->role !== 'student') {
-                $laboratory->update(['occupancyStatus' => 'On-Going']);
-            }
-
-            return response()->json(['message' => 'Attendance recorded successfully']);
-        } elseif ($action === 'exit') {
-            if (!$currentAttendance) {
-                return response()->json(['error' => 'User is not inside the laboratory'], 400);
-            }
-
-            // Update the Current Attendance Record with the Exit Time
-            $currentAttendance->update(['time_out' => now()]);
-
-            // Log the Exit Action
-            Logs::create([
-                'user_id' => $user->id,
-                'laboratory_id' => $laboratory->id,
-                'name' => $user->getFullName(),
-                'description' => 'User exited the laboratory ' . $laboratory->roomNumber,
-                'action' => 'OUT',
-            ]);
-
-            // Update the occupancy status of the laboratory if the user's role is not student
-            if ($user->role !== 'student') {
-                $laboratory->update(['occupancyStatus' => 'Available']);
-            }
-
-            return response()->json(['message' => 'Exit recorded successfully']);
-        } else {
-            return response()->json(['error' => 'Invalid action'], 400);
+        if (!$matchingSchedule) {
+            return response()->json(['error' => 'No matching schedule found for the user at this time'], 404);
         }
+
+        // Record New Attendance
+        Attendance::create([
+            'user_id' => $user->id,
+            'laboratory_id' => $laboratory->id,
+            'subject_id' => $matchingSchedule->subject_id,
+            'schedule_id' => $matchingSchedule->id,
+            'time_in' => now(),
+            'status' => 'PRESENT',
+        ]);
+
+        // Log the Entrance Action
+        Logs::create([
+            'user_id' => $user->id,
+            'laboratory_id' => $laboratory->id,
+            'name' => $user->getFullName(),
+            'description' => 'User entered the laboratory ' . $laboratory->roomNumber,
+            'action' => 'IN',
+        ]);
+
+        // Update the occupancy status of the laboratory if the user's role is not student
+        if ($user->role !== 'student') {
+            $laboratory->update(['occupancyStatus' => 'On-Going']);
+        }
+
+        return response()->json(['message' => 'Attendance recorded successfully']);
+    } elseif ($action === 'exit') {
+        if (!$currentAttendance) {
+            return response()->json(['error' => 'User is not inside the laboratory'], 400);
+        }
+
+        // Update the Current Attendance Record with the Exit Time
+        $currentAttendance->update(['time_out' => now()]);
+
+        // Log the Exit Action
+        Logs::create([
+            'user_id' => $user->id,
+            'laboratory_id' => $laboratory->id,
+            'name' => $user->getFullName(),
+            'description' => 'User exited the laboratory ' . $laboratory->roomNumber,
+            'action' => 'OUT',
+        ]);
+
+        // Update the occupancy status of the laboratory if the user's role is not student
+        if ($user->role !== 'student') {
+            $laboratory->update(['occupancyStatus' => 'Available']);
+        }
+
+        return response()->json(['message' => 'Exit recorded successfully']);
+    } else {
+        return response()->json(['error' => 'Invalid action'], 400);
     }
+}
+
+
 }
