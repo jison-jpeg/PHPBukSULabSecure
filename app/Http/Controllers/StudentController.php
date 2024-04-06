@@ -28,7 +28,6 @@ class StudentController extends Controller
     {
         $request->validate([
             'first_name' => 'required',
-            'middle_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users',
             'college_id' => 'required',
@@ -57,6 +56,59 @@ class StudentController extends Controller
         } else {
             // Send an email to the student with their credentials
             return redirect(route('students'))->with("success", "Student created successfully");
+        }
+    }
+
+    // UPDATE STUDENTS
+    function studentsPut (Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email',
+            'college_id' => 'required',
+            'department_id' => 'required',
+        ]);
+
+        $user = User::find($request->id);
+
+        if (!$user) {
+            return redirect(route('students'))->with("error", "Student not found.");
+        }
+
+        // Extract username from email (remove everything after "@")
+        $username = explode('@', $request->email)[0];
+
+        $user->first_name = $request->first_name;
+        $user->middle_name = $request->middle_name;
+        $user->last_name = $request->last_name;
+        $user->email = $request->email;
+        $user->username = $username;
+        $user->college_id = $request->college_id;
+        $user->department_id = $request->department_id;
+        $user->birthdate = $request->birthdate;
+        $user->phone = $request->phone;
+
+        if ($user->save()) {
+            return redirect(route('students'))->with("success", "Student updated successfully");
+        } else {
+            return redirect(route('students'))->with("error", "Error updating student. Please try again.");
+        }
+    }
+
+    // DELETE STUDENTS
+    function studentsDelete($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect(route('students'))->with("error", "Student not found.");
+        }
+
+        if ($user->delete()) {
+            return redirect(route('students'))->with("success", "Student deleted successfully");
+        } else {
+            return redirect(route('students'))->with("error", "Error deleting student. Please try again.");
         }
     }
 }
