@@ -33,7 +33,7 @@
                             <td>{{ $attendance->time_in }}</td>
                             <td>{{ $attendance->time_out }}</td>
                             <td>{{ $attendance->date }}</td>
-                            <td>{{ $attendance->time_attended }}</td>
+                            <td>{{ $attendance->total_duration  }}</td>
 
                             <td>
                                 <div class="progress mt-1-5">
@@ -45,7 +45,7 @@
                                     @else
                                         bg-success
                                     @endif
-                                    " role="progressbar" style="width: {{ $attendance->percentage }}%" aria-valuenow="{{ $attendance->percentage }}"
+                                    " role="progressbar" style="width: 100%" aria-valuenow="{{ $attendance->percentage }}"
                                         aria-valuemin="0" aria-valuemax="100">{{ $attendance->percentage }}%</div>
                                 </div>
                                 </div>
