@@ -76,6 +76,8 @@ class User extends Authenticatable
         return $this->belongsTo(Department::class);
     }
 
+    
+
     /**
      * Get the logs for the user.
      */

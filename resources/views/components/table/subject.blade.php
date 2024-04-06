@@ -10,9 +10,10 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Descriptive Title</th>
+                        <th scope="col">Subject</th>
+                        <th scope="col">Subject Code</th>
                         <th scope="col">Section Code</th>
-                        <th scope="col">Subject Descriptive Title</th>
+                        <th scope="col">Description</th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>
                 </thead>
@@ -22,6 +23,7 @@
                         <th scope="row">{{ $loop->iteration }}</th>
                         <td>{{ $subject->subjectName }}</td>
                         <td>{{ $subject->subjectCode }}</td>
+                        <td>{{ $subject->sectionCode }}</td>
                         <td>{{ $subject->subjectDescription }}</td>
                         <td>
                             <div class="d-flex justify-content-center">

@@ -109,13 +109,6 @@
         </li>
         @endif
 
-        <li class="nav-item">
-            <a class="nav-link {{ request()->is('contact') ? '' : 'collapsed' }}" href="{{ url('/contact') }}">
-                <i class="bi bi-envelope"></i>
-                <span>Contact</span>
-            </a>
-        </li>
-
         <li class="nav-heading">SETTINGS</li>
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#"

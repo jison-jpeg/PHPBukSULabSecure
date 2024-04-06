@@ -25,7 +25,7 @@
                 <tbody>
                     @foreach ($schedules as $schedule)
                         <tr>
-                            <th scope="row">{{ $schedule->subject->subjectCode }}</th>
+                            <th>{{ $schedule->subject->subjectCode }}</th>
                             <td>{{ $schedule->college->collegeName }}</td>
                             <td>{{ $schedule->department->departmentName }}</td>
                             <td>{{ $schedule->subject->subjectName }}</td>
