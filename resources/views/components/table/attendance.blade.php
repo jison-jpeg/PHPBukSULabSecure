@@ -42,8 +42,7 @@
                                     @elseif ($attendance->percentage < 66)
                                         bg-warning
                                     @else
-                                        bg-success @endif
-                                    "
+                                        bg-success @endif"
                                         role="progressbar" style="width: {{ $attendance->percentage }}%"
                                         aria-valuenow="{{ $attendance->percentage }}" aria-valuemin="0"
                                         aria-valuemax="100">{{ $attendance->percentage }}%</div>
