@@ -17,7 +17,7 @@
                         <th scope="col">Time In</th>
                         <th scope="col">Time Out</th>
                         <th scope="col">Date</th>
-                        <th scope="col">Time Attended</th>
+                        <th scope="col">Duration</th>
                         <th scope="col">Percentage</th>
                         <th scope="col">Status</th>
                     </tr>
@@ -33,30 +33,33 @@
                             <td>{{ $attendance->time_in }}</td>
                             <td>{{ $attendance->time_out }}</td>
                             <td>{{ $attendance->date }}</td>
-                            <td>{{ $attendance->total_duration  }}</td>
+                            <td>{{ $attendance->total_duration }}</td>
 
                             <td>
                                 <div class="progress mt-1-5">
                                     <div class="progress-bar 
-                                    @if ($attendance->percentage < 33)
-                                        bg-danger
+                                    @if ($attendance->percentage < 33) bg-danger
                                     @elseif ($attendance->percentage < 66)
                                         bg-warning
                                     @else
-                                        bg-success
-                                    @endif
-                                    " role="progressbar" style="width: 100%" aria-valuenow="{{ $attendance->percentage }}"
-                                        aria-valuemin="0" aria-valuemax="100">{{ $attendance->percentage }}%</div>
-                                </div>
+                                        bg-success @endif
+                                    "
+                                        role="progressbar" style="width: {{ $attendance->percentage }}%"
+                                        aria-valuenow="{{ $attendance->percentage }}" aria-valuemin="0"
+                                        aria-valuemax="100">{{ $attendance->percentage }}%</div>
                                 </div>
                             </td>
                             <td>
-                                <span
-                                    class="badge rounded-pill {{ $attendance->status === 'Present' ? 'bg-success' : 'bg-danger' }}">{{ $attendance->status }}</span>
+                                <span class="badge rounded-pill 
+                                    @if ($attendance->status === 'Present') bg-success
+                                    @elseif($attendance->status === 'Incomplete') bg-danger
+                                    @elseif($attendance->status === 'Late') bg-secondary
+                                    @endif">
+                                    {{ $attendance->status }}
+                                </span>
                             </td>
                         </tr>
                     @endforeach
-
                 </tbody>
             </table>
         </div>

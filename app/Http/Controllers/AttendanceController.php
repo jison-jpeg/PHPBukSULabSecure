@@ -14,37 +14,61 @@ use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
 {
-// View Attendance
-public function viewAttendance()
-{
-    // Fetch unique attendance records for each subject on the same date
-    $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
-        ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
-        ->get();
-
-    // Calculate the total duration spent in the laboratory for each attendance record
-    foreach ($uniqueAttendances as $attendance) {
-        $totalDuration = CarbonInterval::hours(0); // Initialize total duration as 0 hours
-        $logs = Attendance::where('user_id', $attendance->user_id)
-            ->where('laboratory_id', $attendance->laboratory_id)
-            ->where('subject_id', $attendance->subject_id)
-            ->whereDate('created_at', $attendance->date)
+    // View Attendance
+    public function viewAttendance()
+    {
+        // Fetch unique attendance records for each subject on the same date
+        $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
+            ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
             ->get();
 
-        foreach ($logs as $log) {
-            // Calculate the duration between time_in and time_out for each log
-            $timeIn = Carbon::parse($log->time_in);
-            $timeOut = Carbon::parse($log->time_out);
-            $duration = $timeOut->diff($timeIn);
-            $totalDuration = $totalDuration->add($duration);
+        // Calculate the total duration spent in the laboratory for each attendance record
+        foreach ($uniqueAttendances as $attendance) {
+            $totalDuration = CarbonInterval::hours(0); // Initialize total duration as 0 hours
+            $logs = Attendance::where('user_id', $attendance->user_id)
+                ->where('laboratory_id', $attendance->laboratory_id)
+                ->where('subject_id', $attendance->subject_id)
+                ->whereDate('created_at', $attendance->date)
+                ->get();
+
+            foreach ($logs as $log) {
+                // Calculate the duration between time_in and time_out for each log
+                $timeIn = Carbon::parse($log->time_in);
+                $timeOut = Carbon::parse($log->time_out);
+                $duration = $timeOut->diff($timeIn);
+                $totalDuration = $totalDuration->add($duration);
+            }
+
+            // Format the total duration as HH:MM:SS
+            $attendance->total_duration = $totalDuration->cascade()->format('%H:%I:%S');
+
+            // Calculate the percentage of the total duration spent in the laboratory for scheduled subject
+            $schedule = Schedule::find($logs->first()->schedule_id);
+            $totalDurationInSeconds = $totalDuration->totalSeconds;
+            $scheduledDurationInSeconds = Carbon::parse($schedule->start_time)->diffInSeconds(Carbon::parse($schedule->end_time));
+            $percentage = ($totalDurationInSeconds / $scheduledDurationInSeconds) * 100;
+            $attendance->percentage = abs(round($percentage, 2));
+
+            // Check user's arrival status
+        $scheduleStartTime = Carbon::parse($schedule->start_time);
+        $lateTime = $scheduleStartTime->copy()->addMinutes(15);
+        $timeIn = Carbon::parse($attendance->time_in);
+
+        if ($timeIn->gt($lateTime)) {
+            $attendance->status = 'Late';
+        } else {
+            $attendance->status = 'Present';
         }
 
-        // Format the total duration as HH:MM:SS
-        $attendance->total_duration = $totalDuration->cascade()->format('%H:%I:%S');
-    }
+        // Check if percentage is less than 50% and label as Incomplete
+        if ($attendance->percentage < 50) {
+            $attendance->status = 'Incomplete';
+        }
+            
+        }
 
-    return view('pages.attendance', compact('uniqueAttendances'));
-}
+        return view('pages.attendance', compact('uniqueAttendances'));
+    }
 
 
     // Record Attendance
