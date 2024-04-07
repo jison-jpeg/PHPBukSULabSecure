@@ -50,21 +50,20 @@ class AttendanceController extends Controller
             $attendance->percentage = abs(round($percentage, 2));
 
             // Check user's arrival status
-        $scheduleStartTime = Carbon::parse($schedule->start_time);
-        $lateTime = $scheduleStartTime->copy()->addMinutes(15);
-        $timeIn = Carbon::parse($attendance->time_in);
+            $scheduleStartTime = Carbon::parse($schedule->start_time);
+            $lateTime = $scheduleStartTime->copy()->addMinutes(15);
+            $timeIn = Carbon::parse($attendance->time_in);
 
-        if ($timeIn->gt($lateTime)) {
-            $attendance->status = 'Late';
-        } else {
-            $attendance->status = 'Present';
-        }
+            if ($timeIn->gt($lateTime)) {
+                $attendance->status = 'Late';
+            } else {
+                $attendance->status = 'Present';
+            }
 
-        // Check if percentage is less than 50% and label as Incomplete
-        if ($attendance->percentage < 50) {
-            $attendance->status = 'Incomplete';
-        }
-            
+            // Check if percentage is less than 50% and label as Incomplete
+            if ($attendance->percentage < 50) {
+                $attendance->status = 'Incomplete';
+            }
         }
 
         return view('pages.attendance', compact('uniqueAttendances'));
@@ -102,6 +101,9 @@ class AttendanceController extends Controller
             return response()->json(['error' => 'Laboratory not found'], 404);
         }
 
+        // Check if the user is an instructor
+        $isInstructor = $user->role === 'instructor';
+
         // Check if User is already inside the Laboratory
         $currentAttendance = Attendance::where('user_id', $user->id)
             ->where('laboratory_id', $laboratoryId)
@@ -111,6 +113,21 @@ class AttendanceController extends Controller
         if ($action === 'entrance') {
             if ($currentAttendance) {
                 return response()->json(['error' => 'User is already inside the laboratory'], 400);
+            }
+
+            // If the user is not an instructor, check if instructor is present in the laboratory
+            if (!$isInstructor) {
+                $instructorAttendance = Attendance::where('user_id', '!=', $user->id)
+                    ->where('laboratory_id', $laboratoryId)
+                    ->whereNull('time_out')
+                    ->whereHas('user', function ($query) {
+                        $query->where('role', 'instructor');
+                    })
+                    ->exists();
+
+                if (!$instructorAttendance) {
+                    return response()->json(['error' => 'Instructor is not present in the laboratory'], 400);
+                }
             }
 
             // Find matching schedule based on current time
