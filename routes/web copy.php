@@ -14,8 +14,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
-use App\Http\Middleware\RoleMiddleware;
-
 
 Route::get('/', function () {
     return redirect('/login');
@@ -30,7 +28,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/logout', [AuthManager::class, 'logout'])->name('logout');
 });
 
-Route::group(['middleware' => ['auth', 'role:admin']], function () {
+Route::group(['middleware' => 'auth'], function () {
+
     // Dashboard Routes
     Route::get('/dashboard', [Dashboard::class, 'viewDashboard']);
 
@@ -115,41 +114,6 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::get('/latest', [LogsController::class, 'latestLog']);
 
     });
-});
-
-Route::group(['middleware' => ['auth', 'role:instructor']], function () {
-    // Dashboard Routes
-    Route::get('/dashboard', [Dashboard::class, 'viewDashboard']);
-
-    // Profile Routes
-    Route::group(['prefix' => 'profile'], function () {
-        Route::get('/', [ProfileController::class, 'viewProfile'])->name('profile');
-        Route::put('/', [ProfileController::class, 'profilePut'])->name('profile.put');
-        Route::put('/password', [ProfileController::class, 'passwordPut'])->name('password.put');
-    });
-
-    // Attendance Routes
-    Route::group(['prefix' => 'attendance'], function () {
-        Route::get('/', [AttendanceController::class, 'viewAttendance'])->name('attendance');
-        Route::post('/record-attendance', [AttendanceController::class, 'recordAttendance'])->name('record-attendance')->withoutMiddleware('auth');
-
-    });
-
-    // Subjects Route
-    Route::group(['prefix' => 'subjects'], function () {
-        Route::get('/', [SubjectController::class, 'viewSubjects'])->name('subjects');
-        Route::post('/', [SubjectController::class, 'subjectsPost'])->name('subjects.post');
-        Route::put('/{id}', [SubjectController::class, 'subjectsPut'])->name('subjects.update');
-        Route::delete('/{id}', [SubjectController::class, 'subjectsDelete'])->name('subjects.delete');
-    });
-
-    // Schedules Route
-    Route::group(['prefix' => 'schedules'], function () {
-        Route::get('/', [ScheduleController::class, 'viewSchedules'])->name('schedules');
-        Route::post('/', [ScheduleController::class, 'createSchedule'])->name('schedules.post');
-        Route::put('/{id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
-        Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
-    });
     
-});
 
+});
