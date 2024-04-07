@@ -75,6 +75,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'laboratories'], function () {
         Route::get('/', [LaboratoriesController::class, 'viewLaboratories'])->name('laboratories');
         Route::post('/', [LaboratoriesController::class, 'laboratoriesPost'])->name('laboratories.post');
+        Route::put('/{id}', [LaboratoriesController::class, 'laboratoriesPut'])->name('laboratories.update');
+        Route::delete('/{id}', [LaboratoriesController::class, 'laboratoriesDelete'])->name('laboratories.delete');
     });
 
     // Subjects Route
@@ -101,7 +103,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'schedules'], function () {
         Route::get('/', [ScheduleController::class, 'viewSchedules'])->name('schedules');
         Route::post('/', [ScheduleController::class, 'createSchedule'])->name('schedules.post');
+        Route::put('/{id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
+        Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
     });
+    
 
     // Logs Route
     Route::group(['prefix' => 'logs'], function () {

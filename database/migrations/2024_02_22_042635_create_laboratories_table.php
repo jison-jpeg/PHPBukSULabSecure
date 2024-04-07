@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('building');
             $table->string('laboratoryType');
             $table->string('occupancyStatus')->default('Available');
-            $table->string('lockStatus')->default('Unlocked');
+            $table->boolean('lockStatus')->default(false);
             $table->timestamps();
         });
     }

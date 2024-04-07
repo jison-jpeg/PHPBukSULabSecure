@@ -10,6 +10,13 @@
                 <form class="row g-3 needs-validation" action="{{ route('subjects.post') }}" method="POST" novalidate>
                     @csrf
                     <div class="col-md-4">
+                        <label for="sectionCode" class="form-label">Section Code</label>
+                        <input type="text" class="form-control" name="sectionCode" placeholder="ex. T123" required>
+                        <div class="invalid-feedback">
+                            Please enter a subject code.
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <label for="subjectName" class="form-label">Subject Name</label>
                         <input type="text" class="form-control" name="subjectName" placeholder="Name of the subject" required>
                         <div class="invalid-feedback">
@@ -19,13 +26,6 @@
                     <div class="col-md-4">
                         <label for="subjectCode" class="form-label">Subject Code</label>
                         <input type="text" class="form-control" name="subjectCode" placeholder="ex. IT123" required>
-                        <div class="invalid-feedback">
-                            Please enter a subject code.
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="sectionCode" class="form-label">Section Code</label>
-                        <input type="text" class="form-control" name="sectionCode" placeholder="ex. T123" required>
                         <div class="invalid-feedback">
                             Please enter a subject code.
                         </div>
@@ -88,6 +88,14 @@
                     @csrf
                     @method('PUT')
                     <div class="col-md-4">
+                        <label for="sectionCode" class="form-label">Section Code</label>
+                        <input type="text" class="form-control" name="sectionCode" 
+                            value="{{ $subject->sectionCode }}" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid section code.
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <label for="subjectName" class="form-label">Subject Name</label>
                         <input type="text" class="form-control" name="subjectName" 
                             value="{{ $subject->subjectName }}" required>
@@ -101,14 +109,6 @@
                             value="{{ $subject->subjectCode }}" required>
                         <div class="invalid-feedback">
                             Please enter a valid subject code.
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="sectionCode" class="form-label">Section Code</label>
-                        <input type="text" class="form-control" name="sectionCode" 
-                            value="{{ $subject->sectionCode }}" required>
-                        <div class="invalid-feedback">
-                            Please enter a valid section code.
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">

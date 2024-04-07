@@ -9,10 +9,15 @@
                             <li class="dropdown-header text-start">
                                 <h6>OPTIONS</h6>
                             </li>
-                            <li><a class="dropdown-item" href="#">Edit</a></li>
+                            <li>
+                                <a class="dropdown-item" data-bs-toggle="modal"
+                                    data-bs-target="#editModal{{ $lab->id }}">Edit
+                                </a>
+                            </li>
                             <li>
                                 <a class="dropdown-item text-danger" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal">Remove Comlab {{ $lab->roomNumber }}</a>
+                                    data-bs-target="#deleteModal{{ $lab->id }}">Delete Comlab {{ $lab->roomNumber }}
+                                </a>
                             </li>
                         </ul>
                     </div>

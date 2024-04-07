@@ -6,134 +6,194 @@ use App\Models\Attendance;
 use App\Models\Laboratory;
 use App\Models\Logs;
 use App\Models\Schedule;
-use App\Models\Subject;
 use App\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
 {
-    // GET FULLNAME
-    function getFullName($id)
+    // View Attendance
+    public function viewAttendance()
     {
-        $attendance = Attendance::find($id);
-        return $attendance->user->getFullName();
-    }
+        // Fetch unique attendance records for each subject on the same date
+        $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
+            ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
+            ->get();
 
-    // GET ATTENDANCE
-    function viewAttendance()
-    {
-        $attendances = Attendance::all();
-        return view('pages.attendance', compact('attendances'));
-    }
+        // Calculate the total duration spent in the laboratory for each attendance record
+        foreach ($uniqueAttendances as $attendance) {
+            $totalDuration = CarbonInterval::hours(0); // Initialize total duration as 0 hours
+            $logs = Attendance::where('user_id', $attendance->user_id)
+                ->where('laboratory_id', $attendance->laboratory_id)
+                ->where('subject_id', $attendance->subject_id)
+                ->whereDate('created_at', $attendance->date)
+                ->get();
 
-// STORE ATTENDANCE
-public function recordAttendance(Request $request)
-{
-    // Extract RFID data and laboratory ID from the request
-    $rfidNumber = $request->input('rfid_number');
-    $laboratoryId = $request->input('laboratory_id');
+            foreach ($logs as $log) {
+                // Calculate the duration between time_in and time_out for each log
+                $timeIn = Carbon::parse($log->time_in);
+                $timeOut = Carbon::parse($log->time_out);
+                $duration = $timeOut->diff($timeIn);
+                $totalDuration = $totalDuration->add($duration);
+            }
 
-    // Check if the RFID number exists in the database
-    $user = User::where('rfid_number', $rfidNumber)->first();
+            // Format the total duration as HH:MM:SS
+            $attendance->total_duration = $totalDuration->cascade()->format('%H:%I:%S');
 
-    if (!$user) {
-        return response()->json(['error' => 'User not found!'], 404);
-    }
+            // Calculate the percentage of the total duration spent in the laboratory for scheduled subject
+            $schedule = Schedule::find($logs->first()->schedule_id);
+            $totalDurationInSeconds = $totalDuration->totalSeconds;
+            $scheduledDurationInSeconds = Carbon::parse($schedule->start_time)->diffInSeconds(Carbon::parse($schedule->end_time));
+            $percentage = ($totalDurationInSeconds / $scheduledDurationInSeconds) * 100;
+            $attendance->percentage = abs(round($percentage, 2));
 
-    // Check if the user has a schedule for the current time
-    $schedule = Schedule::where('user_id', $user->id)
-        ->where('days', 'like', '%' . now()->format('D') . '%')
-        ->whereTime('start_time', '<=', now())
-        ->whereTime('end_time', '>=', now())
-        ->first();
+            // Check user's arrival status
+            $scheduleStartTime = Carbon::parse($schedule->start_time);
+            $lateTime = $scheduleStartTime->copy()->addMinutes(15);
+            $timeIn = Carbon::parse($attendance->time_in);
 
-    if (!$schedule) {
-        return response()->json(['error' => 'No schedule found for the user at this time'], 404);
-    }
+            if ($timeIn->gt($lateTime)) {
+                $attendance->status = 'Late';
+            } else {
+                $attendance->status = 'Present';
+            }
 
-    // Check if there is an existing attendance record for the user and schedule on the current day
-    $existingAttendanceToday = Attendance::where('user_id', $user->id)
-        ->where('schedule_id', $schedule->id)
-        ->whereDate('created_at', now()->format('Y-m-d'))
-        ->first();
-
-    if ($existingAttendanceToday) {
-        // If attendance already recorded and has both time in and time out
-        if ($existingAttendanceToday->time_in && $existingAttendanceToday->time_out) {
-            return response()->json(['message' => 'Attendance already completed for this subject']);
+            // Check if percentage is less than 50% and label as Incomplete
+            if ($attendance->percentage < 50) {
+                $attendance->status = 'Incomplete';
+            }
         }
 
-        // If attendance already recorded but missing time out, update time out
-        if ($existingAttendanceToday->laboratory_id != $laboratoryId) {
-            return response()->json(['error' => 'Invalid laboratory for logout'], 400);
-        }
+        return view('pages.attendance', compact('uniqueAttendances'));
+    }
 
-        $existingAttendanceToday->update(['time_out' => now()]);
 
-        // Log the Check Out Action
-        Logs::create([
-            'date_time' => now(),
-            'user_id' => $user->id,
-            'laboratory_id' => $laboratoryId,
-            'name' => $user->getFullName(),
-            'description' => 'A User exited the laboratory: ' . $existingAttendanceToday->laboratory->roomNumber . ' for subject: ' . $existingAttendanceToday->subject->subjectName,
-            'action' => 'OUT'
+    // Record Attendance
+    public function recordAttendance(Request $request)
+    {
+        // Validate Request Data
+        $validator = Validator::make($request->all(), [
+            'rfid_number' => 'required|string',
+            'laboratory_id' => 'required|exists:laboratories,id',
+            'action' => 'required|in:entrance,exit',
         ]);
 
-        // Update the occupancy status of the laboratory if the user's role is not student
-        if ($user->role !== 'student') {
-            $existingAttendanceToday->laboratory->update(['occupancyStatus' => 'Available']);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
         }
 
-        return response()->json(['message' => 'Attendance updated successfully']);
+        // Extract Input Data
+        $rfidNumber = $request->input('rfid_number');
+        $laboratoryId = $request->input('laboratory_id');
+        $action = $request->input('action');
+
+        // Find User by RFID Number
+        $user = User::where('rfid_number', $rfidNumber)->first();
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // Find the Laboratory
+        $laboratory = Laboratory::find($laboratoryId);
+        if (!$laboratory) {
+            return response()->json(['error' => 'Laboratory not found'], 404);
+        }
+
+        // Check if the user is an instructor
+        $isInstructor = $user->role === 'instructor';
+
+        // Check if User is already inside the Laboratory
+        $currentAttendance = Attendance::where('user_id', $user->id)
+            ->where('laboratory_id', $laboratoryId)
+            ->whereNull('time_out')
+            ->first();
+
+        if ($action === 'entrance') {
+            if ($currentAttendance) {
+                return response()->json(['error' => 'User is already inside the laboratory'], 400);
+            }
+
+            // If the user is not an instructor, check if instructor is present in the laboratory
+            if (!$isInstructor) {
+                $instructorAttendance = Attendance::where('user_id', '!=', $user->id)
+                    ->where('laboratory_id', $laboratoryId)
+                    ->whereNull('time_out')
+                    ->whereHas('user', function ($query) {
+                        $query->where('role', 'instructor');
+                    })
+                    ->exists();
+
+                if (!$instructorAttendance) {
+                    return response()->json(['error' => 'Instructor is not present in the laboratory'], 400);
+                }
+            }
+
+            // Find matching schedule based on current time
+            $matchingSchedule = Schedule::where('days', 'like', '%' . now()->format('D') . '%') // Assuming now()->format('D') returns the day abbreviation like "Sat"
+                ->whereTime('start_time', '<=', now())
+                ->whereTime('end_time', '>=', now())
+                ->first();
+
+            if (!$matchingSchedule) {
+                return response()->json(['error' => 'No matching schedule found for the user at this time'], 404);
+            }
+
+            // Record New Attendance
+            Attendance::create([
+                'user_id' => $user->id,
+                'laboratory_id' => $laboratory->id,
+                'subject_id' => $matchingSchedule->subject_id,
+                'schedule_id' => $matchingSchedule->id,
+                'time_in' => now(),
+                'status' => 'PRESENT',
+            ]);
+
+            // Log the Entrance Action
+            Logs::create([
+                'user_id' => $user->id,
+                'laboratory_id' => $laboratory->id,
+                'name' => $user->getFullName(),
+                'description' => 'User entered the laboratory ' . $laboratory->roomNumber,
+                'action' => 'IN',
+            ]);
+
+            // Update the occupancy status of the laboratory if the user's role is not student
+            if ($user->role !== 'student') {
+                $laboratory->update(['occupancyStatus' => 'On-Going']);
+            }
+
+            return response()->json([
+                "message" => "Welcome, " . $user->getFullName() . "!\nSubject: " . $matchingSchedule->subject->name . ".\nTime In: " . now()->format('Y-m-d h:i A')
+            ]);
+        } elseif ($action === 'exit') {
+            if (!$currentAttendance) {
+                return response()->json(['error' => 'You are not inside the laboratory'], 400);
+            }
+
+            // Update the Current Attendance Record with the Exit Time
+            $currentAttendance->update(['time_out' => now()]);
+
+            // Log the Exit Action
+            Logs::create([
+                'user_id' => $user->id,
+                'laboratory_id' => $laboratory->id,
+                'name' => $user->getFullName(),
+                'description' => 'User exited the laboratory ' . $laboratory->roomNumber,
+                'action' => 'OUT',
+            ]);
+
+            // Update the occupancy status of the laboratory if the user's role is not student
+            if ($user->role !== 'student') {
+                $laboratory->update(['occupancyStatus' => 'Available']);
+            }
+
+            return response()->json([
+                'message' => 'Exit recorded successfully at ' . now()->format('Y-m-d h:i A')
+            ]);
+        } else {
+            return response()->json(['error' => 'Invalid action'], 400);
+        }
     }
-
-    // Check if the laboratory is currently occupied
-    $occupiedAttendance = Attendance::where('laboratory_id', $laboratoryId)
-        ->where('time_out', null)
-        ->exists();
-
-    if ($occupiedAttendance) {
-        return response()->json(['error' => 'Laboratory is currently occupied'], 400);
-    }
-
-    // Get laboratory and subject for the schedule
-    $laboratory = Laboratory::find($laboratoryId);
-    $subject = Subject::find($schedule->subject_id);
-
-    // Record attendance with time-in
-    $attendance = new Attendance();
-    $attendance->user_id = $user->id;
-    $attendance->laboratory_id = $laboratory->id;
-    $attendance->subject_id = $subject->id;
-    $attendance->schedule_id = $schedule->id;
-    $attendance->time_in = now();
-    $attendance->status = 'PRESENT';
-    $attendance->save();
-
-    // Log the Check In Action
-    Logs::create([
-        'date_time' => now(),
-        'user_id' => $user->id,
-        'laboratory_id' => $laboratory->id,
-        'name' => $user->getFullName(),
-        'description' => 'A User entered the laboratory: ' . $laboratory->roomNumber . ' for subject: ' . $subject->subjectName,
-        'action' => 'IN'
-    ]);
-
-    // Update the occupancy status of the laboratory if the user's role is not student
-    if ($user->role !== 'student') {
-        $laboratory->update(['occupancyStatus' => 'On-Going']);
-    }
-
-    // Check if attendance was successfully recorded
-    if (!$attendance->exists) {
-        return response()->json(['error' => 'Failed to record attendance'], 500);
-    }
-
-    return response()->json(['message' => 'Attendance recorded successfully']);
-}
-
-
 }
