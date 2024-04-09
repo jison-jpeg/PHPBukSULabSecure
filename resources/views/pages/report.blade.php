@@ -16,7 +16,6 @@
     <section class="section profile">
         <div class="row">
             <div class="col-xl-4">
-
                 <div class="card">
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
@@ -28,10 +27,18 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            <div class="col-xl-8">
+            <div class="col-xl-8 section dashboard">
+                <div class="card">
+                    <div class="card-body profile-card pt-4 d-flex flex-column">
+
+                     
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-12">
 
               <div class="card">
                 <div class="card-body pt-3">
@@ -53,12 +60,12 @@
                         <div class="tab-pane fade show active mt-2" id="bordered-justified-overview" role="tabpanel"
                             aria-labelledby="overview-tab">
                             
-                            {{-- @include('components.cards.overview') --}}
+                            @include('components.cards.overview')
                         </div>
                         <div class="tab-pane fade mt-2" id="bordered-justified-attendence" role="tabpanel"
                             aria-labelledby="attendence-tab">
                             
-                            {{-- @include('components.table.attendence') --}}
+                            @include('components.table.report')
                         </div>
          
                     </div><!-- End Bordered Tabs Justified -->

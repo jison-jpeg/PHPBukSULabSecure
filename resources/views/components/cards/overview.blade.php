@@ -1,93 +1,123 @@
 <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
 
     <h5 class="card-title">Overview</h5>
-    {{-- Instructors Overview of Subjects, Students, etc --}}
-    <div class="container">
-        <div class="row">
-            <!-- Pie Chart -->
-            <div id="pieChart" style="min-height: 400px;" class="echart"></div>
 
-            <script>
-              document.addEventListener("DOMContentLoaded", () => {
-                echarts.init(document.querySelector("#pieChart")).setOption({
-                  title: {
-                    text: 'User Statistics',
-                    subtext: 'Data',
-                    left: 'center'
-                  },
-                  tooltip: {
-                    trigger: 'item'
-                  },
-                  legend: {
-                    orient: 'vertical',
-                    left: 'left'
-                  },
-                  series: [{
-                    name: 'Access From',
-                    type: 'pie',
-                    radius: '50%',
-                    data: [{
-                        value: 15,
-                        name: 'Present'
-                      },
-                      {
-                        value: 5,
-                        name: 'Late'
-                      },
-                      {
-                        value: 1,
-                        name: 'Absent'
-                      },
-                    ],
-                    emphasis: {
-                      itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                      }
-                    }
-                  }]
-                });
-              });
-            </script>
-            <!-- End Pie Chart -->
+    <section class="section dashboard">
+      <div class="row">
+
+        <!-- Sales Card -->
+        <div class="col-xxl-4 col-md-4 col-sm-6">
+          <div class="card info-card sales-card">
+
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">Today</a></li>
+                <li><a class="dropdown-item" href="#">This Month</a></li>
+                <li><a class="dropdown-item" href="#">This Year</a></li>
+              </ul>
+            </div>
+
+            <div class="card-body">
+              <h5 class="card-title">Classes <span>| Today</span></h5>
+
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-cart"></i>
+                </div>
+                <div class="ps-3">
+                  <h6>145</h6>
+                  <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div><!-- End Sales Card -->
+
+        <!-- Revenue Card -->
+        <div class="col-xxl-4 col-md-4 col-sm-6">
+          <div class="card info-card revenue-card">
+
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">Today</a></li>
+                <li><a class="dropdown-item" href="#">This Month</a></li>
+                <li><a class="dropdown-item" href="#">This Year</a></li>
+              </ul>
+            </div>
+
+            <div class="card-body">
+              <h5 class="card-title">Students <span>| This Month</span></h5>
+
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-currency-dollar"></i>
+                </div>
+                <div class="ps-3">
+                  <h6>$3,264</h6>
+                  <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div><!-- End Revenue Card -->
+
+        <!-- Customers Card -->
+        <div class="col-xxl-4 col-md-4">
+
+          <div class="card info-card customers-card">
+
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">Today</a></li>
+                <li><a class="dropdown-item" href="#">This Month</a></li>
+                <li><a class="dropdown-item" href="#">This Year</a></li>
+              </ul>
+            </div>
+
+            <div class="card-body">
+              <h5 class="card-title">Subjects <span>| This Year</span></h5>
+
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-people"></i>
+                </div>
+                <div class="ps-3">
+                  <h6>1244</h6>
+                  <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
-    </div>
+        <!-- End Customers Card -->
 
-    <h5 class="card-title">Statistics</h5>
 
-    <div class="row">
-        <div class="col-lg-3 col-md-4 label ">Total Students</div>
-        <div class="col-lg-9 col-md-8">50</div>
-    </div>
+        
 
-    <div class="row">
-        <div class="col-lg-3 col-md-4 label">Company</div>
-        <div class="col-lg-9 col-md-8">Lueilwitz, Wisoky and Leuschke</div>
-    </div>
+        
+      </div>
+    </section>
 
-    <div class="row">
-        <div class="col-lg-3 col-md-4 label">Job</div>
-        <div class="col-lg-9 col-md-8">Web Designer</div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-3 col-md-4 label">Country</div>
-        <div class="col-lg-9 col-md-8">USA</div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-3 col-md-4 label">Address</div>
-        <div class="col-lg-9 col-md-8">A108 Adam Street, New York, NY 535022</div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-3 col-md-4 label">Phone</div>
-        <div class="col-lg-9 col-md-8">(436) 486-3538 x29071</div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-3 col-md-4 label">Email</div>
-        <div class="col-lg-9 col-md-8">k.anderson@example.com</div>
-    </div>
 </div>

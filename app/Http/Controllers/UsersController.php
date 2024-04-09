@@ -35,12 +35,62 @@ class UsersController extends Controller
     //GET USER REPORTS
     function viewUserReports($id)
     {
+        // Get User by ID
         $user = User::find($id);
-        $attendance = Attendance::where('user_id', $id)->get();
-        $logs = Logs::where('user_id', $id)->get();
-        $schedules = Schedule::where('user_id', $id)->get();
 
-        return view('pages.report', compact('user', 'attendance', 'logs', 'schedules'));
+        // Get all unique attendance records by user ID
+        $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
+            ->where('user_id', $id)
+            ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
+            ->get();
+
+        // Calculate the total duration spent in the laboratory for each attendance record
+        foreach ($uniqueAttendances as $attendance) {
+            $totalDuration = CarbonInterval::hours(0); // Initialize total duration as 0 hours
+            $logs = Attendance::where('user_id', $attendance->user_id)
+                ->where('laboratory_id', $attendance->laboratory_id)
+                ->where('subject_id', $attendance->subject_id)
+                ->whereDate('created_at', $attendance->date)
+                ->get();
+
+            foreach ($logs as $log) {
+                // Calculate the duration between time_in and time_out for each log
+                $timeIn = Carbon::parse($log->time_in);
+                $timeOut = Carbon::parse($log->time_out);
+                $duration = $timeOut->diff($timeIn);
+                $totalDuration = $totalDuration->add($duration);
+            }
+
+            // Format the total duration as HH:MM:SS
+            $attendance->total_duration = $totalDuration->cascade()->format('%H:%I:%S');
+
+            // Calculate the percentage of the total duration spent in the laboratory for scheduled subject
+            $schedule = Schedule::find($logs->first()->schedule_id);
+            $totalDurationInSeconds = $totalDuration->totalSeconds;
+            $scheduledDurationInSeconds = Carbon::parse($schedule->start_time)->diffInSeconds(Carbon::parse($schedule->end_time));
+            $percentage = ($totalDurationInSeconds / $scheduledDurationInSeconds) * 100;
+            $attendance->percentage = abs(round($percentage, 2));
+
+            // Check user's arrival status
+            $scheduleStartTime = Carbon::parse($schedule->start_time);
+            $lateTime = $scheduleStartTime->copy()->addMinutes(15);
+            $timeIn = Carbon::parse($attendance->time_in);
+
+            if ($timeIn->gt($lateTime)) {
+                $attendance->status = 'Late';
+            } else {
+                $attendance->status = 'Present';
+            }
+
+            // Check if percentage is less than 50% and label as Incomplete
+            if ($attendance->percentage < 50) {
+                $attendance->status = 'Incomplete';
+            }
+        }
+        
+
+
+        return view('pages.report', compact('uniqueAttendances'));
     }
 
 

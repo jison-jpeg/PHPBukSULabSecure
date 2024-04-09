@@ -2,14 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Laboratory;
 use Illuminate\Http\Request;
 use App\Models\Logs;
+use App\Models\User;
 use Carbon\Carbon;
 
 class Dashboard extends Controller
 {
-    
+    // View Dashboard
     function viewDashboard(){
+
+        // Get all total users
+        $totalUsers = User::count();
+
+        // Get all total users with role of instructor
+        $totalInstructors = User::where('role', 'instructor')->count();
+
+        // Get all total laboratories
+        $totalLaboratories = Laboratory::count();
 
         $logs = Logs::orderBy('created_at', 'desc')->take(10)->get();
 
@@ -35,6 +46,6 @@ class Dashboard extends Controller
             $log->formatted_time_diff = $formattedTimeDiff;
         }
         
-        return view('pages.dashboard', compact('logs'));
+        return view('pages.dashboard', compact('logs', 'totalUsers', 'totalInstructors', 'totalLaboratories'));
     }
 }

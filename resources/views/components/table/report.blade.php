@@ -1,9 +1,5 @@
-<div class="card">
-    <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-title">Attendance</h5>
-            <button type="button" class="btn btn-primary">Export</button>
-        </div>
+<h5 class="card-title">Attendance</h5>
+
         <!-- Table with hoverable rows -->
         <div class="table-responsive">
             <table class="table table-hover">
@@ -49,11 +45,11 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="badge rounded-pill 
+                                <span
+                                    class="badge rounded-pill 
                                     @if ($attendance->status === 'Present') bg-success
                                     @elseif($attendance->status === 'Incomplete') bg-danger
-                                    @elseif($attendance->status === 'Late') bg-secondary
-                                    @endif">
+                                    @elseif($attendance->status === 'Late') bg-secondary @endif">
                                     {{ $attendance->status }}
                                 </span>
                             </td>
@@ -63,5 +59,4 @@
             </table>
         </div>
         <!-- End Table with hoverable rows -->
-    </div>
-</div>
+
