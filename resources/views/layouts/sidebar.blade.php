@@ -3,7 +3,7 @@
 
     <div class="sidebar-header">
         <a href="#">
-            <img src="/assets/img/logo.png" class="sidebar-logo" alt="" />
+            <img src="{{ asset('assets/img/logo.png') }}" class="sidebar-logo" alt="" />
         </a>
     </div>
 

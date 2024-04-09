@@ -14,12 +14,17 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\UserReportsController;
 use App\Http\Middleware\RoleMiddleware;
 
 
 Route::get('/', function () {
     return redirect('/login');
 });
+
+// Route::get('/report', function () {
+//     return view('pages.report');
+// });
 
 
 Route::group(['middleware' => 'web'], function () {
@@ -28,49 +33,12 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/google', [GoogleController::class, 'loginWithGoogle'])->name('google');
     Route::any('/google/callback', [GoogleController::class, 'callbackFromGoogle'])->name('callback');
     Route::post('/logout', [AuthManager::class, 'logout'])->name('logout');
+
+    // Attendance Routes
+    Route::post('attendance/record-attendance', [AttendanceController::class, 'recordAttendance'])->name('record-attendance')->middleware('guest');
 });
 
 Route::group(['middleware' => ['auth', 'role:admin']], function () {
-    // Dashboard Routes
-    Route::get('/dashboard', [Dashboard::class, 'viewDashboard']);
-
-    // User Routes
-    Route::group(['prefix' => 'users'], function () {
-        Route::get('/', [UsersController::class, 'viewUsers'])->name('users');
-        Route::post('/', [UsersController::class, 'usersPost'])->name('users.post');
-        Route::put('/{id}', [UsersController::class, 'usersPut'])->name('users.update');
-        Route::delete('/{id}', [UsersController::class, 'usersDelete'])->name('users.delete');
-    });
-
-    // Profile Routes
-    Route::group(['prefix' => 'profile'], function () {
-        Route::get('/', [ProfileController::class, 'viewProfile'])->name('profile');
-        Route::put('/', [ProfileController::class, 'profilePut'])->name('profile.put');
-        Route::put('/password', [ProfileController::class, 'passwordPut'])->name('password.put');
-    });
-
-    // Faculty Routes
-    Route::group(['prefix' => 'faculties'], function () {
-        Route::get('/', [FacultyController::class, 'viewFaculties'])->name('faculties');
-        Route::post('/', [FacultyController::class, 'facultiesPost'])->name('faculties.post');
-        Route::put('/{id}', [FacultyController::class, 'facultiesPut'])->name('faculties.put');
-        Route::delete('/{id}', [FacultyController::class, 'facultiesDelete'])->name('faculties.delete');
-    });
-
-    // Student Routes
-    Route::group(['prefix' => 'students'], function () {
-        Route::get('/', [StudentController::class, 'viewStudents'])->name('students');
-        Route::post('/', [StudentController::class, 'studentsPost'])->name('students.post');
-        Route::put('/{id}', [StudentController::class, 'studentsPut'])->name('students.put');
-        Route::delete('/{id}', [StudentController::class, 'studentsDelete'])->name('students.delete');
-    });
-
-    // Attendance Routes
-    Route::group(['prefix' => 'attendance'], function () {
-        Route::get('/', [AttendanceController::class, 'viewAttendance'])->name('attendance');
-        Route::post('/record-attendance', [AttendanceController::class, 'recordAttendance'])->name('record-attendance')->withoutMiddleware('auth');
-
-    });
 
     // Laboratories Route
     Route::group(['prefix' => 'laboratories'], function () {
@@ -80,13 +48,17 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::delete('/{id}', [LaboratoriesController::class, 'laboratoriesDelete'])->name('laboratories.delete');
     });
 
-    // Subjects Route
-    Route::group(['prefix' => 'subjects'], function () {
-        Route::get('/', [SubjectController::class, 'viewSubjects'])->name('subjects');
-        Route::post('/', [SubjectController::class, 'subjectsPost'])->name('subjects.post');
-        Route::put('/{id}', [SubjectController::class, 'subjectsPut'])->name('subjects.update');
-        Route::delete('/{id}', [SubjectController::class, 'subjectsDelete'])->name('subjects.delete');
+    // User Routes
+    Route::group(['prefix' => 'users'], function () {
+        Route::get('/', [UsersController::class, 'viewUsers'])->name('users');
+        Route::post('/', [UsersController::class, 'usersPost'])->name('users.post');
+        Route::put('/{id}', [UsersController::class, 'usersPut'])->name('users.update');
+        Route::delete('/{id}', [UsersController::class, 'usersDelete'])->name('users.delete');
     });
+
+    // User Reports Route
+    Route::get('/users/{id}', [UsersController::class, 'viewUserReports'])->name('users.report');
+
 
     // College Management Route
     Route::group(['prefix' => 'colleges'], function () {
@@ -100,6 +72,14 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::delete('/departments/{id}', [CollegeManagementController::class, 'departmentDelete'])->name('departments.delete');
     });
 
+    // Faculty Routes
+    Route::group(['prefix' => 'faculties'], function () {
+        Route::get('/', [FacultyController::class, 'viewFaculties'])->name('faculties');
+        Route::post('/', [FacultyController::class, 'facultiesPost'])->name('faculties.post');
+        Route::put('/{id}', [FacultyController::class, 'facultiesPut'])->name('faculties.put');
+        Route::delete('/{id}', [FacultyController::class, 'facultiesDelete'])->name('faculties.delete');
+    });
+
     // Schedules Route
     Route::group(['prefix' => 'schedules'], function () {
         Route::get('/', [ScheduleController::class, 'viewSchedules'])->name('schedules');
@@ -107,32 +87,30 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::put('/{id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
         Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
     });
-    
 
     // Logs Route
     Route::group(['prefix' => 'logs'], function () {
         Route::get('/', [LogsController::class, 'viewLogs'])->name('logs');
         Route::get('/latest', [LogsController::class, 'latestLog']);
-
     });
 });
 
-Route::group(['middleware' => ['auth', 'role:instructor']], function () {
+// Routes for Admin and Instructor
+Route::group(['middleware' => ['auth', 'role:admin,instructor']], function () {
     // Dashboard Routes
     Route::get('/dashboard', [Dashboard::class, 'viewDashboard']);
-
-    // Profile Routes
-    Route::group(['prefix' => 'profile'], function () {
-        Route::get('/', [ProfileController::class, 'viewProfile'])->name('profile');
-        Route::put('/', [ProfileController::class, 'profilePut'])->name('profile.put');
-        Route::put('/password', [ProfileController::class, 'passwordPut'])->name('password.put');
-    });
 
     // Attendance Routes
     Route::group(['prefix' => 'attendance'], function () {
         Route::get('/', [AttendanceController::class, 'viewAttendance'])->name('attendance');
-        Route::post('/record-attendance', [AttendanceController::class, 'recordAttendance'])->name('record-attendance')->withoutMiddleware('auth');
+    });
 
+    // Student Routes
+    Route::group(['prefix' => 'students'], function () {
+        Route::get('/', [StudentController::class, 'viewStudents'])->name('students');
+        Route::post('/', [StudentController::class, 'studentsPost'])->name('students.post');
+        Route::put('/{id}', [StudentController::class, 'studentsPut'])->name('students.put');
+        Route::delete('/{id}', [StudentController::class, 'studentsDelete'])->name('students.delete');
     });
 
     // Subjects Route
@@ -150,6 +128,11 @@ Route::group(['middleware' => ['auth', 'role:instructor']], function () {
         Route::put('/{id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
         Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
     });
-    
-});
 
+    // Profile Routes
+    Route::group(['prefix' => 'profile'], function () {
+        Route::get('/', [ProfileController::class, 'viewProfile'])->name('profile');
+        Route::put('/', [ProfileController::class, 'profilePut'])->name('profile.put');
+        Route::put('/password', [ProfileController::class, 'passwordPut'])->name('password.put');
+    });
+});

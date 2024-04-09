@@ -33,7 +33,11 @@
                     @foreach ($users as $user)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
-                            <td>{{ $user->last_name }}, {{ $user->first_name }} {{ $user->middle_name }}</td>
+                            <td>
+                                <a href="{{ route('users.report', ['id' => $user->id]) }}">
+                                {{ $user->last_name }}, {{ $user->first_name }} {{ $user->middle_name }}
+                                </a>
+                            </td>
                             <td>{{ $user->username }}</td>
                             <td>{{ $user->email }}</td>
                             {{-- hide role and display section code if request is student --}}
@@ -42,20 +46,20 @@
                                     @switch($user->role)
                                         @case('admin')
                                         @case('dean')
-    
+
                                         @case('chairperson')
                                             <span class="badge rounded-pill bg-red text-red">{{ $user->role }}</span>
                                         @break
-    
+
                                         @case('instructor')
                                         @case('part-time instructor')
                                             <span class="badge rounded-pill bg-info-2 text-blue ">{{ $user->role }}</span>
                                         @break
-    
+
                                         @case('support')
                                             <span class="badge rounded-pill bg-yellow text-yellow ">{{ $user->role }}</span>
                                         @break
-    
+
                                         @default
                                             <span class="badge rounded-pill bg-gray text-gray">{{ $user->role }}</span>
                                     @endswitch

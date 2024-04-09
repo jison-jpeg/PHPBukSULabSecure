@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Mail\CredentialsMail;
+use App\Models\Attendance;
 use App\Models\User;
 use App\Models\College;
 use App\Models\Department;
 use App\Models\Logs;
+use App\Models\Schedule;
+use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,6 +32,18 @@ class UsersController extends Controller
         return view('pages.user', compact('users', 'colleges', 'departments'));
     }
 
+    //GET USER REPORTS
+    function viewUserReports($id)
+    {
+        $user = User::find($id);
+        $attendance = Attendance::where('user_id', $id)->get();
+        $logs = Logs::where('user_id', $id)->get();
+        $schedules = Schedule::where('user_id', $id)->get();
+
+        return view('pages.report', compact('user', 'attendance', 'logs', 'schedules'));
+    }
+
+
     //GET ARCHIVED USERS
     function viewArchivedUsers()
     {
@@ -48,7 +64,7 @@ class UsersController extends Controller
             'role' => 'required',
             'college_id' => 'required',
             'department_id' => 'required',
-            
+
         ]);
 
         $plainPassword = Str::random(10);

@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
@@ -17,10 +18,22 @@ class AttendanceController extends Controller
     // View Attendance
     public function viewAttendance()
     {
-        // Fetch unique attendance records for each subject on the same date
-        $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
-            ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
-            ->get();
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Check if the authenticated user is an instructor
+        if ($user->role === 'instructor') {
+            // Fetch unique attendance records for the authenticated instructor user only
+            $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
+                ->where('user_id', $user->id) // Filter by authenticated user's ID
+                ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
+                ->get();
+        } else {
+            // If the authenticated user is not an instructor, display all attendance records
+            $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
+                ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
+                ->get();
+        }
 
         // Calculate the total duration spent in the laboratory for each attendance record
         foreach ($uniqueAttendances as $attendance) {

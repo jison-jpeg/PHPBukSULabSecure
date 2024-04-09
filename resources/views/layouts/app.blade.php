@@ -8,7 +8,7 @@
     <div id="preloader">
         <div class="preloader-background"></div>
         <div class="preloader-logo">
-            <img src="/assets/img/logo.png" alt="Logo">
+            <img src="{{ asset('assets/img/logo.png') }}" alt="Logo">
         </div>
     </div>
 
