@@ -14,10 +14,12 @@
                         <th scope="col">Username</th>
                         <th scope="col">Email</th>
                         {{-- hide role and display section code if request is student --}}
-                        @if (!request()->is('student') && !request()->is('faculties'))
+                        @if (!request()->is('students') && !request()->is('faculties'))
                             <th scope="col">Role</th>
                         @else
-                            <th scope="col">Section Code</th>
+                            @if (!request()->is('faculties'))
+                                <th scope="col">Section Code</th>
+                            @endif
                         @endif
                         <th scope="col">College</th>
                         <th scope="col">Department</th>
@@ -35,7 +37,7 @@
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>
                                 <a href="{{ route('users.report', ['id' => $user->id]) }}">
-                                {{ $user->last_name }}, {{ $user->first_name }} {{ $user->middle_name }}
+                                    {{ $user->last_name }}, {{ $user->first_name }} {{ $user->middle_name }}
                                 </a>
                             </td>
                             <td>{{ $user->username }}</td>
@@ -65,7 +67,9 @@
                                     @endswitch
                                 </td>
                             @else
-                                <td>{{ $user->section_code ? $user->section_code : 'N/A' }}</td>
+                                @if (!request()->is('faculties'))
+                                    <td>{{ $user->section_code ? $user->section_code : 'N/A' }}</td>
+                                @endif
                             @endif
                             <td>{{ $user->college ? $user->college->collegeName : 'N/A' }}</td>
                             <!-- Check if college is null -->

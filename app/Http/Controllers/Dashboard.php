@@ -16,6 +16,9 @@ class Dashboard extends Controller
         // Get all total users
         $totalUsers = User::count();
 
+        // Get all total users with role of student
+        $totalStudents = User::where('role', 'student')->count();
+
         // Get all total users with role of instructor
         $totalInstructors = User::where('role', 'instructor')->count();
 
@@ -46,6 +49,6 @@ class Dashboard extends Controller
             $log->formatted_time_diff = $formattedTimeDiff;
         }
         
-        return view('pages.dashboard', compact('logs', 'totalUsers', 'totalInstructors', 'totalLaboratories'));
+        return view('pages.dashboard', compact('logs', 'totalUsers', 'totalInstructors', 'totalLaboratories', 'totalStudents'));
     }
 }

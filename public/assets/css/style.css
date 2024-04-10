@@ -987,6 +987,11 @@ h6 {
   background: #e0f8e9;
 }
 
+.dashboard .student-card .card-icon {
+  color: #912eca;
+  background: #fff1ff;
+}
+
 .dashboard .customers-card .card-icon {
   color: #ff771d;
   background: #ffecdf;
@@ -1174,7 +1179,7 @@ h6 {
 # Profie Page
 --------------------------------------------------------------*/
 .profile .profile-card img {
-  max-width: 120px;
+  max-width: 150px;
 }
 
 .profile .profile-card h2 {
@@ -1222,6 +1227,13 @@ h6 {
 
 .profile .profile-edit img {
   max-width: 120px;
+}
+
+.profile-card {
+  margin-top: 63px;
+  margin-bottom: 63px;
+
+
 }
 
 /*--------------------------------------------------------------

@@ -38,6 +38,9 @@ class UsersController extends Controller
         // Get User by ID
         $user = User::find($id);
 
+        // Get all total number of students by section code
+
+
         // Get all unique attendance records by user ID
         $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
             ->where('user_id', $id)
@@ -85,12 +88,20 @@ class UsersController extends Controller
             // Check if percentage is less than 50% and label as Incomplete
             if ($attendance->percentage < 50) {
                 $attendance->status = 'Incomplete';
+            } else {
+                // If 0% attendance, label as Absent
+                if ($attendance->percentage == 0) {
+                    $attendance->status = 'Absent';
+                }
             }
         }
-        
+
+        // Fetch all schedules associated with the user
+        $schedules = Schedule::where('user_id', $id)->get();
+        $schedulesCount = $schedules->count();
 
 
-        return view('pages.report', compact('uniqueAttendances'));
+        return view('pages.report', compact('user', 'uniqueAttendances', 'schedules', 'schedulesCount'));
     }
 
 
