@@ -125,6 +125,7 @@ class UsersController extends Controller
             'role' => 'required',
             'college_id' => 'required',
             'department_id' => 'required',
+            'section_id' => 'nullable',
 
         ]);
 

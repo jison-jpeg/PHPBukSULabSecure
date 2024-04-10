@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('college_id')->constrained()->onDelete('cascade');
             $table->foreignId('department_id')->constrained()->onDelete('cascade');
             $table->bigInteger('subject_id')->unsigned()->constrained()->onDelete('cascade');
-            $table->string('sectionCode');
+            $table->bigInteger('section_id')->unsigned()->constrained()->onDelete('cascade');
             $table->time('start_time');
             $table->time('end_time');
             $table->string('days');

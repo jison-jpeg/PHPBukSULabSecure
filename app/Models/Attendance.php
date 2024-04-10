@@ -18,8 +18,6 @@ class Attendance extends Model
         'schedule_id',
         'time_in',
         'time_out',
-        'percentage',
-        'status',
     ];
 
     /**
@@ -52,5 +50,13 @@ class Attendance extends Model
     public function schedule()
     {
         return $this->belongsTo(Schedule::class);
+    }
+
+    /**
+     * Get the section that the attendance belongs to.
+     */
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
     }
 }

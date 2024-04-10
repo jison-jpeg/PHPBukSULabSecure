@@ -14,10 +14,9 @@ class Subject extends Model
     protected $fillable = [
         'subjectName',
         'subjectCode',
-        'sectionCode',
+        'subjectDescription',
         'college_id',
         'department_id',
-        'subjectDescription',
     ];
 
     public function college()

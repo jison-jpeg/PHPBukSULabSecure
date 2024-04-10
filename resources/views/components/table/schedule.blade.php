@@ -11,10 +11,10 @@
                     <tr>
                         <th>College</th>
                         <th>Department</th>
-                        <th scope="col">Subject Code</th>
-                        <th scope="col">Section Code</th>
-                        <th scope="col">Subject Name</th>
                         <th scope="col">Instructor</th>
+                        <th scope="col">Subject Code</th>
+                        <th scope="col">Subject Name</th>
+                        <th scope="col">Section Code</th>
                         <th scope="col">Room</th>
                         <th scope="col">Days</th>
                         <th scope="col">Start Time</th>
@@ -27,10 +27,10 @@
                         <tr>
                             <td>{{ $schedule->college->collegeName }}</td>
                             <td>{{ $schedule->department->departmentName }}</td>
-                            <td>{{ $schedule->subject->subjectCode }}</td>
-                            <th>{{ $schedule->sectionCode }}</th>
-                            <td>{{ $schedule->subject->subjectName }}</td>
                             <td>{{ $schedule->user->full_name }}</td>
+                            <td>{{ $schedule->subject->subjectCode }}</td>
+                            <td>{{ $schedule->subject->subjectName }}</td>
+                            <td>{{ $schedule->section->sectionCode }}</td>
                             <td>Comlab {{ $schedule->laboratory->roomNumber }}</td>
                             <td>{{ $schedule->days }}</td>
                             <td>{{ date('h:i A', strtotime($schedule->start_time)) }}</td>
@@ -46,16 +46,6 @@
                                         data-bs-target="#deleteModal{{$schedule->id}}">
                                         Delete
                                     </button>
-                                    {{-- <div class="mx-1"></div>
-                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#archiveModal">
-                                        Archive
-                                    </button>
-                                    <div class="mx-1"></div>
-                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#restoreModal">
-                                        Restore
-                                    </button> --}}
                                 </div>
                             </td>
                         </tr>

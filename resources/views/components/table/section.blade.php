@@ -1,8 +1,7 @@
-<div class="card ">
+<div class="mt-2">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-title">Subject</h5>
-            <button type="button" class="btn btn-primary">Export</button>
+            <h5 class="card-title">Class Section Lists</h5>
         </div>
         <!-- Table with hoverable rows -->
         <div class="table-responsive">
@@ -10,40 +9,28 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Subject</th>
-                        <th scope="col">Subject Code</th>
+                        <th scope="col">Department Name</th>
                         <th scope="col">Description</th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($subjects as $subject)
+                    @foreach ($sections as $section)
                     <tr>
                         <th scope="row">{{ $loop->iteration }}</th>
-                        <td>{{ $subject->subjectName }}</td>
-                        <td>{{ $subject->subjectCode }}</td>
-                        <td>{{ $subject->subjectDescription }}</td>
+                        <td>{{ $section->sectionCode }}</td>
+                        <td>{{ $section->sectionDescription }}</td>
                         <td>
                             <div class="d-flex justify-content-center">
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#updateModal{{ $subject->id }}">
+                                    data-bs-target="#updateSectionModal{{ $section->id }}">
                                     Edit
                                 </button>
                                 <div class="mx-1"></div>
                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal{{ $subject->id }}">
+                                    data-bs-target="#deleteSectionModal{{ $section->id }}">
                                     Delete
                                 </button>
-                                {{-- <div class="mx-1"></div>
-                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#archiveModal">
-                                    Archive
-                                </button>
-                                <div class="mx-1"></div>
-                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#restoreModal">
-                                    Restore
-                                </button> --}}
                             </div>
                         </td>
                     </tr>

@@ -46,11 +46,11 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <label for="section_code" class="form-label">Section Code</label>
-                        <select class="form-select" id="sectionCode" required="" name="sectionCode">
+                        <label for="section_id" class="form-label">Section Code</label>
+                        <select class="form-select" id="section_id" required="" name="section_id">
                             <option selected="" disabled="" value="">Choose...</option>
-                            @foreach ($subjects as $subject)
-                                <option value="{{ $subject->sectionCode }}">{{ $subject->sectionCode }}</option>
+                            @foreach ($sections as $section)
+                                <option value="{{ $section->id }}">{{ $section->sectionCode }}</option>
                             @endforeach
                         </select>
                         <div class="invalid-feedback">
@@ -179,13 +179,13 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <label for="section_code" class="form-label">Section Code</label>
-                            <select class="form-select" id="sectionCode" required="" name="sectionCode">
+                            <label for="section_id" class="form-label">Section Code</label>
+                            <select class="form-select" id="section_id" required="" name="section_id">
                                 <option selected="" disabled="" value="">Choose...</option>
-                                @foreach ($subjects as $subject)
-                                    <option value="{{ $subject->sectionCode }}"
-                                        {{ $subject->sectionCode == $schedule->sectionCode ? 'selected' : '' }}>
-                                        {{ $subject->sectionCode }}</option>
+                                @foreach ($sections as $section)
+                                    <option value="{{ $section->id }}"
+                                        {{ $section->id == $schedule->section_id ? 'selected' : '' }}>
+                                        {{ $section->sectionCode }}</option>
                                 @endforeach
                             </select>
                             <div class="invalid-feedback">

@@ -14,8 +14,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
-use App\Http\Controllers\UserReportsController;
-use App\Http\Middleware\RoleMiddleware;
 
 
 Route::get('/', function () {
@@ -70,6 +68,10 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::post('/departments', [CollegeManagementController::class, 'departmentsPost'])->name('departments.post');
         Route::put('/departments/{id}', [CollegeManagementController::class, 'departmentPut'])->name('departments.update');
         Route::delete('/departments/{id}', [CollegeManagementController::class, 'departmentDelete'])->name('departments.delete');
+        // Section Management Route
+        Route::post('/sections', [CollegeManagementController::class, 'sectionsPost'])->name('sections.create');
+        Route::put('/sections/{id}', [CollegeManagementController::class, 'sectionPut'])->name('sections.update');
+        Route::delete('/sections/{id}', [CollegeManagementController::class, 'sectionDelete'])->name('sections.delete');
     });
 
     // Faculty Routes

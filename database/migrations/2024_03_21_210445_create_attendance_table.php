@@ -19,9 +19,6 @@ return new class extends Migration
             $table->foreignId('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
             $table->time('time_in')->nullable();
             $table->time('time_out')->nullable();
-            $table->string('time_attended')->nullable();
-            $table->string('percentage')->default('0');
-            $table->string('status');
             $table->timestamps();
         });
     }

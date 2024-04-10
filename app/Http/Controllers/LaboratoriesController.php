@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Laboratory;
 use App\Models\Logs;
+use App\Models\User;
 use Carbon\Carbon;
 
 class LaboratoriesController extends Controller
@@ -79,8 +80,15 @@ class LaboratoriesController extends Controller
         if (!$laboratory) {
             return redirect(route('laboratories'))->with("error", "Error creating laboratory. Please try again.");
         } else {
+
+            // Get user's name
+            $user = User::find(auth()->user()->id);
+
             // Log the creation of the laboratory
             Logs::create([
+                'user_id' => auth()->user()->id,
+                'laboratory_id' => $laboratory->id,
+                'name' => $user->getFullName(),
                 'description' => 'Laboratory created: ' . $laboratory->roomNumber,
                 'action' => 'CREATE',
             ]);
@@ -106,8 +114,14 @@ class LaboratoriesController extends Controller
             return redirect(route('laboratories'))->with("error", "Laboratory not found.");
         }
 
+        // Get user's name
+        $user = User::find(auth()->user()->id);
+
         // Log the changes before updating
         Logs::create([
+            'user_id' => auth()->user()->id,
+            'laboratory_id' => $laboratory->id,
+            'name' => $user->getFullName(),
             'description' => 'Laboratory updated: ' . $laboratory->roomNumber,
             'action' => 'UPDATE',
         ]);
@@ -131,8 +145,15 @@ class LaboratoriesController extends Controller
         $laboratory = Laboratory::find($id);
 
         if ($laboratory->delete()) {
+
+            // Get user's name
+            $user = User::find(auth()->user()->id);
+
             // Log the deletion of the laboratory
             Logs::create([
+                'user_id' => auth()->user()->id,
+                'laboratory_id' => $laboratory->id,
+                'name' => $user->getFullName(),
                 'description' => 'Laboratory deleted: ' . $laboratory->roomNumber,
                 'action' => 'DELETE',
             ]);

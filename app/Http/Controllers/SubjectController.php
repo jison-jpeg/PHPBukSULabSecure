@@ -24,24 +24,22 @@ class SubjectController extends Controller
         $request->validate([
             'subjectName' => 'required',
             'subjectCode' => 'required',
-            'sectionCode' => 'required',
             'college_id' => 'required',
             'department_id' => 'required',
             'subjectDescription' => 'nullable',
         ]);
 
-        // Check if a subject with the given subject code already exists
-        $existingSubject = Subject::where('subjectCode', $request->subjectCode)->first();
+        // Check if a subject with the given subject name already exists
+        $existingSubject = Subject::where('subjectName', $request->subjectName)->first();
 
         if ($existingSubject) {
-            return redirect(route('subjects'))->with("error", "Subject with this subject code already exists.");
+            return redirect(route('subjects'))->with("error", "Subject with this subject name already exists.");
         }
 
         // If no existing subject found, proceed to create a new one
         $subject = Subject::create([
             'subjectName' => $request->subjectName,
             'subjectCode' => $request->subjectCode,
-            'sectionCode' => $request->sectionCode,
             'college_id' => $request->college_id,
             'department_id' => $request->department_id,
             'subjectDescription' => $request->subjectDescription ?? 'N/A',
@@ -60,7 +58,6 @@ class SubjectController extends Controller
         $request->validate([
             'subjectName' => 'required',
             'subjectCode' => 'required',
-            'sectionCode' => 'required',
             'college_id' => 'required',
             'department_id' => 'required',
             'subjectDescription' => 'nullable',
@@ -70,7 +67,6 @@ class SubjectController extends Controller
 
         $subject->subjectName = $request->subjectName;
         $subject->subjectCode = $request->subjectCode;
-        $subject->sectionCode = $request->sectionCode;
         $subject->college_id = $request->college_id;
         $subject->department_id = $request->department_id;
         $subject->subjectDescription = $request->subjectDescription;

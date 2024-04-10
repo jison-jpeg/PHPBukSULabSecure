@@ -15,10 +15,9 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('subjectName');
             $table->string('subjectCode');
-            $table->string('sectionCode');
             $table->text('subjectDescription')->nullable();
             $table->foreignId('college_id')->constrained()->onDelete('cascade');
-            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade'); 
+            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
             $table->timestamps();
         });
     }

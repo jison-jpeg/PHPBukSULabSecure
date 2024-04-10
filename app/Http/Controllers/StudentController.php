@@ -6,6 +6,8 @@ use App\Models\College;
 use App\Models\Department;
 use App\Models\Subject;
 use App\Models\User;
+use App\Models\Section;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -17,9 +19,12 @@ class StudentController extends Controller
     {
         $colleges = College::all();
         $departments = Department::all();
-        $sections = Subject::select('sectionCode')->distinct()->get();
+        $sections = Section::all();
+
         // Retrieve only users with the role of "student"
-        $users = User::where('role', 'student')->with(['college', 'department'])->get();
+        $users = User::where('role', 'student')
+            ->with(['college', 'department', 'section'])
+            ->get();
 
         return view('pages.user', compact('users', 'colleges', 'departments', 'sections'));
     }
@@ -33,7 +38,7 @@ class StudentController extends Controller
             'email' => 'required|email|unique:users',
             'college_id' => 'required',
             'department_id' => 'required',
-            'section_code' => 'required',
+            'section_id' => 'required',
         ]);
 
         // Extract username from email (remove everything after "@")
@@ -48,7 +53,7 @@ class StudentController extends Controller
             'role' => $request->role ?? 'student', // Set default role to "student"
             'college_id' => $request->college_id,
             'department_id' => $request->department_id,
-            'section_code' => $request->section_code,
+            'section_id' => $request->section_id,
             'birthdate' => $request->birthdate,
             'phone' => $request->phone,
             'password' => Hash::make(Str::random(10)), // Generate random password
@@ -63,7 +68,7 @@ class StudentController extends Controller
     }
 
     // UPDATE STUDENTS
-    function studentsPut (Request $request)
+    function studentsPut(Request $request)
     {
         $request->validate([
             'first_name' => 'required',
@@ -71,7 +76,7 @@ class StudentController extends Controller
             'email' => 'required|email',
             'college_id' => 'required',
             'department_id' => 'required',
-            'section_code' => 'required',
+            'section_id' => 'required',
         ]);
 
         $user = User::find($request->id);
@@ -90,7 +95,7 @@ class StudentController extends Controller
         $user->username = $username;
         $user->college_id = $request->college_id;
         $user->department_id = $request->department_id;
-        $user->section_code = $request->section_code;
+        $user->section_id = $request->section_id;
         $user->birthdate = $request->birthdate;
         $user->phone = $request->phone;
 

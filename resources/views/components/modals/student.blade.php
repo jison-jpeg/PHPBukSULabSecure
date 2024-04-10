@@ -65,17 +65,18 @@
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-12">
-                        <label for="section_code" class="form-label">Section Code</label>
-                        <select class="form-select" id="section_code" required="" name="section_code">
+                        <label for="section_id" class="form-label">Section Code</label>
+                        <select class="form-select" id="section_id" required="" name="section_id">
                             <option selected="" disabled="" value="">Choose...</option>
                             @foreach ($sections as $section)
-                                <option value="{{ $section->sectionCode }}">{{ $section->sectionCode }}</option>
+                                <option value="{{ $section->id }}">{{ $section->sectionCode }}</option>
                             @endforeach
                         </select>
                         <div class="invalid-feedback">
                             Please select a section code.
                         </div>
                     </div>
+                    
             </div>
             <div class="modal-footer">
                 <button type="reset" class="btn btn-secondary">Reset</button>
@@ -165,12 +166,12 @@
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-12">
-                            <label for="section_code" class="form-label">Section Code</label>
-                            <select class="form-select" id="section_code" required="" name="section_code">
+                            <label for="section_id" class="form-label">Section Code</label>
+                            <select class="form-select" id="section_id" required="" name="section_id">
                                 <option selected="" disabled="" value="">Choose...</option>
                                 @foreach ($sections as $section)
-                                    <option value="{{ $section->sectionCode }}"
-                                        @if ($user->section_code == $section->sectionCode) selected @endif>
+                                    <option value="{{ $section->id }}"
+                                        @if ($user->section_id == $section->id) selected @endif>
                                         {{ $section->sectionCode }}</option>
                                 @endforeach
                             </select>

@@ -27,12 +27,12 @@ class User extends Authenticatable
         'username',
         'role',
         'email',
-        'college_id',
-        'department_id',
-        'section_code',
+        'password',
         'birthdate',
         'phone',
-        'password',
+        'college_id',
+        'department_id',
+        'section_id',
     ];
 
     // get full name
@@ -78,6 +78,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the section assigned to the user.
+     */
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
+
+    /**
      * Get the subjects for the user.
      */
     public function subjects()
@@ -99,11 +107,11 @@ class User extends Authenticatable
      *
      * @return string
      */
-
-    public function getFullName()
+    public function getFullName(): string
     {
-        return "{$this->last_name} {$this->first_name} {$this->middle_name}";
+        return "{$this->first_name} {$this->middle_name} {$this->last_name}";
     }
+
 
     /**
      * Get the user's ID formatted as an instructor ID.

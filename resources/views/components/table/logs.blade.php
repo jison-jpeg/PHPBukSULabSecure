@@ -21,7 +21,7 @@
                     @foreach ($logs as $log)
                         <tr>
                             <td>{{ $log->created_at }}</td>
-                            <td>COMLAB {{ $log->laboratory_id }}</td>
+                            <td>{{ $log->laboratory_id ?? 'N/A'}}</td>
                             <td>{{ $log->user_id }}</td>
                             <td>
                                 @if ($log->user)

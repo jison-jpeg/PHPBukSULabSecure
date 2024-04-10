@@ -34,4 +34,13 @@ class Logs extends Model
     {
         return $this->belongsTo(Laboratory::class);
     }
+
+    /**
+     * Get user's full name.
+     */
+    public function getFullNameAttribute()
+    {
+        return "{$this->user->first_name} {$this->user->middle_name} {$this->user->last_name}";
+    }
+
 }

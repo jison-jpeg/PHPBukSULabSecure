@@ -18,7 +18,7 @@
                             <th scope="col">Role</th>
                         @else
                             @if (!request()->is('faculties'))
-                                <th scope="col">Section Code</th>
+                                <th scope="col">Section</th>
                             @endif
                         @endif
                         <th scope="col">College</th>
@@ -68,7 +68,9 @@
                                 </td>
                             @else
                                 @if (!request()->is('faculties'))
-                                    <td>{{ $user->section_code ? $user->section_code : 'N/A' }}</td>
+                                    <td>
+                                        {{ $user->section ? $user->section->sectionCode : 'N/A' }}                                        
+                                    </td>
                                 @endif
                             @endif
                             <td>{{ $user->college ? $user->college->collegeName : 'N/A' }}</td>

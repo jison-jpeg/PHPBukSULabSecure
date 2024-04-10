@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('rfid_number')->nullable();
             $table->string('first_name');
             $table->string('middle_name')->nullable();
             $table->string('last_name');
@@ -24,8 +25,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->foreignId('college_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('department_id')->nullable()->constrained('departments')->onDelete('set null');
-            $table->string('section_code')->nullable();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->unsignedBigInteger('section_id')->nullable()->constrained('sections')->onDelete('set null');
             $table->rememberToken();
             $table->timestamps();
         }); 

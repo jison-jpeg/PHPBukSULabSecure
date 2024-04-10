@@ -13,7 +13,7 @@ class Schedule extends Model
         'college_id',
         'department_id',
         'subject_id',
-        'sectionCode',
+        'section_id',
         'user_id',
         'laboratory_id',
         'start_time',
@@ -44,6 +44,11 @@ class Schedule extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
     }
 
     public function subject()

@@ -27,4 +27,22 @@ class Department extends Model
     {
         return $this->belongsTo(College::class);
     }
+
+    /**
+     * Get the subjects that belong to this department.
+     */
+    public function subjects()
+    {
+        return $this->hasMany(Subject::class);
+    }
+
+    /**
+     * Get the sections that belong to this department.
+     */
+    public function sections()
+    {
+        return $this->hasMany(Section::class);
+    }
+
+    
 }

@@ -18,6 +18,7 @@
     </div> --}}
     @include('components.modals.college')
     @include('components.modals.department')
+    @include('components.modals.section')
 
     <section class="section dashboard">
         <div class="row">
@@ -45,12 +46,17 @@
                             <li class="nav-item flex-fill" role="presentation">
                                 <button class="nav-link w-100 active" id="college-tab" data-bs-toggle="tab"
                                     data-bs-target="#bordered-justified-college" type="button" role="tab"
-                                    aria-controls="home" aria-selected="true">College</button>
+                                    aria-controls="college" aria-selected="true">College</button>
                             </li>
                             <li class="nav-item flex-fill" role="presentation">
                                 <button class="nav-link w-100" id="department-tab" data-bs-toggle="tab"
                                     data-bs-target="#bordered-justified-department" type="button" role="tab"
-                                    aria-controls="profile" aria-selected="false" tabindex="-1">Department</button>
+                                    aria-controls="department" aria-selected="false" tabindex="-1">Department</button>
+                            </li>
+                            <li class="nav-item flex-fill" role="presentation">
+                                <button class="nav-link w-100" id="section-tab" data-bs-toggle="tab"
+                                    data-bs-target="#bordered-justified-section" type="button" role="tab"
+                                    aria-controls="section" aria-selected="false" tabindex="-1">Section</button>
                             </li>
                         </ul>
                         <div class="tab-content pt-2" id="borderedTabJustifiedContent">
@@ -67,6 +73,13 @@
                                     Add Department
                                 </button>
                                 @include('components.table.department')
+                            </div>
+                            <div class="tab-pane fade mt-2" id="bordered-justified-section" role="tabpanel"
+                                aria-labelledby="section-tab">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSectionModal">
+                                    Add Section
+                                </button>
+                                @include('components.table.section')
                             </div>
              
                         </div><!-- End Bordered Tabs Justified -->

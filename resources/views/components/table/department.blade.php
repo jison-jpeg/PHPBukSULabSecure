@@ -10,6 +10,7 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Department Name</th>
+                        <th scope="col">Sections</th>
                         <th scope="col">Description</th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>
@@ -19,6 +20,7 @@
                     <tr>
                         <th scope="row">{{ $loop->iteration }}</th>
                         <td>{{ $department->departmentName }}</td>
+                        <td>{{ $department->sections->count() }}</td>
                         <td>{{ $department->departmentDescription }}</td>
                         <td>
                             <div class="d-flex justify-content-center">
