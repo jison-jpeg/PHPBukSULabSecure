@@ -27,7 +27,6 @@ class UsersController extends Controller
         $users = User::all();
         $colleges = College::all();
         $departments = Department::all();
-        $users = User::with(['college', 'department'])->get();
 
         return view('pages.user', compact('users', 'colleges', 'departments'));
     }
@@ -37,8 +36,6 @@ class UsersController extends Controller
     {
         // Get User by ID
         $user = User::find($id);
-
-        // Get all total number of students by section code
 
 
         // Get all unique attendance records by user ID
@@ -85,13 +82,13 @@ class UsersController extends Controller
                 $attendance->status = 'Present';
             }
 
-            // Check if percentage is less than 50% and label as Incomplete
-            if ($attendance->percentage < 50) {
-                $attendance->status = 'Incomplete';
+            // Change the status to absent if the percentage is less than 15%
+            if ($attendance->percentage < 15) {
+                $attendance->status = 'Absent';
             } else {
-                // If 0% attendance, label as Absent
-                if ($attendance->percentage == 0) {
-                    $attendance->status = 'Absent';
+                // Change the status to incomplete if the percentage is less than 50%
+                if ($attendance->percentage < 50) {
+                    $attendance->status = 'Incomplete';
                 }
             }
         }
@@ -100,8 +97,15 @@ class UsersController extends Controller
         $schedules = Schedule::where('user_id', $id)->get();
         $schedulesCount = $schedules->count();
 
+        // Fetch all students by section code in the schedule by user
+        $students = Schedule::where('user_id', $id)->get();
+        $studentsCount = $students->count();
 
-        return view('pages.report', compact('user', 'uniqueAttendances', 'schedules', 'schedulesCount'));
+        // Fetch all subjects by associated with the user
+        $subjects = Schedule::where('user_id', $id)->get();
+        $subjectsCount = $subjects->count();
+
+        return view('pages.report', compact('user', 'uniqueAttendances', 'schedules', 'schedulesCount', 'students', 'studentsCount', 'subjects', 'subjectsCount'));
     }
 
 
@@ -158,8 +162,8 @@ class UsersController extends Controller
                 'date_time' => now(),
                 'user_id' => Auth::id(),
                 'name' => $user->getFullName(),
-                'description' => "An admin created an account.ID: $user->id",
-                'action' => 'Create',
+                'description' => "An admin created an account. ID: $user->id",
+                'action' => 'CREATE',
             ]);
             return redirect(route('users'))->with("success", "User added successfully!");
         }
@@ -194,14 +198,15 @@ class UsersController extends Controller
         $user->username = $request->username;
 
         if ($user->save()) {
-            // //Create log
-            // Logs::create([
-            //     'date_time' => now(),
-            //     'user_id' => Auth::id(),
-            //     'name' => $user->getFullName(),
-            //     'description' => "An admin updated an account.ID: $user->id",
-            //     'action' => 'Update',
-            // ]);
+
+            //Create log
+            Logs::create([
+                'date_time' => now(),
+                'user_id' => Auth::id(),
+                'name' => $user->getFullName(),
+                'description' => "An admin updated an account. ID: $user->id",
+                'action' => 'UPDATE',
+            ]);
             return redirect(route('users'))->with("success", "User updated successfully!");
         } else {
             return redirect(route('users'))->with("error", "User update failed!");
@@ -224,8 +229,8 @@ class UsersController extends Controller
                 'date_time' => now(),
                 'user_id' => Auth::id(),
                 'name' => $user->getFullName(),
-                'description' => "An admin deleted an account.ID: $user->id",
-                'action' => 'Delete',
+                'description' => "An admin deleted an account. ID: $user->id",
+                'action' => 'DELETE',
             ]);
             return redirect(route('users'))->with("success", "User deleted successfully!");
         } else {

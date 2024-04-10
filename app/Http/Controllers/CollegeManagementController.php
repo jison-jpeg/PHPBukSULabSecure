@@ -207,7 +207,7 @@ class CollegeManagementController extends Controller
             'user_id' => Auth::id(),
             'name' => $user->getFullName(),
             'description' => "Section created: " . $section->sectionCode,
-            'action' => 'Create',
+            'action' => 'CREATE',
         ]);
 
         if (!$section) {
@@ -241,7 +241,7 @@ class CollegeManagementController extends Controller
                 'user_id' => Auth::id(),
                 'name' => $user->getFullName(),
                 'description' => "Section updated: " . $section->sectionCode,
-                'action' => 'Update',
+                'action' => 'UPDATE',
             ]);
 
             return redirect(route('colleges'))->with("success", "Section updated successfully!");
@@ -265,7 +265,7 @@ class CollegeManagementController extends Controller
                 'user_id' => Auth::id(),
                 'name' => $user->getFullName(),
                 'description' => "Section deleted: " . $section->sectionCode,
-                'action' => 'Delete',
+                'action' => 'DELETE',
             ]);
 
             return redirect(route('colleges'))->with("success", "Section deleted successfully!");

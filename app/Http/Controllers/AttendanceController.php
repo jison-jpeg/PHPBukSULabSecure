@@ -73,11 +73,17 @@ class AttendanceController extends Controller
                 $attendance->status = 'Present';
             }
 
-            // Check if percentage is less than 50% and label as Incomplete
-            if ($attendance->percentage < 50) {
-                $attendance->status = 'Incomplete';
+            // Change the status to absent if the percentage is less than 15%
+            if ($attendance->percentage < 15) {
+                $attendance->status = 'Absent';
+            } else {
+                // Change the status to incomplete if the percentage is less than 50%
+                if ($attendance->percentage < 50) {
+                    $attendance->status = 'Incomplete';
+                }
             }
-        }
+
+        }   
 
         return view('pages.attendance', compact('uniqueAttendances'));
     }

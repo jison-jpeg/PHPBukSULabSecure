@@ -49,6 +49,7 @@
                                     class="badge rounded-pill 
                                     @if ($attendance->status === 'Present') bg-success
                                     @elseif($attendance->status === 'Incomplete') bg-danger
+                                    @elseif($attendance->status === 'Absent') bg-danger
                                     @elseif($attendance->status === 'Late') bg-secondary @endif">
                                     {{ $attendance->status }}
                                 </span>

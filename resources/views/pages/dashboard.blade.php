@@ -137,8 +137,7 @@
                             @foreach ($logs as $log)
                                 <div class="activity-item d-flex">
                                     <div class="activite-label">{{ $log->formatted_time_diff }}</div>
-                                    <i
-                                        class='bi bi-circle-fill activity-badge text-{{ $log->action == 'Create' ? 'success' : ($log->action == 'Update' ? 'primary' : 'danger') }} align-self-start'></i>
+                                    <i class='bi bi-circle-fill activity-badge text-{{ $log->action == 'Create' ? 'success' : ($log->action == 'Update' ? 'primary' : 'danger') }} align-self-start'></i>
                                     <div class="activity-content">
                                         {!! nl2br(e($log->description)) !!}
                                     </div>

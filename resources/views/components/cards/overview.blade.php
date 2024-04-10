@@ -30,7 +30,9 @@
                   <i class="bi bi-cart"></i>
                 </div>
                 <div class="ps-3">
-                  <h6>{{$schedulesCount}}</h6>
+                  <h6>
+                    {{$schedulesCount}}
+                  </h6>
                   <span class="text-muted small pt-2 ps-1">total</span>
 
                 </div>
@@ -65,7 +67,9 @@
                   <i class="bi bi-currency-dollar"></i>
                 </div>
                 <div class="ps-3">
-                  <h6>000</h6>
+                  <h6>
+                    {{$studentsCount}}
+                  </h6>
                   <span class="text-muted small pt-2 ps-1">total</span>
 
                 </div>
@@ -101,7 +105,9 @@
                   <i class="bi bi-people"></i>
                 </div>
                 <div class="ps-3">
-                  <h6>000</h6>
+                  <h6>
+                    {{$subjectsCount}}
+                  </h6>
                   <span class="text-muted small pt-2 ps-1">total</span>
 
                 </div>
