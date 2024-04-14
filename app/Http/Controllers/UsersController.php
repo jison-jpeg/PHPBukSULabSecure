@@ -9,6 +9,7 @@ use App\Models\College;
 use App\Models\Department;
 use App\Models\Logs;
 use App\Models\Schedule;
+use App\Models\Section;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\View;
@@ -31,12 +32,41 @@ class UsersController extends Controller
         return view('pages.user', compact('users', 'colleges', 'departments'));
     }
 
+    //GET USER STUDENTS ASSOCIATED WITH A USER
+    function viewUserStudents($id)
+    {
+        $schedules = Schedule::where('user_id', $id)->get();
+        $colleges = College::all();
+        $departments = Department::all();
+        $sections = Section::all();
+
+        // Retrieve only users with the role of "student"
+        $users = User::where('role', 'student')
+            ->with(['college', 'department', 'section'])
+            ->get();
+            
+        return view('pages.user', compact('users', 'colleges', 'departments', 'sections', 'schedules'));
+    }
+
+
     //GET USER REPORTS
     function viewUserReports($id)
     {
         // Get User by ID
         $user = User::find($id);
 
+        // Fetch all schedules associated with the user
+        $schedules = Schedule::where('user_id', $id)->get();
+
+        // Fetch all students by section code in the schedule associated with the user
+        $students = collect();
+        foreach ($schedules as $schedule) {
+            $sectionId = $schedule->section_id;
+            $studentsInSection = User::where('section_id', $sectionId)->get();
+            $students = $students->merge($studentsInSection);
+        }
+
+        $students = $students->unique();
 
         // Get all unique attendance records by user ID
         $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
@@ -97,8 +127,8 @@ class UsersController extends Controller
         $schedules = Schedule::where('user_id', $id)->get();
         $schedulesCount = $schedules->count();
 
-        // Fetch all students by section code in the schedule by user
-        $students = Schedule::where('user_id', $id)->get();
+        // Fetch all students by section code in the schedule associated with the user
+        $students = User::where('section_id', $schedules->first()->section_id)->get();
         $studentsCount = $students->count();
 
         // Fetch all subjects by associated with the user

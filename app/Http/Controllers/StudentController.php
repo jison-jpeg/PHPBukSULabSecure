@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\College;
 use App\Models\Department;
+use App\Models\Schedule;
 use App\Models\Subject;
 use App\Models\User;
 use App\Models\Section;
-
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -28,6 +29,35 @@ class StudentController extends Controller
 
         return view('pages.user', compact('users', 'colleges', 'departments', 'sections'));
     }
+
+    // VIEW STUDENTS ASSOCIATED WITH A USER
+    public function viewUserStudents($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->route('students')->with("error", "User not found.");
+        }
+
+        // Fetch all schedules associated with the user
+        $schedules = Schedule::where('user_id', $id)->get();
+
+        // Initialize an empty collection to store students
+        $students = new Collection();
+
+        // Loop through each schedule to retrieve students
+        foreach ($schedules as $schedule) {
+            $sectionId = $schedule->section_id;
+            $studentsInSection = User::where('section_id', $sectionId)->get();
+            $students = $students->merge($studentsInSection);
+        }
+
+        // Ensure uniqueness of students
+        $students = $students->unique();
+
+        return view('pages.user_students', compact('user', 'students'));
+    }
+
 
     // CREATE STUDENTS
     function studentsPost(Request $request)

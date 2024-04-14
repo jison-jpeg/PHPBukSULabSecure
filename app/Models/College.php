@@ -28,4 +28,15 @@ class College extends Model
     {
         return $this->hasMany(Section::class);
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
+    
 }

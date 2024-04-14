@@ -108,4 +108,18 @@ class ScheduleController extends Controller
         $schedule->delete();
         return redirect(route('schedules'))->with("success", "Schedule deleted successfully");
     }
+
+    // VIEW SCHEDULES BY USER
+    function viewUserSchedules($id)
+    {
+        $schedules = Schedule::where('user_id', $id)->get();
+        $departments = Department::all();
+        $colleges = College::all();
+        $sections = Section::all();
+        $laboratories = Laboratory::all();
+        $subjects = Subject::all();
+        $users = User::all();
+        $instructors = User::where('role', 'instructor')->get();
+        return view('pages.schedule', compact('schedules', 'departments', 'colleges', 'sections', 'laboratories', 'subjects', 'instructors', 'users'));
+    }
 }

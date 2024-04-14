@@ -5,7 +5,7 @@
     <section class="section dashboard">
       <div class="row">
 
-        <!-- Sales Card -->
+        <!-- Classes Card -->
         <div class="col-xxl-4 col-md-4 col-sm-6">
           <div class="card info-card sales-card">
 
@@ -23,7 +23,7 @@
             </div>
 
             <div class="card-body">
-              <h5 class="card-title">Classes</h5>
+              <h5 class="card-title"><a href="{{ route('schedules.user', ['id' => $user->id]) }}">Schedules</a></h5>
 
               <div class="d-flex align-items-center">
                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -31,7 +31,7 @@
                 </div>
                 <div class="ps-3">
                   <h6>
-                    {{$schedulesCount}}
+                    {{$schedulesCount ?? '0'}}
                   </h6>
                   <span class="text-muted small pt-2 ps-1">total</span>
 
@@ -40,9 +40,9 @@
             </div>
 
           </div>
-        </div><!-- End Sales Card -->
+        </div><!-- End Classes Card -->
 
-        <!-- Revenue Card -->
+        <!-- Students Card -->
         <div class="col-xxl-4 col-md-4 col-sm-6">
           <div class="card info-card revenue-card">
 
@@ -60,7 +60,7 @@
             </div>
 
             <div class="card-body">
-              <h5 class="card-title">Students</h5>
+              <h5 class="card-title"><a href="{{ route('user.students', ['id' => $user->id]) }}">Students</a></h5>
 
               <div class="d-flex align-items-center">
                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -68,7 +68,7 @@
                 </div>
                 <div class="ps-3">
                   <h6>
-                    {{$studentsCount}}
+                    {{$studentsCount ?? '0'}}
                   </h6>
                   <span class="text-muted small pt-2 ps-1">total</span>
 
@@ -77,9 +77,9 @@
             </div>
 
           </div>
-        </div><!-- End Revenue Card -->
+        </div><!-- End Studenst Card -->
 
-        <!-- Customers Card -->
+        <!-- Subjects Card -->
         <div class="col-xxl-4 col-md-4">
 
           <div class="card info-card customers-card">
@@ -106,7 +106,7 @@
                 </div>
                 <div class="ps-3">
                   <h6>
-                    {{$subjectsCount}}
+                    {{$subjectsCount ?? '0'}}
                   </h6>
                   <span class="text-muted small pt-2 ps-1">total</span>
 

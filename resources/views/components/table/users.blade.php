@@ -36,7 +36,7 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>
-                                <a href="{{ route('users.report', ['id' => $user->id]) }}">
+                                <a href="{{ route('user.report', ['id' => $user->id]) }}">
                                     {{ $user->last_name }}, {{ $user->first_name }} {{ $user->middle_name }}
                                 </a>
                             </td>

@@ -52,10 +52,10 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::post('/', [UsersController::class, 'usersPost'])->name('users.post');
         Route::put('/{id}', [UsersController::class, 'usersPut'])->name('users.update');
         Route::delete('/{id}', [UsersController::class, 'usersDelete'])->name('users.delete');
-    });
+        Route::get('/{id}', [UsersController::class, 'viewUserReports'])->name('user.report');
+        Route::get('/{id}/students', [UsersController::class, 'viewUserStudents'])->name('user.students');
 
-    // User Reports Route
-    Route::get('/users/{id}', [UsersController::class, 'viewUserReports'])->name('users.report');
+    });
 
 
     // College Management Route
@@ -80,14 +80,6 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::post('/', [FacultyController::class, 'facultiesPost'])->name('faculties.post');
         Route::put('/{id}', [FacultyController::class, 'facultiesPut'])->name('faculties.put');
         Route::delete('/{id}', [FacultyController::class, 'facultiesDelete'])->name('faculties.delete');
-    });
-
-    // Schedules Route
-    Route::group(['prefix' => 'schedules'], function () {
-        Route::get('/', [ScheduleController::class, 'viewSchedules'])->name('schedules');
-        Route::post('/', [ScheduleController::class, 'createSchedule'])->name('schedules.post');
-        Route::put('/{id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
-        Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
     });
 
     // Logs Route
@@ -129,6 +121,8 @@ Route::group(['middleware' => ['auth', 'role:admin,instructor']], function () {
         Route::post('/', [ScheduleController::class, 'createSchedule'])->name('schedules.post');
         Route::put('/{id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
         Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
+        Route::get('/user/{id}', [ScheduleController::class, 'viewUserSchedules'])->name('schedules.user');
+
     });
 
     // Profile Routes
