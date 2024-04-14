@@ -101,7 +101,6 @@ class User extends Authenticatable
         return $this->belongsToMany(Subject::class);
     }
 
-
     /**
      * Get the logs for the user.
      */

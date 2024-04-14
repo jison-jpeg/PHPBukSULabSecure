@@ -101,6 +101,11 @@ class UsersController extends Controller
             $percentage = ($totalDurationInSeconds / $scheduledDurationInSeconds) * 100;
             $attendance->percentage = abs(round($percentage, 2));
 
+            // Set the maximum percentage to 100%
+            if ($attendance->percentage > 100) {
+                $attendance->percentage = 100;
+            }
+
             // Check user's arrival status
             $scheduleStartTime = Carbon::parse($schedule->start_time);
             $lateTime = $scheduleStartTime->copy()->addMinutes(15);

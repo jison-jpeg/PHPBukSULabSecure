@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\College;
 use App\Models\Department;
+use App\Models\Laboratory;
+use App\Models\Schedule;
+use App\Models\Section;
 use App\Models\Subject;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SubjectController extends Controller
@@ -104,5 +108,19 @@ class SubjectController extends Controller
         } else {
             return redirect(route('subjects'))->with("error", "Subject deletion failed!");
         }
+    }
+
+    // VIEW SUBJECTS BY USER
+    function viewUserSubjects($id)
+    {
+        $schedules = Schedule::where('user_id', $id)->get();
+        $departments = Department::all();
+        $colleges = College::all();
+        $sections = Section::all();
+        $laboratories = Laboratory::all();
+        $subjects = Subject::all();
+        $users = User::all();
+        $instructors = User::where('role', 'instructor')->get();
+        return view('pages.schedule', compact('schedules', 'departments', 'colleges', 'sections', 'laboratories', 'subjects', 'instructors', 'users'));
     }
 }

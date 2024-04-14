@@ -1,5 +1,9 @@
 @extends('layouts.app')
-@section('pageTitle', 'Schedule')
+@if(Request::is('subjects/user/*'))
+    @section('pageTitle', 'Subjects')
+@else
+    @section('pageTitle', 'Schedule')
+@endif
 @section('content')
     <div class="pagetitle">
         <nav>
@@ -11,11 +15,21 @@
         </nav>
     </div>
 
-    <div class="mt-3 mb-3">
+    {{-- Hide button if request is subjects --}}
+    @if(!Request::is('subjects/user/*'))
+        <div class="mt-3 mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                Add Schedule
+            </button>
+        </div>
+    @endif
+    
+    {{-- <div class="mt-3 mb-3">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
             Add Schedule
         </button>
-    </div>
+    </div> --}}
+
     @include('components.modals.schedule')
 
     <section class="section dashboard">

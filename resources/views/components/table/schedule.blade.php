@@ -1,7 +1,13 @@
 <div class="card ">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-title">Schedule</h5>
+            <h5 class="card-title">
+                @if(!Request::is('subjects/user/*'))
+                Schedule
+                @else
+                Subjects
+                @endif
+            </h5>
             <button type="button" class="btn btn-primary">Export</button>
         </div>
         <!-- Table with hoverable rows -->

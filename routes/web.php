@@ -113,6 +113,8 @@ Route::group(['middleware' => ['auth', 'role:admin,instructor']], function () {
         Route::post('/', [SubjectController::class, 'subjectsPost'])->name('subjects.post');
         Route::put('/{id}', [SubjectController::class, 'subjectsPut'])->name('subjects.update');
         Route::delete('/{id}', [SubjectController::class, 'subjectsDelete'])->name('subjects.delete');
+        Route::get('/user/{id}', [SubjectController::class, 'viewUserSubjects'])->name('subjects.user');
+
     });
 
     // Schedules Route
