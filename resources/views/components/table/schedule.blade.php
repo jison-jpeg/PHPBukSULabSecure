@@ -1,11 +1,13 @@
-<div class="card ">
+<div class="card">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-title">
-                @if(!Request::is('subjects/user/*'))
-                Schedule
+                @if(Request::is('schedules/instructor/*'))
+                    Schedule
+                @elseif(Request::is('subjects/user/*'))
+                    Subjects
                 @else
-                Subjects
+                    Schedule
                 @endif
             </h5>
             <button type="button" class="btn btn-primary">Export</button>
@@ -15,12 +17,19 @@
             <table class="table table-hover datatable">
                 <thead>
                     <tr>
-                        <th>College</th>
-                        <th>Department</th>
-                        <th scope="col">Instructor</th>
+                        @if(!Request::is('schedules/instructor/*') && !Request::is('subjects/user/*'))
+                            <th>College</th>
+                            <th>Department</th>
+                        @endif
+                        @unless(Request::is('subjects/user/*'))
+                            <th scope="col">Instructor</th>
+                        @endunless
                         <th scope="col">Subject Code</th>
                         <th scope="col">Subject Name</th>
                         <th scope="col">Section Code</th>
+                        @if(Request::is('subjects/user/*'))
+                            <th scope="col">Instructor</th>
+                        @endif
                         <th scope="col">Room</th>
                         <th scope="col">Days</th>
                         <th scope="col">Start Time</th>
@@ -31,12 +40,19 @@
                 <tbody>
                     @foreach ($schedules as $schedule)
                         <tr>
-                            <td>{{ $schedule->college->collegeName }}</td>
-                            <td>{{ $schedule->department->departmentName }}</td>
-                            <td>{{ $schedule->user->full_name }}</td>
+                            @if(!Request::is('schedules/instructor/*') && !Request::is('subjects/user/*'))
+                                <td>{{ $schedule->college->collegeName }}</td>
+                                <td>{{ $schedule->department->departmentName }}</td>
+                            @endif
+                            @unless(Request::is('subjects/user/*'))
+                                <td>{{ $schedule->user->full_name }}</td>
+                            @endunless
                             <td>{{ $schedule->subject->subjectCode }}</td>
                             <td>{{ $schedule->subject->subjectName }}</td>
                             <td>{{ $schedule->section->sectionCode }}</td>
+                            @if(Request::is('subjects/user/*'))
+                                <td>{{ $schedule->user->full_name }}</td>
+                            @endif
                             <td>Comlab {{ $schedule->laboratory->roomNumber }}</td>
                             <td>{{ $schedule->days }}</td>
                             <td>{{ date('h:i A', strtotime($schedule->start_time)) }}</td>
