@@ -19,6 +19,9 @@ class LaboratoriesController extends Controller
             if ($lab->occupancyStatus == "On-Going") {
                 $recentLog  = Logs::where('laboratory_id', $lab->id)
                     ->where('action', 'IN')
+                    ->whereHas('user', function ($query) {
+                        $query->where('role', '!=', 'student'); // Exclude students
+                    })
                     ->latest()
                     ->first();
 
@@ -35,6 +38,9 @@ class LaboratoriesController extends Controller
             } else {
                 $recentOutLog = Logs::where('laboratory_id', $lab->id)
                     ->where('action', 'OUT')
+                    ->whereHas('user', function ($query) {
+                        $query->where('role', '!=', 'student'); // Exclude students
+                    })
                     ->latest()
                     ->first();
 
