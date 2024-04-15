@@ -53,8 +53,6 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::put('/{id}', [UsersController::class, 'usersPut'])->name('users.update');
         Route::delete('/{id}', [UsersController::class, 'usersDelete'])->name('users.delete');
         Route::get('/{id}', [UsersController::class, 'viewUserReports'])->name('user.report');
-        Route::get('/{id}/students', [UsersController::class, 'viewUserStudents'])->name('user.students');
-
     });
 
 
@@ -105,6 +103,7 @@ Route::group(['middleware' => ['auth', 'role:admin,instructor']], function () {
         Route::post('/', [StudentController::class, 'studentsPost'])->name('students.post');
         Route::put('/{id}', [StudentController::class, 'studentsPut'])->name('students.put');
         Route::delete('/{id}', [StudentController::class, 'studentsDelete'])->name('students.delete');
+        Route::get('/instructor/{id}', [StudentController::class, 'viewStudentsByInstructor'])->name('students.instructor');
     });
 
     // Subjects Route
@@ -114,18 +113,20 @@ Route::group(['middleware' => ['auth', 'role:admin,instructor']], function () {
         Route::put('/{id}', [SubjectController::class, 'subjectsPut'])->name('subjects.update');
         Route::delete('/{id}', [SubjectController::class, 'subjectsDelete'])->name('subjects.delete');
         Route::get('/user/{id}', [SubjectController::class, 'viewUserSubjects'])->name('subjects.user');
+        Route::get('/section/{section_id}', [SubjectController::class, 'viewSectionSubjects'])->name('subjects.section');
 
     });
 
     // Schedules Route
-    Route::group(['prefix' => 'schedules'], function () {
-        Route::get('/', [ScheduleController::class, 'viewSchedules'])->name('schedules');
-        Route::post('/', [ScheduleController::class, 'createSchedule'])->name('schedules.post');
-        Route::put('/{id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
-        Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
-        Route::get('/user/{id}', [ScheduleController::class, 'viewUserSchedules'])->name('schedules.user');
-
+Route::group(['prefix' => 'schedules'], function () {
+    Route::get('/', [ScheduleController::class, 'viewSchedules'])->name('schedules');
+    Route::post('/', [ScheduleController::class, 'createSchedule'])->name('schedules.post');
+    Route::put('/{id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
+    Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
+    Route::get('/instructor/{id}', [ScheduleController::class, 'viewUserSchedules'])->name('schedules.user');
+    Route::get('/section/{section_id}', [ScheduleController::class, 'viewSectionSchedules'])->name('schedules.section');
     });
+
 
     // Profile Routes
     Route::group(['prefix' => 'profile'], function () {

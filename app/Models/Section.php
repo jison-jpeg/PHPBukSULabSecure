@@ -35,4 +35,12 @@ class Section extends Model
     {
         return $this->hasMany(User::class, 'section_id');
     }
+
+    /**
+     * Get the schedules assigned to this section.
+     */
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
 }

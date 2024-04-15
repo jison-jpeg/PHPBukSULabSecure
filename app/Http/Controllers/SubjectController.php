@@ -123,4 +123,18 @@ class SubjectController extends Controller
         $instructors = User::where('role', 'instructor')->get();
         return view('pages.schedule', compact('schedules', 'departments', 'colleges', 'sections', 'laboratories', 'subjects', 'instructors', 'users'));
     }
+
+    // VIEW SUBJECTS BY SECTION
+    function viewSectionSubjects($section_id)
+    {
+        $schedules = Schedule::where('section_id', $section_id)->get();
+        $departments = Department::all();
+        $colleges = College::all();
+        $sections = Section::all();
+        $laboratories = Laboratory::all();
+        $subjects = Subject::all();
+        $users = User::all();
+        $instructors = User::where('role', 'instructor')->get();
+        return view('pages.schedule', compact('schedules', 'departments', 'colleges', 'sections', 'laboratories', 'subjects', 'instructors', 'users'));
+    }
 }

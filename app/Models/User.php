@@ -70,6 +70,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the section that owns the student.
+     */
+    public function students()
+    {
+        return $this->hasMany(User::class, 'section_id');
+    }
+
+    /**
      * Get the department that owns the user.
      */
     public function department()
@@ -119,14 +127,5 @@ class User extends Authenticatable
         return "{$this->first_name} {$this->middle_name} {$this->last_name}";
     }
 
-
-    /**
-     * Get the user's ID formatted as an instructor ID.
-     *
-     * @return string
-     */
-    public function getInstructorIdAttribute()
-    {
-        return "f-" . str_pad($this->id, 5, '0', STR_PAD_LEFT);
-    }
+    
 }

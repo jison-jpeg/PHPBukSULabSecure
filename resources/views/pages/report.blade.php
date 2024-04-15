@@ -139,7 +139,6 @@
                 <div class="tab-content pt-2" id="borderedTabJustifiedContent">
                     <div class="tab-pane fade show active mt-2" id="bordered-justified-overview" role="tabpanel"
                         aria-labelledby="overview-tab">
-
                         @include('components.cards.overview')
                     </div>
                     <div class="tab-pane fade mt-2" id="bordered-justified-attendence" role="tabpanel"

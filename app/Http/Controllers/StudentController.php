@@ -30,34 +30,27 @@ class StudentController extends Controller
         return view('pages.user', compact('users', 'colleges', 'departments', 'sections'));
     }
 
-    // VIEW STUDENTS ASSOCIATED WITH A USER
-    public function viewUserStudents($id)
+    // VIEW STUDENT USER ASSOCIATED WITH A INSTRUCTOR USER BASED ON SCHEDULE SECTION
+    function viewStudentsByInstructor($id)
     {
-        $user = User::find($id);
+        $colleges = College::all();
+        $departments = Department::all();
+        $sections = Section::all();
 
-        if (!$user) {
-            return redirect()->route('students')->with("error", "User not found.");
-        }
-
-        // Fetch all schedules associated with the user
+        // Retrieve all schedules associated with the instructor
         $schedules = Schedule::where('user_id', $id)->get();
 
-        // Initialize an empty collection to store students
-        $students = new Collection();
+        // Retrieve all student IDs associated with the instructor's schedules
+        $studentIds = $schedules->pluck('section_id')->toArray();
 
-        // Loop through each schedule to retrieve students
-        foreach ($schedules as $schedule) {
-            $sectionId = $schedule->section_id;
-            $studentsInSection = User::where('section_id', $sectionId)->get();
-            $students = $students->merge($studentsInSection);
-        }
+        // Retrieve only students with section IDs associated with the instructor's schedules
+        $users = User::where('role', 'student')
+            ->whereIn('section_id', $studentIds)
+            ->with(['college', 'department', 'section'])
+            ->get();
 
-        // Ensure uniqueness of students
-        $students = $students->unique();
-
-        return view('pages.user_students', compact('user', 'students'));
-    }
-
+        return view('pages.user', compact('users', 'colleges', 'departments', 'sections'));
+    }    
 
     // CREATE STUDENTS
     function studentsPost(Request $request)
