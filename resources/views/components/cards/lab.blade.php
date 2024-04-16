@@ -16,12 +16,13 @@
                             </li>
                             <li>
                                 <a class="dropdown-item text-danger" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal{{ $lab->id }}">Delete Comlab {{ $lab->roomNumber }}
+                                    data-bs-target="#deleteModal{{ $lab->id }}">Delete Comlab
+                                    {{ $lab->roomNumber }}
                                 </a>
                             </li>
                         </ul>
                     </div>
-                    <a class="card-body" href="/room">
+                    <a class="card-body" data-bs-toggle="modal" data-bs-target="#viewModal{{ $lab->id }}">
                         <div class="card-badge"><span
                                 class="badge rounded-pill bg-{{ $lab->occupancyStatus == 'Available' ? 'success' : 'danger' }}">{{ $lab->occupancyStatus }}</span>
                         </div>
