@@ -48,7 +48,12 @@
                                 <td>{{ $schedule->user->full_name }}</td>
                             @endunless
                             <td>{{ $schedule->subject->subjectCode }}</td>
-                            <td>{{ $schedule->subject->subjectName }}</td>
+                            {{-- View attendance of the user based on section and subject from schedule --}}
+                            <td>
+                                <a href="{{ route('attendance.student', ['sectionId' => $schedule->section->id, 'subjectId' => $schedule->subject->id]) }}">
+                                    {{ $schedule->subject->subjectName }}
+                                </a>
+                            </td>
                             <td>{{ $schedule->section->sectionCode }}</td>
                             @if(Request::is('subjects/user/*'))
                                 <td>{{ $schedule->user->full_name }}</td>

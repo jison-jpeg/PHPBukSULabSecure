@@ -10,7 +10,6 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Room</th>
                         <th scope="col">Subject</th>
@@ -26,9 +25,8 @@
                     @foreach ($uniqueAttendances as $key => $attendance)
                         <tr>
                             <th scope="row">{{ $key + 1 }}</th>
-                            <td>{{ $attendance->id }}</td>
                             <td>{{ $attendance->user->full_name }}</td>
-                            <td>Comlab {{ $attendance->laboratory->roomNumber }}</td>
+                            <td>Comlab {{ $attendance->laboratory->roomNumber ?? 'N/A'}}</td>
                             <td>{{ $attendance->subject->subjectName }}</td>
                             <td>{{ $attendance->time_in }}</td>
                             <td>{{ $attendance->time_out }}</td>

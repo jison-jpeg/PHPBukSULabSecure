@@ -87,11 +87,112 @@ class AttendanceController extends Controller
                     $attendance->status = 'Incomplete';
                 }
             }
-
-        }   
+        }
 
         return view('pages.attendance', compact('uniqueAttendances'));
     }
+
+// VIEW UNIQUE ATTENDANCE OF STUDENT BY SUBJECT IN THE SCHEDULE BASED ON SECTION. IF STUDENT DONT HAVE ATTENDANCE, DISPLAY ABSENT IN THE STATUS
+public function viewStudentAttendance($sectionId, $subjectId)
+{
+    // Get the authenticated user
+    $user = Auth::user();
+
+    // Retrieve students belonging to the specified section
+    $students = User::where('role', 'student')
+        ->where('section_id', $sectionId)
+        ->get();
+
+    // Fetch the schedule based on the subject and section id
+    $schedule = Schedule::where('subject_id', $subjectId)
+        ->where('section_id', $sectionId)
+        ->first();
+
+    // Fetch unique attendance records for the schedule associated with the specified section and subject
+    $uniqueAttendances = collect();
+    foreach ($students as $student) {
+        $attendance = Attendance::where('user_id', $student->id)
+            ->where('subject_id', $subjectId)
+            ->first();
+
+        // If the attendance record exists, add it to the collection
+        if ($attendance) {
+            $attendance->date = Carbon::parse($attendance->created_at)->format('Y-m-d'); // Add date to attendance
+            $uniqueAttendances->push($attendance);
+        } else {
+            // If the student is absent, create a dummy attendance record
+            $dummyAttendance = new Attendance([
+                'user_id' => $student->id,
+                'laboratory_id' => $schedule->laboratory_id,
+                'subject_id' => $subjectId,
+                'schedule_id' => null,
+                'time_in' => null,
+                'time_out' => null,
+                'date' => null, // Add date to dummy attendance
+            ]);
+            $uniqueAttendances->push($dummyAttendance);
+        }
+    }
+
+    // Calculate attendance details for each unique attendance record
+    foreach ($uniqueAttendances as $attendance) {
+
+        $studentId = $attendance->user_id;
+        // Calculate time in and time out
+        $logs = Attendance::where('user_id', $attendance->user_id)
+            ->where('laboratory_id', $attendance->laboratory_id)
+            ->where('subject_id', $attendance->subject_id)
+            ->get();
+
+        // Initialize total duration as 0 hours
+        $totalDuration = CarbonInterval::hours(0);
+
+        foreach ($logs as $log) {
+            // Calculate the duration between time_in and time_out for each log
+            $timeIn = Carbon::parse($log->time_in);
+            $timeOut = Carbon::parse($log->time_out);
+            $duration = $timeOut->diff($timeIn);
+            $totalDuration = $totalDuration->add($duration);
+        }
+
+        // Format the total duration as HH:MM:SS
+        $attendance->total_duration = $totalDuration->cascade()->format('%H:%I:%S');
+
+        // Calculate the percentage of the total duration spent in the laboratory for scheduled subject
+        $totalDurationInSeconds = $totalDuration->totalSeconds;
+        $scheduledDurationInSeconds = Carbon::parse($schedule->start_time)->diffInSeconds(Carbon::parse($schedule->end_time));
+        $percentage = ($totalDurationInSeconds / $scheduledDurationInSeconds) * 100;
+        $attendance->percentage = abs(round($percentage, 2));
+
+        // Set the maximum percentage to 100%
+        if ($attendance->percentage > 100) {
+            $attendance->percentage = 100;
+        }
+
+        // Check user's arrival status
+        $scheduleStartTime = Carbon::parse($schedule->start_time);
+        $lateTime = $scheduleStartTime->copy()->addMinutes(15);
+        $timeIn = Carbon::parse($attendance->time_in);
+
+        if ($timeIn->gt($lateTime)) {
+            $attendance->status = 'Late';
+        } else {
+            $attendance->status = 'Present';
+        }
+
+        // Change the status to absent if the percentage is less than 15%
+        if ($attendance->percentage < 15) {
+            $attendance->status = 'Absent';
+        } else {
+            // Change the status to incomplete if the percentage is less than 50%
+            if ($attendance->percentage < 50) {
+                $attendance->status = 'Incomplete';
+            }
+        }
+    }
+
+    return view('pages.attendance', compact('uniqueAttendances'));
+}
 
 
     // Record Attendance

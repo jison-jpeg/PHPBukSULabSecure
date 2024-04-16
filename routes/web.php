@@ -95,6 +95,7 @@ Route::group(['middleware' => ['auth', 'role:admin,instructor']], function () {
     // Attendance Routes
     Route::group(['prefix' => 'attendance'], function () {
         Route::get('/', [AttendanceController::class, 'viewAttendance'])->name('attendance');
+        Route::get('/{sectionId}/{subjectId}', [AttendanceController::class, 'viewStudentAttendance'])->name('attendance.student');
     });
 
     // Student Routes
@@ -114,7 +115,7 @@ Route::group(['middleware' => ['auth', 'role:admin,instructor']], function () {
         Route::delete('/{id}', [SubjectController::class, 'subjectsDelete'])->name('subjects.delete');
         Route::get('/user/{id}', [SubjectController::class, 'viewUserSubjects'])->name('subjects.user');
         Route::get('/section/{section_id}', [SubjectController::class, 'viewSectionSubjects'])->name('subjects.section');
-
+        Route::get('/{section_id}/attendance/{subject_id}', [ScheduleController::class, 'viewStudentAttendance'])->name('subjects.attendance');
     });
 
     // Schedules Route

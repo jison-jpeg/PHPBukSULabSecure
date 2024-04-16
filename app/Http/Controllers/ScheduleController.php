@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\College;
 use App\Models\Department;
 use App\Models\Section;
@@ -136,4 +137,9 @@ class ScheduleController extends Controller
         $instructors = User::where('role', 'instructor')->get();
         return view('pages.schedule', compact('schedules', 'departments', 'colleges', 'sections', 'laboratories', 'subjects', 'instructors', 'users'));
     }
+
+
+
+    
+    
 }

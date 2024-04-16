@@ -126,6 +126,9 @@ class User extends Authenticatable
     {
         return "{$this->first_name} {$this->middle_name} {$this->last_name}";
     }
-
     
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
