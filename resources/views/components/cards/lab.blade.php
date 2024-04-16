@@ -26,7 +26,7 @@
                         <div class="card-badge"><span
                                 class="badge rounded-pill bg-{{ $lab->occupancyStatus == 'Available' ? 'success' : 'danger' }}">{{ $lab->occupancyStatus }}</span>
                         </div>
-                        <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center ">
 
                             <div class="ps-0 mb-5">
                                 <span class="text-muted small pt-2">{{ $lab->laboratoryType }}</span>

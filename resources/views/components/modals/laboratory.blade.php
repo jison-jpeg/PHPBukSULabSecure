@@ -151,7 +151,28 @@
                                         <label class="form-check-label" for="toggleSwitch{{ $laboratory->id }}">Lock</label>
                                     </div>
                                 </div>
-                                <h5 class="card-title">COMLAB {{ $laboratory->roomNumber }}</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="ps-0 mb-5">
+                                        <span class="text-muted small pt-2">{{ $laboratory->laboratoryType }}</span>
+                                        <h6>COMLAB {{ $laboratory->roomNumber }}</h6>
+                                        <span class="text-muted small pt-2">{{ $laboratory->building }}</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-5">
+                                    <div class="col-12">
+                                        <span>{{ $laboratory->label }}:</span>
+                                    </div>
+                                    <div class="col-12">
+                                        <span class="text-muted small">
+                                            {{ Str::limit($laboratory->recentUser, 18, '...') }}
+                                        </span>
+                                    </div>
+                                    <div class="col-12">
+                                        <span class="text-muted small">
+                                            {{ $laboratory->recentTime }}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
