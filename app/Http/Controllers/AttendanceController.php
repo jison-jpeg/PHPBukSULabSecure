@@ -294,7 +294,7 @@ class AttendanceController extends Controller
                 $laboratory->update(['occupancyStatus' => 'On-Going']);
             }
 
-            return response()->json(['message' => 'Attendance recorded successfully']);
+            return response()->json(['message' => 'Welcome, ' . $user->first_name . ' ' . $user->last_name . '!' . "\n" . 'Subject: ' . $matchingSchedule->subject->name . "\n" . 'Attendance has been successfully recorded.']);
         } elseif ($action === 'exit') {
             if (!$currentAttendance) {
                 return response()->json(['error' => 'User is not inside the laboratory'], 400);
@@ -316,8 +316,8 @@ class AttendanceController extends Controller
             if ($user->role !== 'student') {
                 $laboratory->update(['occupancyStatus' => 'Available']);
             }
-
-            return response()->json(['message' => 'Exit recorded successfully']);
+            // Response message for attendance exit
+            return response()->json(['message' => 'Goodbye, ' . $user->first_name . ' ' . $user->last_name . '!' . "\n" . 'Your exit has been successfully recorded.']);
         } else {
             return response()->json(['error' => 'Invalid action'], 400);
         }
