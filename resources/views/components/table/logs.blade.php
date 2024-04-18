@@ -20,13 +20,14 @@
                 <tbody>
                     @foreach ($logs as $log)
                         <tr>
-                            <td>{{ $log->created_at }}</td>
+                            <td>{{ date('F j, Y h:i A', strtotime($log->created_at)) }}</td>
                             <td>{{ $log->laboratory_id ?? 'N/A'}}</td>
                             <td>{{ $log->user_id }}</td>
                             <td>
                                 @if ($log->user)
-                                    {{ $log->user->last_name }}, {{ $log->user->first_name }}
-                                    {{ $log->user->middle_name }}
+                                <a href="{{ route('logs.byUser', ['userId' => $log->user_id]) }}">
+                                    {{ $log->user->last_name }}, {{ $log->user->first_name }} {{ $log->user->middle_name }}
+                                </a>
                                 @else
                                     User not found
                                 @endif

@@ -55,6 +55,24 @@ class LaboratoriesController extends Controller
 
                 $lab->label = "Recent";
             }
+
+            // Fetch all logs of the instructor user for this laboratory along with user names
+            $instructorLogs = Logs::where('laboratory_id', $lab->id)
+                ->whereHas('user', function ($query) {
+                    $query->where('role', 'instructor'); // Filter by instructor role
+                })
+                ->with('user') // Include the user relationship
+                ->latest()
+                ->get();
+
+            // Modify the description of each log to include the user's name
+            $instructorLogs->transform(function ($log) {
+                $userName = optional($log->user)->getFullName();
+                $log->description = str_replace('User', $userName, $log->description);
+                return $log;
+            });
+
+            $lab->instructorLogs = $instructorLogs;
         }
 
         return view('pages.laboratory', compact('laboratories'));
@@ -98,7 +116,7 @@ class LaboratoriesController extends Controller
                 'description' => 'Laboratory created: ' . $laboratory->roomNumber,
                 'action' => 'CREATE',
             ]);
-            
+
             return redirect(route('laboratories'))->with("success", "Laboratory created successfully");
         }
     }
@@ -163,10 +181,43 @@ class LaboratoriesController extends Controller
                 'description' => 'Laboratory deleted: ' . $laboratory->roomNumber,
                 'action' => 'DELETE',
             ]);
-            
+
             return redirect(route('laboratories'))->with("success", "Laboratory deleted successfully");
         } else {
             return redirect(route('laboratories'))->with("error", "Error deleting laboratory. Please try again.");
         }
     }
+
+    // UPDATE LOCK STATUS
+public function updateLockStatus(Request $request, $id)
+{
+    $request->validate([
+        'lockStatus' => 'required|boolean',
+    ]);
+
+    $laboratory = Laboratory::find($id);
+
+    if (!$laboratory) {
+        return redirect(route('laboratories'))->with("error", "Laboratory not found.");
+    }
+
+    $lockStatus = $request->lockStatus;
+    $laboratory->lockStatus = $lockStatus;
+    $laboratory->save();
+
+    $message = $lockStatus ? "Laboratory locked successfully." : "Laboratory unlocked successfully.";
+
+    // Create a log entry for the lock status change
+    Logs::create([
+        'user_id' => auth()->user()->id,
+        'laboratory_id' => $laboratory->id,
+        'name' => auth()->user()->full_name,
+        'description' => $message,
+        'action' => 'UPDATE',
+    ]);
+
+    return redirect(route('laboratories'))->with("success", $message);
+}
+
+    
 }

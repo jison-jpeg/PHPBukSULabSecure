@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Logs;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class LogsController extends Controller
@@ -16,10 +17,14 @@ class LogsController extends Controller
     }
 
     // GET LOGS BY USER
-    function viewLogsByUser($id)
+    function logsByUser($userId)
     {
-        $logs = Logs::with('user')->where('user_id', $id)->get();
-        return view('pages.logs', compact('logs'));
+        $logs = Logs::where('user_id', $userId)->orderBy('created_at', 'desc')->paginate(10);
+
+        // Load user associated with the logs
+        $user = User::find($userId);
+
+        return view('pages.logs', compact('logs', 'user'));
     }
 
     // GET LOGS BY LABORATORY

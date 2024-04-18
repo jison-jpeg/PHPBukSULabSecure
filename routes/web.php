@@ -44,6 +44,8 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::post('/', [LaboratoriesController::class, 'laboratoriesPost'])->name('laboratories.post');
         Route::put('/{id}', [LaboratoriesController::class, 'laboratoriesPut'])->name('laboratories.update');
         Route::delete('/{id}', [LaboratoriesController::class, 'laboratoriesDelete'])->name('laboratories.delete');
+        Route::put('/laboratories/{id}/updateLockStatus', [LaboratoriesController::class, 'updateLockStatus'])->name('updateLockStatus');
+
     });
 
     // User Routes
@@ -84,6 +86,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::group(['prefix' => 'logs'], function () {
         Route::get('/', [LogsController::class, 'viewLogs'])->name('logs');
         Route::get('/latest', [LogsController::class, 'latestLog']);
+        Route::get('/user/{userId}', [LogsController::class, 'logsByUser'])->name('logs.byUser');
     });
 });
 

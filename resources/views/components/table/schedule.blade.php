@@ -61,7 +61,7 @@
                             <td>Comlab {{ $schedule->laboratory->roomNumber }}</td>
                             <td>{{ $schedule->days }}</td>
                             <td>{{ date('h:i A', strtotime($schedule->start_time)) }}</td>
-                            <td>{{ date('H:i A', strtotime($schedule->end_time)) }}</td>
+                            <td>{{ date('h:i A', strtotime($schedule->end_time)) }}</td>
                             <td>
                                 <div class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"

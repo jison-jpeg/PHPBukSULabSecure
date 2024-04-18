@@ -1,12 +1,17 @@
 @extends('layouts.app')
-@section('pageTitle', 'Activity Logs')
+@section('pageTitle', isset($user) ? 'Logs of ' . $user->getFullName() : 'Activity Logs')
 @section('content')
     <div class="pagetitle">
         <nav>
             <h1>@yield('pageTitle')</h1>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                <li class="breadcrumb-item active">@yield('pageTitle')</li>
+                @if(isset($user))
+                    <li class="breadcrumb-item"><a href="{{ route('logs') }}">Logs</a></li>
+                    <li class="breadcrumb-item active">{{ $user->getFullName() }}</li>
+                @else
+                    <li class="breadcrumb-item active">@yield('pageTitle')</li>
+                @endif
             </ol>
         </nav>
     </div>
