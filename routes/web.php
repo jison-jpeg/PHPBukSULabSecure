@@ -15,6 +15,11 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 
+use App\Http\Controllers\FacultyReportController;
+use App\Http\Controllers\StudentReportController;
+use App\Http\Controllers\UserReportController;
+use App\Http\Controllers\SubjectReportController;
+
 
 Route::get('/', function () {
     return redirect('/login');
@@ -87,6 +92,14 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::get('/', [LogsController::class, 'viewLogs'])->name('logs');
         Route::get('/latest', [LogsController::class, 'latestLog']);
         Route::get('/user/{userId}', [LogsController::class, 'logsByUser'])->name('logs.byUser');
+    });
+
+    // Report Route
+    Route::group(['prefix' => 'reports'], function () {
+        Route::get('/faculty', [FacultyReportController::class, 'index'])->name('faculty.tableReport');
+        Route::get('/student', [StudentReportController::class, 'index'])->name('student.tableReport');
+        Route::get('/user', [UserReportController::class, 'index'])->name('user.tableReport');
+        Route::get('/subject', [SubjectReportController::class, 'index'])->name('subject.tableReport');
     });
 });
 

@@ -2,7 +2,7 @@
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-title">Users</h5>
-            <button type="button" class="btn btn-primary">Export</button>
+            <button type="button" class="btn btn-primary" id="exportButton">Export</button>        
         </div>
         <!-- Table with hoverable rows -->
         <div class="table-responsive">
@@ -103,3 +103,60 @@
         <!-- End Table with hoverable rows -->
     </div>
 </div>
+
+<script>
+document.getElementById('exportButton').addEventListener('click', function() {
+    let route;
+    // Determine the route based on the current user's role
+    @if (Request::is('faculties'))
+        route = '{{ route('faculty.tableReport') }}';
+    @elseif (Request::is('students'))
+        route = '{{ route('student.tableReport') }}';
+    @else
+        route = '{{ route('user.tableReport') }}';
+    @endif
+   
+    // Send an AJAX request to the determined route for report generation
+    fetch(route, {
+        method: 'GET',
+    })
+    .then(response => {
+        if (response.ok) {
+            // If the response is successful, initiate download
+            return response.blob();
+        } else {
+            // Handle error responses
+            console.error('Failed to export report');
+            // Optionally, display an error message to the user
+        }
+    })
+    .then(blob => {
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+        // Create a link element
+        const a = document.createElement('a');
+        // Set the href attribute to the blob URL
+        a.href = url;
+        // Set the download attribute to specify the file name
+        @if (Request::is('faculties'))
+            a.download = 'Faculty List Report.pdf';
+        @elseif (Request::is('students'))
+            a.download = 'Student List Report.pdf';
+        @else
+            a.download = 'User List Report.pdf';
+        @endif
+        // Append the link to the document body
+        document.body.appendChild(a);
+        // Click the link to initiate download
+        a.click();
+        // Remove the link from the document body
+        document.body.removeChild(a);
+        // Revoke the blob URL to free up memory
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(error => {
+        console.error('Error exporting report:', error);
+        // Optionally, display an error message to the user
+    });
+});
+</script>
