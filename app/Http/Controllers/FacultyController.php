@@ -29,7 +29,6 @@ class FacultyController extends Controller
     {
         $request->validate([
             'first_name' => 'required',
-            'middle_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users',
             'college_id' => 'required',
