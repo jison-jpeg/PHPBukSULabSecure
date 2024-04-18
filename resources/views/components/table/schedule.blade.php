@@ -45,7 +45,7 @@
                                 <td>{{ $schedule->department->departmentName }}</td>
                             @endif
                             @unless(Request::is('subjects/user/*'))
-                                <td>{{ $schedule->user->full_name }}</td>
+                                <td>{{ $schedule->user->full_name ?? 'N/A'}}</td>
                             @endunless
                             <td>{{ $schedule->subject->subjectCode }}</td>
                             {{-- View attendance of the user based on section and subject from schedule --}}
@@ -56,7 +56,7 @@
                             </td>
                             <td>{{ $schedule->section->sectionCode }}</td>
                             @if(Request::is('subjects/user/*'))
-                                <td>{{ $schedule->user->full_name }}</td>
+                                <td>{{ $schedule->user->full_name ?? 'N/A'}}</td>
                             @endif
                             <td>Comlab {{ $schedule->laboratory->roomNumber }}</td>
                             <td>{{ $schedule->days }}</td>

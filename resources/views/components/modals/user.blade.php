@@ -9,28 +9,28 @@
             <div class="modal-body">
                 <form class="row g-3 needs-validation" action="{{ route('users.post') }}" method="POST" novalidate>
                     @csrf
-                    <div class="col-md-3">
+                    {{-- <div class="col-md-3">
                         <label for="rfid_number" class="form-label">RFID No.</label>
                         <input type="text" class="form-control" name="rfid_number" placeholder="Scanning...">
                         <div class="invalid-feedback">
                             Please enter an 8-digit valid and unique RFID number.
                         </div>
-                    </div>
-                    <div class="col-md-3">
+                    </div> --}}
+                    <div class="col-md-4">
                         <label for="first_name" class="form-label">First Name</label>
                         <input type="text" class="form-control" name="first_name" required>
                         <div class="invalid-feedback">
                             Please enter a valid first name.
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label for="middle_name" class="form-label">Middle Name</label>
                         <input type="text" class="form-control" name="middle_name">
                         <div class="invalid-feedback">
                             Please enter a valid middle name.
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label for="last_name" class="form-label">Last Name</label>
                         <input type="text" class="form-control" name="last_name" required>
                         <div class="invalid-feedback">
@@ -60,7 +60,6 @@
                             <option value="dean">Dean</option>
                             <option value="chairperson">Chairperson</option>
                             <option value="instructor">Instructor</option>
-                            <option value="part-time instructor">Part-time Instructor</option>
                         </select>
                         <div class="invalid-feedback">
                             Please select a role.

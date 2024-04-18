@@ -92,6 +92,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::get('/', [LogsController::class, 'viewLogs'])->name('logs');
         Route::get('/latest', [LogsController::class, 'latestLog']);
         Route::get('/user/{userId}', [LogsController::class, 'logsByUser'])->name('logs.byUser');
+        Route::get('/laboratory/{id}', [LogsController::class, 'viewLogsByLaboratory'])->name('logs.byLaboratory');
     });
 
     // Report Route
