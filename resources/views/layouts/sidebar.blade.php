@@ -96,14 +96,14 @@
             </a>
         </li>
 
-        @if(Auth::user()->role !== 'admin')
+        {{-- @if(Auth::user()->role !== 'admin')
         <li class="nav-item">
             <a class="nav-link {{ request()->is('reports') ? '' : 'collapsed' }}" href="{{ url('/reports') }}">
                 <i class="bi bi-graph-up-arrow"></i>
                 <span>Reports</span>
             </a>
         </li>
-        @endif
+        @endif --}}
 
         @if(Auth::user()->role === 'admin' || Auth::user()->role === 'support')
         <li class="nav-heading">SETTINGS</li>
