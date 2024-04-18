@@ -30,5 +30,15 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
+        // Create a user with the role of "instructor"
+        User::create([
+            'first_name' => 'Instructor',
+            'last_name' => 'User',
+            'username' => 'instructor',
+            'role' => 'instructor',
+            'email' => 'instructor@gmail.com',
+            'password' => bcrypt('password'),
+        ]);
+
     }
 }
