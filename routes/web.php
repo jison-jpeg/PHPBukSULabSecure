@@ -19,6 +19,7 @@ use App\Http\Controllers\FacultyReportController;
 use App\Http\Controllers\StudentReportController;
 use App\Http\Controllers\UserReportController;
 use App\Http\Controllers\SubjectReportController;
+use App\Http\Controllers\ScheduleReportController;
 
 
 Route::get('/', function () {
@@ -101,6 +102,8 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::get('/student', [StudentReportController::class, 'index'])->name('student.tableReport');
         Route::get('/user', [UserReportController::class, 'index'])->name('user.tableReport');
         Route::get('/subject', [SubjectReportController::class, 'index'])->name('subject.tableReport');
+        Route::get('/schedule', [ScheduleReportController::class, 'index'])->name('schedule.tableReport');
+        Route::get('/attendance/{sectionId}/{subjectId}', [AttendanceReportController::class, 'viewStudentAttendance'])->name('attendanceStudent.tableReport');
     });
 });
 
