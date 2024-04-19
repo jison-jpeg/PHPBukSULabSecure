@@ -27,7 +27,12 @@ class AuthManager extends Controller
             $user = Auth::user();
             // dd($user.attributes);
             session(['user' => $user]);
-            return redirect()->intended('dashboard');
+            // Redirect users based on their role
+            if ($user->role === 'instructor') {
+                return redirect('/attendance');
+            } else {
+                return redirect()->intended('dashboard');
+            }
         } else {
             return redirect(route('login'))->with("error", "Invalid username or password!");
         }

@@ -43,6 +43,8 @@ Route::group(['middleware' => 'web'], function () {
 });
 
 Route::group(['middleware' => ['auth', 'role:admin']], function () {
+    // Dashboard Routes
+    Route::get('/dashboard', [Dashboard::class, 'viewDashboard']);
 
     // Laboratories Route
     Route::group(['prefix' => 'laboratories'], function () {
@@ -51,7 +53,6 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::put('/{id}', [LaboratoriesController::class, 'laboratoriesPut'])->name('laboratories.update');
         Route::delete('/{id}', [LaboratoriesController::class, 'laboratoriesDelete'])->name('laboratories.delete');
         Route::put('/laboratories/{id}/updateLockStatus', [LaboratoriesController::class, 'updateLockStatus'])->name('updateLockStatus');
-
     });
 
     // User Routes
@@ -109,8 +110,8 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
 
 // Routes for Admin and Instructor
 Route::group(['middleware' => ['auth', 'role:admin,instructor']], function () {
-    // Dashboard Routes
-    Route::get('/dashboard', [Dashboard::class, 'viewDashboard']);
+    // // Dashboard Routes
+    // Route::get('/dashboard', [Dashboard::class, 'viewDashboard']);
 
     // Attendance Routes
     Route::group(['prefix' => 'attendance'], function () {
@@ -139,13 +140,13 @@ Route::group(['middleware' => ['auth', 'role:admin,instructor']], function () {
     });
 
     // Schedules Route
-Route::group(['prefix' => 'schedules'], function () {
-    Route::get('/', [ScheduleController::class, 'viewSchedules'])->name('schedules');
-    Route::post('/', [ScheduleController::class, 'createSchedule'])->name('schedules.post');
-    Route::put('/{id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
-    Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
-    Route::get('/instructor/{id}', [ScheduleController::class, 'viewUserSchedules'])->name('schedules.user');
-    Route::get('/section/{section_id}', [ScheduleController::class, 'viewSectionSchedules'])->name('schedules.section');
+    Route::group(['prefix' => 'schedules'], function () {
+        Route::get('/', [ScheduleController::class, 'viewSchedules'])->name('schedules');
+        Route::post('/', [ScheduleController::class, 'createSchedule'])->name('schedules.post');
+        Route::put('/{id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
+        Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
+        Route::get('/instructor/{id}', [ScheduleController::class, 'viewUserSchedules'])->name('schedules.user');
+        Route::get('/section/{section_id}', [ScheduleController::class, 'viewSectionSchedules'])->name('schedules.section');
     });
 
 
