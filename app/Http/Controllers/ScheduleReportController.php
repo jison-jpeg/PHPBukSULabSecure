@@ -62,7 +62,7 @@ class ScheduleReportController extends Controller
         $pdf->SetLineWidth(.3);
         $pdf->SetFont('Arial','B', 8);
         // Header
-        $header = ['College', 'Department', 'Instructor', 'Subject Code', 'Subject Name', 'Section Code', 'Room', 'Days', 'Start Time', 'End Time'];
+        
         $w = array(35, 35, 35, 25, 30, 25, 20, 30, 20, 20);
         for($i=0;$i<count($header);$i++)
             $pdf->Cell($w[$i],7,$header[$i],1,0,'C',true);
