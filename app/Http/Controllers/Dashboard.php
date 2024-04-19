@@ -51,4 +51,6 @@ class Dashboard extends Controller
         
         return view('pages.dashboard', compact('logs', 'totalUsers', 'totalInstructors', 'totalLaboratories', 'totalStudents'));
     }
+
+    
 }

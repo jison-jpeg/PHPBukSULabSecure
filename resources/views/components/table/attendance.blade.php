@@ -25,7 +25,7 @@
                     @foreach ($uniqueAttendances as $key => $attendance)
                         <tr>
                             <th scope="row">{{ $key + 1 }}</th>
-                            <td>{{ $attendance->user->full_name }}</td>
+                            <td>{{ $attendance->user->full_name ?? 'N/A'}}</td>
                             <td>Comlab {{ $attendance->laboratory->roomNumber ?? 'N/A'}}</td>
                             <td>{{ $attendance->subject->subjectName }}</td>
                             <td>{{ $attendance->time_in }}</td>

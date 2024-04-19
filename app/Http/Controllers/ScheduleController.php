@@ -44,6 +44,21 @@ class ScheduleController extends Controller
             'days.*' => 'in:Mon,Tue,Wed,Thu,Fri,Sat,Sun',
         ]);
 
+        // Check if there's an existing schedule with the same subject and conflicting time and day
+        foreach ($request->days as $day) {
+            $existingSchedule = Schedule::where('subject_id', $request->subject_id)
+                ->where('days', 'like', '%' . $day . '%')
+                ->where(function ($query) use ($request) {
+                    $query->where('start_time', '<', $request->end_time)
+                        ->where('end_time', '>', $request->start_time);
+                })
+                ->first();
+
+            if ($existingSchedule) {
+                return redirect(route('schedules'))->with("error", "Conflict: Another schedule exists for the same subject at the conflicting time and day.");
+            }
+        }
+
         $schedule = Schedule::create([
             'college_id' => $request->college_id,
             'department_id' => $request->department_id,
@@ -137,9 +152,4 @@ class ScheduleController extends Controller
         $instructors = User::where('role', 'instructor')->get();
         return view('pages.schedule', compact('schedules', 'departments', 'colleges', 'sections', 'laboratories', 'subjects', 'instructors', 'users'));
     }
-
-
-
-    
-    
 }
