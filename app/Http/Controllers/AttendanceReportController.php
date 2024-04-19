@@ -373,7 +373,9 @@ class AttendanceReportController extends Controller {
             $pdf->Cell($w[3], 6, $attendance->subjectName ?? '', 'LR', 0, 'L', $fill);
             $pdf->Cell($w[4], 6, $attendance->time_in ?? '', 'LR', 0, 'L', $fill);
             $pdf->Cell($w[5], 6, $attendance->time_out ?? '', 'LR', 0, 'L', $fill);
-            $pdf->Cell($w[6], 6, $attendance->created_at->format('Y-m-d') ?? '', 'LR', 0, 'L', $fill);
+            // $pdf->Cell($w[6], 6, $attendance->created_at->format('Y-m-d') ?? '', 'LR', 0, 'L', $fill);
+            $pdf->Cell($w[6], 6, $attendance->created_at ? $attendance->created_at->format('Y-m-d') : '', 'LR', 0, 'L', $fill);
+
     
             // Calculate total duration
             $timeIn = \Carbon\Carbon::parse($attendance->time_in);
