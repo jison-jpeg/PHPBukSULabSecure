@@ -104,9 +104,9 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
         Route::get('/student', [StudentReportController::class, 'index'])->name('student.tableReport');
         Route::get('/user', [UserReportController::class, 'index'])->name('user.tableReport');
         Route::get('/subject', [SubjectReportController::class, 'index'])->name('subject.tableReport');
-        Route::get('/schedule', [ScheduleReportController::class, 'index'])->name('schedule.tableReport');
-        Route::get('/attendance', [AttendanceReportController::class, 'index'])->name('attendance.tableReport');
-        Route::get('/attendance/{sectionId}/{subjectId}', [AttendanceReportController::class, 'viewStudentAttendance'])->name('attendanceStudent.tableReport');
+        // Route::get('/schedule', [ScheduleReportController::class, 'index'])->name('schedule.tableReport');
+        // Route::get('/attendance', [AttendanceReportController::class, 'index'])->name('attendance.tableReport');
+        // Route::get('/attendance/{sectionId}/{subjectId}', [AttendanceReportController::class, 'viewStudentAttendance'])->name('attendanceStudent.tableReport');
     });
 });
 
@@ -157,5 +157,12 @@ Route::group(['middleware' => ['auth', 'role:admin,instructor']], function () {
         Route::get('/', [ProfileController::class, 'viewProfile'])->name('profile');
         Route::put('/', [ProfileController::class, 'profilePut'])->name('profile.put');
         Route::put('/password', [ProfileController::class, 'passwordPut'])->name('password.put');
+    });
+
+    // Report Route
+    Route::group(['prefix' => 'reports'], function () {
+        Route::get('/schedule', [ScheduleReportController::class, 'index'])->name('schedule.tableReport');
+        Route::get('/attendance', [AttendanceReportController::class, 'index'])->name('attendance.tableReport');
+        Route::get('/attendance/{sectionId}/{subjectId}', [AttendanceReportController::class, 'viewStudentAttendance'])->name('attendanceStudent.tableReport');
     });
 });

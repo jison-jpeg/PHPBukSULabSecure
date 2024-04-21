@@ -191,7 +191,8 @@ class AttendanceController extends Controller
             }
         }
 
-        return view('pages.attendance', compact('uniqueAttendances'));
+        // return view('pages.attendance', compact('uniqueAttendances'));
+        return view('pages.attendance', compact('uniqueAttendances', 'sectionId', 'subjectId'));
     }
 
 
