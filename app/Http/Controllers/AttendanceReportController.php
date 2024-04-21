@@ -180,8 +180,15 @@ class AttendanceReportController extends Controller {
             $pdf->Cell($w[1], 6, $attendance->last_name . ', ' . $attendance->first_name . ' ' . $attendance->middle_name, 'LR', 0, 'L', $fill);
             $pdf->Cell($w[2], 6, 'COMLAB ' . ($attendance->roomNumber ?? ''), 'LR', 0, 'L', $fill);
             $pdf->Cell($w[3], 6, $attendance->subjectName ?? '', 'LR', 0, 'L', $fill);
-            $pdf->Cell($w[4], 6, $attendance->time_in ?? '', 'LR', 0, 'L', $fill);
-            $pdf->Cell($w[5], 6, $attendance->time_out ?? '', 'LR', 0, 'L', $fill);
+
+            // Format time in 12-hour format if it's not null
+            $timeIn = $attendance->time_in ? \Carbon\Carbon::parse($attendance->time_in)->format('g:i A') : '';
+            $pdf->Cell($w[4], 6, $timeIn, 'LR', 0, 'L', $fill);
+            
+            // Format time out 12-hour format if it's not null
+            $timeOut = $attendance->time_out ? \Carbon\Carbon::parse($attendance->time_out)->format('g:i A') : '';
+            $pdf->Cell($w[5], 6, $timeOut, 'LR', 0, 'L', $fill);
+
             $pdf->Cell($w[6], 6, $attendance->created_at->format('Y-m-d') ?? '', 'LR', 0, 'L', $fill);
 
             // Calculate total duration
@@ -384,9 +391,15 @@ class AttendanceReportController extends Controller {
             $pdf->Cell($w[1], 6, $attendance->last_name . ', ' . $attendance->first_name . ' ' . $attendance->middle_name, 'LR', 0, 'L', $fill);
             $pdf->Cell($w[2], 6, 'COMLAB ' . ($attendance->roomNumber ?? ''), 'LR', 0, 'L', $fill);
             $pdf->Cell($w[3], 6, $attendance->subjectName ?? '', 'LR', 0, 'L', $fill);
-            $pdf->Cell($w[4], 6, $attendance->time_in ?? '', 'LR', 0, 'L', $fill);
-            $pdf->Cell($w[5], 6, $attendance->time_out ?? '', 'LR', 0, 'L', $fill);
-            // $pdf->Cell($w[6], 6, $attendance->created_at->format('Y-m-d') ?? '', 'LR', 0, 'L', $fill);
+
+            // Format time in 12-hour format if it's not null
+            $timeIn = $attendance->time_in ? \Carbon\Carbon::parse($attendance->time_in)->format('g:i A') : '';
+            $pdf->Cell($w[4], 6, $timeIn, 'LR', 0, 'L', $fill);
+            
+            // Format time out 12-hour format if it's not null
+            $timeOut = $attendance->time_out ? \Carbon\Carbon::parse($attendance->time_out)->format('g:i A') : '';
+            $pdf->Cell($w[5], 6, $timeOut, 'LR', 0, 'L', $fill);
+
             $pdf->Cell($w[6], 6, $attendance->created_at ? $attendance->created_at->format('Y-m-d') : '', 'LR', 0, 'L', $fill);
 
     
