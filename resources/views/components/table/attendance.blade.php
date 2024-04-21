@@ -25,11 +25,11 @@
                     @foreach ($uniqueAttendances as $key => $attendance)
                         <tr>
                             <th scope="row">{{ $key + 1 }}</th>
-                            <td>{{ $attendance->user->full_name ?? 'N/A'}}</td>
-                            <td>Comlab {{ $attendance->laboratory->roomNumber ?? 'N/A'}}</td>
+                            <td>{{ $attendance->user->full_name ?? 'N/A' }}</td>
+                            <td>Comlab {{ $attendance->laboratory->roomNumber ?? 'N/A' }}</td>
                             <td>{{ $attendance->subject->subjectName }}</td>
-                            <td>{{ date('h:i A', strtotime($attendance->time_in)) }}</td>
-                            <td>{{date('h:i A', strtotime( $attendance->time_out)) }}</td>
+                            <td>{{ $attendance->time_in ? date('h:i A', strtotime($attendance->time_in)) : '' }}</td>
+                            <td>{{ $attendance->time_out ? date('h:i A', strtotime($attendance->time_out)) : '' }}</td>
                             <td>{{ $attendance->date }}</td>
                             <td>{{ $attendance->total_duration }}</td>
 
@@ -47,12 +47,12 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="badge rounded-pill 
+                                <span
+                                    class="badge rounded-pill 
                                     @if ($attendance->status === 'Present') bg-success
                                     @elseif($attendance->status === 'Late') bg-secondary
                                     @elseif($attendance->status === 'Incomplete') bg-danger
-                                    @elseif($attendance->status === 'Absent') bg-danger
-                                    @endif">
+                                    @elseif($attendance->status === 'Absent') bg-danger @endif">
                                     {{ $attendance->status }}
                                 </span>
                             </td>
@@ -66,107 +66,107 @@
 </div>
 
 <script>
+    // overall attendance only
+    // document.getElementById('exportButton').addEventListener('click', function() {
+    //     let route;
+    //     // Determine the route based on the current user's role
+    //     @if (Request::is('attendance.student'))
+    //         route = '{{ route('attendanceStudent.tableReport') }}';
+    //     @else
+    //         route = '{{ route('attendance.tableReport') }}';
+    //     @endif
 
-// overall attendance only
-// document.getElementById('exportButton').addEventListener('click', function() {
-//     let route;
-//     // Determine the route based on the current user's role
-//     @if (Request::is('attendance.student'))
-//         route = '{{ route('attendanceStudent.tableReport') }}';
-//     @else
-//         route = '{{ route('attendance.tableReport') }}';
-//     @endif
-   
-//     // Send an AJAX request to the determined route for report generation
-//     fetch(route, {
-//         method: 'GET',
-//     })
-//     .then(response => {
-//         if (response.ok) {
-//             // If the response is successful, initiate download
-//             return response.blob();
-//         } else {
-//             // Handle error responses
-//             console.error('Failed to export report');
-//             // Optionally, display an error message to the user
-//         }
-//     })
-//     .then(blob => {
-//         // Create a URL for the blob
-//         const url = window.URL.createObjectURL(blob);
-//         // Create a link element
-//         const a = document.createElement('a');
-//         // Set the href attribute to the blob URL
-//         a.href = url;
-//         // Set the download attribute to specify the file name
-//         @if (Request::is('attendance.student'))
-//             a.download = 'Student Attendance Report.pdf';
-//         @else
-//             a.download = 'User Attendance Report.pdf';
-//         @endif
-//         // Append the link to the document body
-//         document.body.appendChild(a);
-//         // Click the link to initiate download
-//         a.click();
-//         // Remove the link from the document body
-//         document.body.removeChild(a);
-//         // Revoke the blob URL to free up memory
-//         window.URL.revokeObjectURL(url);
-//     })
-//     .catch(error => {
-//         console.error('Error exporting report:', error);
-//         // Optionally, display an error message to the user
-//     });
-// });
+    //     // Send an AJAX request to the determined route for report generation
+    //     fetch(route, {
+    //         method: 'GET',
+    //     })
+    //     .then(response => {
+    //         if (response.ok) {
+    //             // If the response is successful, initiate download
+    //             return response.blob();
+    //         } else {
+    //             // Handle error responses
+    //             console.error('Failed to export report');
+    //             // Optionally, display an error message to the user
+    //         }
+    //     })
+    //     .then(blob => {
+    //         // Create a URL for the blob
+    //         const url = window.URL.createObjectURL(blob);
+    //         // Create a link element
+    //         const a = document.createElement('a');
+    //         // Set the href attribute to the blob URL
+    //         a.href = url;
+    //         // Set the download attribute to specify the file name
+    //         @if (Request::is('attendance.student'))
+    //             a.download = 'Student Attendance Report.pdf';
+    //         @else
+    //             a.download = 'User Attendance Report.pdf';
+    //         @endif
+    //         // Append the link to the document body
+    //         document.body.appendChild(a);
+    //         // Click the link to initiate download
+    //         a.click();
+    //         // Remove the link from the document body
+    //         document.body.removeChild(a);
+    //         // Revoke the blob URL to free up memory
+    //         window.URL.revokeObjectURL(url);
+    //     })
+    //     .catch(error => {
+    //         console.error('Error exporting report:', error);
+    //         // Optionally, display an error message to the user
+    //     });
+    // });
 
-document.getElementById('exportButton').addEventListener('click', function() {
-    let route;
 
-    // Determine the route based on the presence of sectionId and subjectId
-    @if (isset($sectionId) && isset($subjectId))
-        route = '{{ route('attendanceStudent.tableReport', ['sectionId' => $sectionId, 'subjectId' => $subjectId]) }}';
-    @else
-        route = '{{ route('attendance.tableReport') }}';
-    @endif
+    document.getElementById('exportButton').addEventListener('click', function() {
+        let route;
 
-    // Send an AJAX request to the determined route for report generation
-    fetch(route)
-    .then(response => {
-        if (response.ok) {
-            // If the response is successful, initiate download
-            return response.blob();
-        } else {
-            // Handle error responses
-            console.error('Failed to export report');
-            // Optionally, display an error message to the user
-        }
-    })
-    .then(blob => {
-        // Create a URL for the blob
-        const url = window.URL.createObjectURL(blob);
-        // Create a link element
-        const a = document.createElement('a');
-        // Set the href attribute to the blob URL
-        a.href = url;
-        // Set the download attribute to specify the file name
+        // Determine the route based on the presence of sectionId and subjectId
         @if (isset($sectionId) && isset($subjectId))
-            a.download = 'Student Attendance Report.pdf';
+            route =
+                '{{ route('attendanceStudent.tableReport', ['sectionId' => $sectionId, 'subjectId' => $subjectId]) }}';
         @else
-            a.download = 'User Attendance Report.pdf';
+            route = '{{ route('attendance.tableReport') }}';
         @endif
-        // Append the link to the document body
-        document.body.appendChild(a);
-        // Click the link to initiate download
-        a.click();
-        // Remove the link from the document body
-        document.body.removeChild(a);
-        // Revoke the blob URL to free up memory
-        window.URL.revokeObjectURL(url);
-    })
-    .catch(error => {
-        console.error('Error exporting report:', error);
-        // Optionally, display an error message to the user
-    });
-});
 
+        // Send an AJAX request to the determined route for report generation
+        fetch(route)
+            .then(response => {
+                if (response.ok) {
+                    // If the response is successful, initiate download
+                    return response.blob();
+                } else {
+                    // Handle error responses
+                    console.error('Failed to export report');
+                    // Optionally, display an error message to the user
+                }
+            })
+            .then(blob => {
+                // Create a URL for the blob
+                const url = window.URL.createObjectURL(blob);
+                // Create a link element
+                const a = document.createElement('a');
+                // Set the href attribute to the blob URL
+                a.href = url;
+                // Set the download attribute to specify the file name
+                @if (isset($sectionId) && isset($subjectId))
+                    a.download = 'Student Attendance Report.pdf';
+                @else
+                    a.download = 'User Attendance Report.pdf';
+                @endif
+                // Append the link to the document body
+                document.body.appendChild(a);
+                // Click the link to initiate download
+                a.click();
+                // Remove the link from the document body
+                document.body.removeChild(a);
+                // Revoke the blob URL to free up memory
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('Error exporting report:', error);
+                // Optionally, display an error message to the user
+            });
+    });
 </script>

@@ -67,24 +67,29 @@ class AttendanceController extends Controller
                 $attendance->percentage = 100;
             }
 
-            // Check user's arrival status
-            $scheduleStartTime = Carbon::parse($schedule->start_time);
-            $lateTime = $scheduleStartTime->copy()->addMinutes(15);
-            $timeIn = Carbon::parse($attendance->time_in);
-
-            if ($timeIn->gt($lateTime)) {
-                $attendance->status = 'Late';
+            // Check if user dont have time out, set the status to null
+            if ($attendance->time_out === null) {
+                $attendance->status = null;
             } else {
-                $attendance->status = 'Present';
-            }
+                // Check user's arrival status
+                $scheduleStartTime = Carbon::parse($schedule->start_time);
+                $lateTime = $scheduleStartTime->copy()->addMinutes(15);
+                $timeIn = Carbon::parse($attendance->time_in);
 
-            // Change the status to absent if the percentage is less than 15%
-            if ($attendance->percentage < 15) {
-                $attendance->status = 'Absent';
-            } else {
-                // Change the status to incomplete if the percentage is less than 50%
-                if ($attendance->percentage < 50) {
-                    $attendance->status = 'Incomplete';
+                if ($timeIn->gt($lateTime)) {
+                    $attendance->status = 'Late';
+                } else {
+                    $attendance->status = 'Present';
+                }
+
+                // Change the status to absent if the percentage is less than 15%
+                if ($attendance->percentage < 15) {
+                    $attendance->status = 'Absent';
+                } else {
+                    // Change the status to incomplete if the percentage is less than 50%
+                    if ($attendance->percentage < 50) {
+                        $attendance->status = 'Incomplete';
+                    }
                 }
             }
         }
@@ -169,24 +174,33 @@ class AttendanceController extends Controller
                 $attendance->percentage = 100;
             }
 
-            // Check user's arrival status
-            $scheduleStartTime = Carbon::parse($schedule->start_time);
-            $lateTime = $scheduleStartTime->copy()->addMinutes(15);
-            $timeIn = Carbon::parse($attendance->time_in);
-
-            if ($timeIn->gt($lateTime)) {
-                $attendance->status = 'Late';
+            // Check if user dont have time out, set the status to null. if both time in and time out is null, set the status to absent
+            if ($attendance->time_out === null) {
+                $attendance->status = null;
+                if ($attendance->time_in === null) {
+                    $attendance->status = 'Absent';
+                }
             } else {
-                $attendance->status = 'Present';
-            }
 
-            // Change the status to absent if the percentage is less than 15%
-            if ($attendance->percentage < 15) {
-                $attendance->status = 'Absent';
-            } else {
-                // Change the status to incomplete if the percentage is less than 50%
-                if ($attendance->percentage < 50) {
-                    $attendance->status = 'Incomplete';
+                // Check user's arrival status
+                $scheduleStartTime = Carbon::parse($schedule->start_time);
+                $lateTime = $scheduleStartTime->copy()->addMinutes(15);
+                $timeIn = Carbon::parse($attendance->time_in);
+
+                if ($timeIn->gt($lateTime)) {
+                    $attendance->status = 'Late';
+                } else {
+                    $attendance->status = 'Present';
+                }
+
+                // Change the status to absent if the percentage is less than 15%
+                if ($attendance->percentage < 15) {
+                    $attendance->status = 'Absent';
+                } else {
+                    // Change the status to incomplete if the percentage is less than 50%
+                    if ($attendance->percentage < 50) {
+                        $attendance->status = 'Incomplete';
+                    }
                 }
             }
         }
