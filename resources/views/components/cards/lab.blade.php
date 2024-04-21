@@ -23,9 +23,14 @@
                         </ul>
                     </div>
                     <a class="card-body" data-bs-toggle="modal" data-bs-target="#viewModal{{ $lab->id }}">
-                        <div class="card-badge"><span
-                                class="badge rounded-pill bg-{{ $lab->occupancyStatus == 'Available' ? 'success' : 'danger' }}">{{ $lab->occupancyStatus }}</span>
+                        <div class="card-badge">
+                            @if ($lab->lockStatus)
+                                <span class="badge rounded-pill bg-danger">Locked</span>
+                            @else
+                                <span class="badge rounded-pill bg-{{ $lab->occupancyStatus == 'Available' ? 'success' : 'danger' }}">{{ $lab->occupancyStatus }}</span>
+                            @endif
                         </div>
+                        
                         <div class="d-flex align-items-center ">
 
                             <div class="ps-0 mb-5">

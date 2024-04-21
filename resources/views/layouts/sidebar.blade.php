@@ -100,7 +100,7 @@
         <li class="nav-heading">SETTINGS</li>
         <li class="nav-item">
             <a class="nav-link {{ request()->is('logs') ? '' : 'collapsed' }}" href="{{ url('/logs') }}">
-                <i class="bi bi-graph"></i>
+                <i class="bx bx-detail"></i>
                 <span>Logs</span>
             </a>
         </li>

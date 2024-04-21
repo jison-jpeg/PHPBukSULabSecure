@@ -12,7 +12,7 @@
                     @csrf
                     <div class="col-md-4">
                         <label for="roomNumber" class="form-label">Comlab No.</label>
-                        <input type="number" class="form-control" name="roomNumber" placeholder="ex. 1" required>
+                        <input type="number" class="form-control" name="roomNumber" placeholder="ex. 1" min="1" required>
                         <div class="invalid-feedback">
                             Please enter a comlab number.
                         </div>
@@ -63,7 +63,7 @@
                         <div class="col-md-4">
                             <label for="roomNumber" class="form-label">Comlab No.</label>
                             <input type="number" class="form-control" name="roomNumber"
-                                value="{{ $laboratory->roomNumber }}" required>
+                                value="{{ $laboratory->roomNumber }}" min="1" required>
                             <div class="invalid-feedback">
                                 Please enter a comlab number.
                             </div>

@@ -116,7 +116,6 @@ class UsersController extends Controller
     function usersPost(Request $request)
     {
         $request->validate([
-            'rfid_number' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email|unique:users',
@@ -168,7 +167,6 @@ class UsersController extends Controller
     function usersPut(Request $request, $id)
     {
         $request->validate([
-            'rfid_number' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email',
