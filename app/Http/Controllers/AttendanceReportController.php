@@ -108,16 +108,21 @@ class AttendanceReportController extends Controller {
                 $attendance->percentage = 100;
             }
     
-            // Check user's arrival status
-            $scheduleStartTime = Carbon::parse($schedule->start_time);
-            $lateTime = $scheduleStartTime->copy()->addMinutes(15);
-            $timeIn = Carbon::parse($attendance->time_in);
-    
-            if ($timeIn->gt($lateTime)) {
-                $attendance->status = 'Late';
+            // Check if user dont have time out, set the status to null
+            if ($attendance->time_out === null) {
+                $attendance->status = null;
             } else {
-                $attendance->status = 'Present';
-            }
+                // Check user's arrival status
+                $scheduleStartTime = Carbon::parse($schedule->start_time);
+                $lateTime = $scheduleStartTime->copy()->addMinutes(15);
+                $timeIn = Carbon::parse($attendance->time_in);
+
+                if ($timeIn->gt($lateTime)) {
+                    $attendance->status = 'Late';
+                } else {
+                    $attendance->status = 'Present';
+                }
+
     
             // Change the status to absent if the percentage is less than 15%
             if ($attendance->percentage < 15) {
@@ -128,6 +133,7 @@ class AttendanceReportController extends Controller {
                     $attendance->status = 'Incomplete';
                 }
             }
+        }
 
             $attendance->last_name = $attendance->user->last_name;
             $attendance->first_name = $attendance->user->first_name;
@@ -211,12 +217,17 @@ class AttendanceReportController extends Controller {
         exit;
     }
 
-    function prepareJsonData($subjectId) {
+    function prepareJsonData($sectionId, $subjectId) {
+        $user = Auth::user();
         // Assuming you have a specific logic to fetch students or you may need to adjust this query
-        $students = User::where('role', 'student')->get();
+        $students = User::where('role', 'student')
+            ->where('section_id', $sectionId)
+            ->get();
 
-        // Retrieve the schedule associated with the subject ID
-        $schedule = Schedule::where('subject_id', $subjectId)->first();
+        // Retrieve the schedule associated with the subject and section ID
+        $schedule = Schedule::where('subject_id', $subjectId)
+        ->where('section_id', $sectionId)
+        ->first();
 
         // Check if the schedule exists
         if (!$schedule) {
@@ -233,6 +244,7 @@ class AttendanceReportController extends Controller {
         ->leftJoin('laboratories', 'laboratories.id', '=', 'schedules.laboratory_id')
         ->where('users.role', 'student') // Filter out non-student users
         ->where('schedules.subject_id', $subjectId) // Filter by subject ID
+        // ->where('schedules.section_id', $sectionId)
         ->select(
             'users.last_name',
             'users.first_name',
@@ -250,6 +262,7 @@ class AttendanceReportController extends Controller {
         $uniqueAttendances = collect();
         foreach ($students as $student) {
             $attendance = Attendance::where('user_id', $student->id)
+                // ->where('section_id', $sectionId)
                 ->where('subject_id', $subjectId)
                 ->first();
     
@@ -279,6 +292,7 @@ class AttendanceReportController extends Controller {
             // Calculate time in and time out
             $logs = Attendance::where('user_id', $attendance->user_id)
                 ->where('laboratory_id', $attendance->laboratory_id)
+                // ->where('section_id', $sectionId)
                 ->where('subject_id', $attendance->subject_id)
                 ->get();
     
