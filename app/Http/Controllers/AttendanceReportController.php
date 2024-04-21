@@ -244,7 +244,6 @@ class AttendanceReportController extends Controller {
         ->leftJoin('laboratories', 'laboratories.id', '=', 'schedules.laboratory_id')
         ->where('users.role', 'student') // Filter out non-student users
         ->where('schedules.subject_id', $subjectId) // Filter by subject ID
-        // ->where('schedules.section_id', $sectionId)
         ->select(
             'users.last_name',
             'users.first_name',
