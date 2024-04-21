@@ -55,6 +55,29 @@
         });
     </script>
 
+{{-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to show the preloader
+        function showPreloader() {
+            document.getElementById('preloader').style.display = 'block';
+            setTimeout(hidePreloader, 3000); // Adjust the delay as needed
+        }
+
+        // Function to hide the preloader
+        function hidePreloader() {
+            document.getElementById('preloader').style.opacity = 0;
+            setTimeout(function() {
+                document.getElementById('preloader').style.display = 'none';
+                showPreloader(); // Show the preloader again in a loop
+            }, 300);
+        }
+
+        // Start the loop by showing the preloader
+        showPreloader();
+    });
+</script> --}}
+
+
     <!-- Necessary code for autocompletion in tenant admin within add tenant modal -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>

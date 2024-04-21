@@ -28,8 +28,8 @@
                             <td>{{ $attendance->user->full_name ?? 'N/A'}}</td>
                             <td>Comlab {{ $attendance->laboratory->roomNumber ?? 'N/A'}}</td>
                             <td>{{ $attendance->subject->subjectName }}</td>
-                            <td>{{ $attendance->time_in }}</td>
-                            <td>{{ $attendance->time_out }}</td>
+                            <td>{{ date('h:i A', strtotime($attendance->time_in)) }}</td>
+                            <td>{{date('h:i A', strtotime( $attendance->time_out)) }}</td>
                             <td>{{ $attendance->date }}</td>
                             <td>{{ $attendance->total_duration }}</td>
 

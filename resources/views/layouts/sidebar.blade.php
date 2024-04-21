@@ -96,6 +96,16 @@
             </a>
         </li>
 
+        @if(Auth::user()->role !== 'instructor' && Auth::user()->role !== 'dean' && Auth::user()->role !== 'chairperson')
+        <li class="nav-heading">SETTINGS</li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->is('logs') ? '' : 'collapsed' }}" href="{{ url('/logs') }}">
+                <i class="bi bi-graph"></i>
+                <span>Logs</span>
+            </a>
+        </li>
+        @endif
+
         {{-- @if(Auth::user()->role !== 'admin')
         <li class="nav-item">
             <a class="nav-link {{ request()->is('reports') ? '' : 'collapsed' }}" href="{{ url('/reports') }}">
@@ -104,29 +114,5 @@
             </a>
         </li>
         @endif --}}
-
-        @if(Auth::user()->role === 'admin' || Auth::user()->role === 'support')
-        <li class="nav-heading">SETTINGS</li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#"
-                aria-expanded="false">
-                <i class="bi bi-gear"></i><span>Settings</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-
-            <ul id="icons-nav" class="nav-content collapse {{ Request::is('users/archived*') || Request::is('logs*') ? 'show' : '' }}"
-                data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{{ url('/logs') }}">
-                        <i class="bi bi-circle"></i><span>Logs</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url('/archived') }}">
-                        <i class="bi bi-circle"></i><span>Archives</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        @endif
     </ul>
 </aside>

@@ -48,7 +48,10 @@
   width: 150px; /* Adjust this to match your logo size */
   height: auto;
   animation: pulse 1.5s infinite;
-  border-radius: 50%; /* Ensure the logo container is circular */
+  border-top-left-radius: 0px; /* Adjust the top-left border radius */
+  border-top-right-radius: 0px; /* Adjust the top-right border radius */
+  border-bottom-left-radius: 50%; /* Set the bottom-left border radius to 0 */
+  border-bottom-right-radius: 50%;
 }
 
 @keyframes pulse {

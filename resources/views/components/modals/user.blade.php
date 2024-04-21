@@ -57,8 +57,6 @@
                             <option selected="" disabled="" value="">Choose...</option>
                             <option value="admin">Admin</option>
                             <option value="support">Support</option>
-                            <option value="dean">Dean</option>
-                            <option value="chairperson">Chairperson</option>
                             <option value="instructor">Instructor</option>
                         </select>
                         <div class="invalid-feedback">
@@ -183,16 +181,9 @@
                                 <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
                                 <option value="support" {{ $user->role == 'support' ? 'selected' : '' }}>Support
                                 </option>
-                                <option value="dean" {{ $user->role == 'dean' ? 'selected' : '' }}>Dean</option>
-                                <option value="chairperson" {{ $user->role == 'chairperson' ? 'selected' : '' }}>
-                                    Chairperson
-                                </option>
                                 <option value="instructor" {{ $user->role == 'instructor' ? 'selected' : '' }}>
                                     Instructor
                                 </option>
-                                <option value="part-time instructor"
-                                    {{ $user->role == 'part-time instructor' ? 'selected' : '' }}>
-                                    Part-time Instructor</option>
                             </select>
                             <div class="invalid-feedback">
                                 Please select a role.
