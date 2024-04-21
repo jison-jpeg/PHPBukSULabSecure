@@ -43,7 +43,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('attendance/record-attendance', [AttendanceController::class, 'recordAttendance'])->name('record-attendance')->middleware('guest');
 });
 
-Route::group(['middleware' => ['auth', 'role:admin']], function () {
+Route::group(['middleware' => ['auth', 'role:admin,support']], function () {
     // Dashboard Routes
     Route::get('/dashboard', [Dashboard::class, 'viewDashboard']);
 
@@ -111,7 +111,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
 });
 
 // Routes for Admin and Instructor
-Route::group(['middleware' => ['auth', 'role:admin,instructor']], function () {
+Route::group(['middleware' => ['auth', 'role:admin,instructor,support']], function () {
     // // Dashboard Routes
     // Route::get('/dashboard', [Dashboard::class, 'viewDashboard']);
 
