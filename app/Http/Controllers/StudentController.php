@@ -30,27 +30,32 @@ class StudentController extends Controller
         return view('pages.user', compact('users', 'colleges', 'departments', 'sections'));
     }
 
-    // VIEW STUDENT USER ASSOCIATED WITH A INSTRUCTOR USER BASED ON SCHEDULE SECTION
-    function viewStudentsByInstructor($id)
-    {
-        $colleges = College::all();
-        $departments = Department::all();
-        $sections = Section::all();
+    // VIEW STUDENT USER ASSOCIATED WITH AN INSTRUCTOR USER BASED ON SCHEDULE SECTION ID
+function viewStudentsByInstructor($id)
+{
+    $colleges = College::all();
+    $departments = Department::all();
+    $sections = Section::all();
 
-        // Retrieve all schedules associated with the instructor
-        $schedules = Schedule::where('user_id', $id)->get();
+    // Retrieve the section ID of the instructor's schedule subject
+    $instructorSchedule = Schedule::where('user_id', $id)->first();
 
-        // Retrieve all student IDs associated with the instructor's schedules
-        $studentIds = $schedules->pluck('section_id')->toArray();
+    if (!$instructorSchedule) {
+        // Handle case when no schedule is found for the instructor
+        return redirect(route('students'))->with("error", "No schedule found for the instructor.");
+    }
 
-        // Retrieve only students with section IDs associated with the instructor's schedules
-        $users = User::where('role', 'student')
-            ->whereIn('section_id', $studentIds)
-            ->with(['college', 'department', 'section'])
-            ->get();
+    $instructorSectionId = $instructorSchedule->section_id;
 
-        return view('pages.user', compact('users', 'colleges', 'departments', 'sections'));
-    }    
+    // Retrieve only students with the same section ID as the instructor's schedule subject
+    $users = User::where('role', 'student')
+        ->where('section_id', $instructorSectionId)
+        ->with(['college', 'department', 'section'])
+        ->get();
+
+    return view('pages.user', compact('users', 'colleges', 'departments', 'sections'));
+}
+
 
     // CREATE STUDENTS
     function studentsPost(Request $request)
