@@ -201,6 +201,10 @@ public function updateLockStatus(Request $request, $id)
         return redirect(route('laboratories'))->with("error", "Laboratory not found.");
     }
 
+    if ($laboratory->occupancyStatus == "On-Going") {
+        return redirect(route('laboratories'))->with("error", "Cannot lock laboratory with ongoing occupancy.");
+    }
+
     $lockStatus = $request->lockStatus;
     $laboratory->lockStatus = $lockStatus;
     $laboratory->save();
