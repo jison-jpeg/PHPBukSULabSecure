@@ -44,20 +44,54 @@ class ScheduleController extends Controller
             'days.*' => 'in:Mon,Tue,Wed,Thu,Fri,Sat,Sun',
         ]);
 
-        // Check if there's an existing schedule with the same subject and conflicting time and day
-        foreach ($request->days as $day) {
-            $existingSchedule = Schedule::where('subject_id', $request->subject_id)
-                ->where('days', 'like', '%' . $day . '%')
-                ->where(function ($query) use ($request) {
-                    $query->where('start_time', '<', $request->end_time)
-                        ->where('end_time', '>', $request->start_time);
-                })
-                ->first();
+        // Check for conflicting schedules
+        $conflictingSchedules = Schedule::where('user_id', $request->user_id)
+            ->where(function ($query) use ($request) {
+                foreach ($request->days as $day) {
+                    $query->where('days', 'like', '%' . $day . '%')
+                        ->where(function ($query) use ($request) {
+                            $query->where(function ($query) use ($request) {
+                                $query->where('start_time', '>=', $request->start_time)
+                                    ->where('start_time', '<', $request->end_time);
+                            })
+                                ->orWhere(function ($query) use ($request) {
+                                    $query->where('end_time', '>', $request->start_time)
+                                        ->where('end_time', '<=', $request->end_time);
+                                });
+                        });
+                }
+            })
+            ->exists();
 
-            if ($existingSchedule) {
-                return redirect(route('schedules'))->with("error", "Conflict: Another schedule exists for the same subject at the conflicting time and day.");
-            }
+        if ($conflictingSchedules) {
+            return redirect(route('schedules'))->with("error", "There is a scheduling conflict for the selected time and day.");
         }
+
+        // Check if the same schedule already exists
+        $existingSchedule = Schedule::where('college_id', $request->college_id)
+            ->where('department_id', $request->department_id)
+            ->where('subject_id', $request->subject_id)
+            ->where('section_id', $request->section_id)
+            ->where('user_id', $request->user_id)
+            ->where('laboratory_id', $request->laboratory_id)
+            ->where('start_time', $request->start_time)
+            ->where('end_time', $request->end_time)
+            ->where('days', implode(',', $request->days))
+            ->exists();
+
+        if ($existingSchedule) {
+            return redirect(route('schedules'))->with("error", "The same schedule already exists.");
+        }
+
+        // Check if the subject has the same instructor
+        $existingInstructor = Schedule::where('subject_id', $request->subject_id)
+            ->where('user_id', $request->user_id)
+            ->exists();
+
+        if ($existingInstructor) {
+            return redirect(route('schedules'))->with("error", "The instructor is already assigned to the subject.");
+        }
+
 
         $schedule = Schedule::create([
             'college_id' => $request->college_id,
@@ -138,7 +172,7 @@ class ScheduleController extends Controller
         $instructors = User::where('role', 'instructor')->get();
         return view('pages.schedule', compact('schedules', 'departments', 'colleges', 'sections', 'laboratories', 'subjects', 'instructors', 'users'));
     }
-    
+
 
     // VIEW SCHEDULES BY SECTION
     function viewSectionSchedules($section_id)

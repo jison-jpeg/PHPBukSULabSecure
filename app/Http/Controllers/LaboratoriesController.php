@@ -63,6 +63,7 @@ class LaboratoriesController extends Controller
                 })
                 ->with('user') // Include the user relationship
                 ->latest()
+                ->take(5)
                 ->get();
 
             // Modify the description of each log to include the user's name
@@ -202,7 +203,7 @@ public function updateLockStatus(Request $request, $id)
     }
 
     if ($laboratory->occupancyStatus == "On-Going") {
-        return redirect(route('laboratories'))->with("error", "Cannot lock laboratory with ongoing occupancy.");
+        return redirect(route('laboratories'))->with("error", "Cannot lock laboratory while being used.");
     }
 
     $lockStatus = $request->lockStatus;

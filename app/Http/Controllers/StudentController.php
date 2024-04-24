@@ -91,6 +91,7 @@ function viewStudentsByInstructor($id)
             return redirect(route('students'))->with("error", "Error creating student. Please try again.");
         } else {
             // Send an email to the student with their credentials
+            
             return redirect(route('students'))->with("success", "Student created successfully");
         }
     }

@@ -112,10 +112,14 @@
                             Please select at least one day.
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="reset" class="btn btn-secondary">Reset</button>
-                        <button type="submit" class="btn btn-primary">Confirm</button>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-primary">Import</button>
+                        <div>
+                            <button type="reset" class="btn btn-secondary me-2">Reset</button>
+                            <button type="submit" class="btn btn-primary">Confirm</button>
+                        </div>
                     </div>
+                                       
                 </form>
             </div>
         </div>

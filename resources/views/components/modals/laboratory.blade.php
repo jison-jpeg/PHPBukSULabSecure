@@ -12,7 +12,8 @@
                     @csrf
                     <div class="col-md-4">
                         <label for="roomNumber" class="form-label">Comlab No.</label>
-                        <input type="number" class="form-control" name="roomNumber" placeholder="ex. 1" min="1" required>
+                        <input type="number" class="form-control" name="roomNumber" placeholder="ex. 1" min="1"
+                            required>
                         <div class="invalid-feedback">
                             Please enter a comlab number.
                         </div>
@@ -158,18 +159,25 @@
                                     <h5 class="card-title">Recent Activity <span>| Today</span></h5>
 
                                     <div class="activity">
-                                        @foreach ($laboratory->instructorLogs as $log)
-                                            <div class="activity-item d-flex">
-                                                <div class="activite-label">
-                                                    {{ $log->created_at->diffForHumans(null, false, true, 1) }}</div>
-                                                <i
-                                                    class="bi bi-circle-fill activity-badge text-primary align-self-start"></i>
-                                                <div class="activity-content">
-                                                    {{ $log->description }}
-                                                </div>
-                                            </div><!-- End activity item-->
-                                        @endforeach
-
+                                        {{-- Check if log is empty --}}
+                                        @if ($laboratory->instructorLogs->isEmpty())
+                                            <div class="d-flex align-items-center">
+                                                <span>No recent activity found.</span>
+                                            </div>
+                                        @else
+                                            @foreach ($laboratory->instructorLogs as $log)
+                                                <div class="activity-item d-flex">
+                                                    <div class="activite-label">
+                                                        {{ $log->created_at->diffForHumans(null, false, true, 1) }}
+                                                    </div>
+                                                    <i
+                                                        class="bi bi-circle-fill activity-badge text-primary align-self-start"></i>
+                                                    <div class="activity-content">
+                                                        {{ $log->description }}
+                                                    </div>
+                                                </div><!-- End activity item-->
+                                            @endforeach
+                                        @endif
 
                                     </div>
 
@@ -182,15 +190,20 @@
                                     <div class="card-badge d-flex justify-content-between align-items-center">
                                         <span
                                             class="badge rounded-pill bg-{{ $laboratory->occupancyStatus == 'Available' ? 'success' : 'danger' }}">{{ $laboratory->occupancyStatus }}</span>
-                                            <div class="form-check form-switch mb-0">
-                                                <input class="form-check-input" type="checkbox" id="toggleSwitch{{ $laboratory->id }}" {{ $laboratory->lockStatus ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="toggleSwitch{{ $laboratory->id }}">Lock</label>
-                                                <form action="{{ route('updateLockStatus', ['id' => $laboratory->id]) }}" method="POST" id="toggleForm{{ $laboratory->id }}">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <input type="hidden" name="lockStatus" value="{{ $laboratory->lockStatus ? 0 : 1 }}">
-                                                </form>
-                                            </div>
+                                        <div class="form-check form-switch mb-0">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="toggleSwitch{{ $laboratory->id }}"
+                                                {{ $laboratory->lockStatus ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="toggleSwitch{{ $laboratory->id }}">Lock</label>
+                                            <form action="{{ route('updateLockStatus', ['id' => $laboratory->id]) }}"
+                                                method="POST" id="toggleForm{{ $laboratory->id }}">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="lockStatus"
+                                                    value="{{ $laboratory->lockStatus ? 0 : 1 }}">
+                                            </form>
+                                        </div>
                                     </div>
                                     <div class="d-flex align-items-center mb-5">
                                         <div class="ps-0 mb-5">
