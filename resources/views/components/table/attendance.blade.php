@@ -13,6 +13,7 @@
                         <th scope="col">Name</th>
                         <th scope="col">Room</th>
                         <th scope="col">Subject</th>
+                        <th scope="col">Section Code</th>
                         <th scope="col">Time In</th>
                         <th scope="col">Time Out</th>
                         <th scope="col">Date</th>
@@ -28,6 +29,7 @@
                             <td>{{ $attendance->user->full_name ?? 'N/A' }}</td>
                             <td>Comlab {{ $attendance->laboratory->roomNumber ?? 'N/A' }}</td>
                             <td>{{ $attendance->subject->subjectName }}</td>
+                            <td>{{ $attendance->section_code }}</td>
                             <td>{{ $attendance->time_in ? date('h:i A', strtotime($attendance->time_in)) : '' }}</td>
                             <td>{{ $attendance->time_out ? date('h:i A', strtotime($attendance->time_out)) : '' }}</td>
                             <td>{{ $attendance->date }}</td>

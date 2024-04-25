@@ -73,25 +73,22 @@ class AttendanceController extends Controller
             } else {
                 // Check user's arrival status
                 $scheduleStartTime = Carbon::parse($schedule->start_time);
-                $lateTime = $scheduleStartTime->copy()->addMinutes(15);
+                $lateTime = $scheduleStartTime->copy()->addMinutes(30);
                 $timeIn = Carbon::parse($attendance->time_in);
 
                 if ($timeIn->gt($lateTime)) {
                     $attendance->status = 'Late';
+                } elseif
+                // Check if user's time out is less than the schedule's end time, set the status to incomplete
+                ($timeOut->lt(Carbon::parse($schedule->end_time))) {
+                    $attendance->status = 'Incomplete';
                 } else {
                     $attendance->status = 'Present';
                 }
-
-                // Change the status to absent if the percentage is less than 15%
-                if ($attendance->percentage < 15) {
-                    $attendance->status = 'Absent';
-                } else {
-                    // Change the status to incomplete if the percentage is less than 50%
-                    if ($attendance->percentage < 50) {
-                        $attendance->status = 'Incomplete';
-                    }
-                }
+                               
             }
+            // Add section code to the attendance record
+            $attendance->section_code = $schedule->section->sectionCode;
         }
 
         return view('pages.attendance', compact('uniqueAttendances'));
@@ -184,25 +181,21 @@ class AttendanceController extends Controller
 
                 // Check user's arrival status
                 $scheduleStartTime = Carbon::parse($schedule->start_time);
-                $lateTime = $scheduleStartTime->copy()->addMinutes(15);
+                $lateTime = $scheduleStartTime->copy()->addMinutes(30);
                 $timeIn = Carbon::parse($attendance->time_in);
 
                 if ($timeIn->gt($lateTime)) {
                     $attendance->status = 'Late';
+                } elseif
+                // Check if user's time out is less than the schedule's end time, set the status to incomplete
+                ($timeOut->lt(Carbon::parse($schedule->end_time))) {
+                    $attendance->status = 'Incomplete';
                 } else {
                     $attendance->status = 'Present';
                 }
-
-                // Change the status to absent if the percentage is less than 15%
-                if ($attendance->percentage < 15) {
-                    $attendance->status = 'Absent';
-                } else {
-                    // Change the status to incomplete if the percentage is less than 50%
-                    if ($attendance->percentage < 50) {
-                        $attendance->status = 'Incomplete';
-                    }
-                }
             }
+            // Add section code to the attendance record
+            $attendance->section_code = $schedule->section->sectionCode;
         }
 
         // return view('pages.attendance', compact('uniqueAttendances'));
