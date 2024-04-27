@@ -14,29 +14,35 @@ class GoogleController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    public function callbackFromGoogle(){
-        try {
+    public function callbackFromGoogle()
+{
+    try {
+        // Retrieves email from Google itself
+        $user = Socialite::driver('google')->user();
+        $email = $user->email;
 
-            //retrieves email from Google itself
-            $user = Socialite::driver('google')->user();
-            $email = $user->email;
+        // Checks if email exists in the database
+        if ($this->emailExists($email)) {
+            $userModel = User::where('email', $email)->first();
 
-            //checks if email exist in the database
-            if($this->emailExists($email)){
-                $userModel = User::where('email', $email)->first();
+            // Authenticates user login
+            auth()->login($userModel);
+            session(['user' => $userModel]);
 
-                //authenticates user login
-                auth()->login($userModel);
-                session(['user' => $userModel]);
+            // Redirects based on user role
+            if ($userModel->role != 'admin' && $userModel->role != 'support') {
+                return redirect()->route('attendance');
+            } else {
                 return redirect()->intended('dashboard');
-            }else{
-                return redirect(route('login'))->with("error", "Unregistered account!");
             }
-
-        } catch (\Throwable $th) {
-            throw $th;
+        } else {
+            return redirect(route('login'))->with("error", "Unregistered account!");
         }
+    } catch (\Throwable $th) {
+        throw $th;
     }
+}
+
 
     private function emailExists($email)
     {
