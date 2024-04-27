@@ -49,6 +49,7 @@ class FacultyController extends Controller
             'department_id' => $request->department_id,
             'birthdate' => $request->birthdate,
             'phone' => $request->phone,
+            'status' => 'active',
             'password' => Hash::make(Str::random(10)), // Generate random password
         ]);
 
@@ -79,6 +80,7 @@ class FacultyController extends Controller
         $user->email = $request->email;
         $user->college_id = $request->college_id;
         $user->department_id = $request->department_id;
+        $user->status = $request->status;
 
         if ($user->save()) {
             // //Create log

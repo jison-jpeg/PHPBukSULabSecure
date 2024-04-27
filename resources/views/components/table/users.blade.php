@@ -79,6 +79,10 @@
                             <td>
                                 @if ($user->status === 'active')
                                     <span class="badge rounded-pill bg-success">{{ $user->status }}</span>
+                                @elseif ($user->status === 'dropped')
+                                    <span class="badge rounded-pill bg-secondary">{{ $user->status }}</span>
+                                    @elseif ($user->status === 'on-leave')
+                                    <span class="badge rounded-pill bg-warning text-black">{{ $user->status }}</span>
                                 @else
                                     <span class="badge rounded-pill bg-danger">{{ $user->status }}</span>
                                 @endif

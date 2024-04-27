@@ -239,6 +239,12 @@ class AttendanceController extends Controller
             return response()->json(['error' => 'Laboratory is locked by the Administrator'], 400);
         }
 
+        // Check user's status is not active, return error
+        if ($user->status !== 'active') {
+            return response()->json(['error' => 'User is not active'], 400);
+        }
+
+
         // Check if the user is an instructor
         $isInstructor = $user->role === 'instructor';
 

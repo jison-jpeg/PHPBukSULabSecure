@@ -86,19 +86,19 @@
                                             show: false
                                         },
                                         data: [{
-                                                value: 1,
+                                                value: {{ $presentCount }},
                                                 name: 'Present'
                                             },
                                             {
-                                                value: 2,
+                                                value: {{ $lateCount }},
                                                 name: 'Late'
                                             },
                                             {
-                                                value: 1,
+                                                value: {{ $incompleteCount }},
                                                 name: 'Incomplete'
                                             },
                                             {
-                                                value: 2,
+                                                value: {{ $absentCount }},
                                                 name: 'Absent'
                                             },
                                         ]

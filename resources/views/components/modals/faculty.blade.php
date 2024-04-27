@@ -88,7 +88,7 @@
                         method="POST" novalidate>
                         @csrf
                         @method('PUT')
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="first_name" class="form-label">First Name</label>
                             <input type="text" class="form-control" name="first_name"
                                 value="{{ $user->first_name }}" required>
@@ -96,7 +96,7 @@
                                 Please enter a valid first name.
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="middle_name" class="form-label">Middle Name</label>
                             <input type="text" class="form-control" name="middle_name"
                                 value="{{ $user->middle_name }}">
@@ -104,10 +104,22 @@
                                 Please enter a valid middle name.
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="last_name" class="form-label">Last Name</label>
                             <input type="text" class="form-control" name="last_name"
                                 value="{{ $user->last_name }}" required>
+                            <div class="invalid-feedback">
+                                Please enter a valid last name.
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" required="" name="status">
+                                <option selected="" disabled="" value="">Choose...</option>
+                                <option value="active" {{ $user->status == 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ $user->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                <option value="on-leave" {{ $user->status == 'on-leave' ? 'selected' : '' }}>On Leave</option>
+                            </select>
                             <div class="invalid-feedback">
                                 Please enter a valid last name.
                             </div>

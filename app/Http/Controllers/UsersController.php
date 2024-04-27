@@ -47,6 +47,12 @@ class UsersController extends Controller
             ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
             ->get();
 
+        // Initialize counts
+        $absentCount = 0;
+        $lateCount = 0;
+        $presentCount = 0;
+        $incompleteCount = 0;
+
         // Calculate the total duration spent in the laboratory for each attendance record
         foreach ($uniqueAttendances as $attendance) {
             $totalDuration = CarbonInterval::hours(0); // Initialize total duration as 0 hours
@@ -86,22 +92,26 @@ class UsersController extends Controller
 
             if ($timeIn->gt($lateTime)) {
                 $attendance->status = 'Late';
+                $lateCount++;
             } else {
                 $attendance->status = 'Present';
+                $presentCount++;
             }
 
             // Change the status to absent if the percentage is less than 15%
             if ($attendance->percentage < 15) {
                 $attendance->status = 'Absent';
+                $absentCount++;
             } else {
                 // Change the status to incomplete if the percentage is less than 50%
                 if ($attendance->percentage < 50) {
                     $attendance->status = 'Incomplete';
+                    $incompleteCount++;
                 }
             }
         }
 
-        return view('pages.report', compact('user', 'uniqueAttendances'));
+        return view('pages.report', compact('user', 'uniqueAttendances', 'absentCount', 'lateCount', 'presentCount', 'incompleteCount'));
     }
 
     //CREATE USERS
@@ -223,6 +233,5 @@ class UsersController extends Controller
         } else {
             return redirect(route('users'))->with("error", "User deletion failed!");
         }
-        
     }
 }

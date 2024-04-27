@@ -9,13 +9,6 @@
             <div class="modal-body">
                 <form class="row g-3 needs-validation" action="{{ route('users.post') }}" method="POST" novalidate>
                     @csrf
-                    {{-- <div class="col-md-3">
-                        <label for="rfid_number" class="form-label">RFID No.</label>
-                        <input type="text" class="form-control" name="rfid_number" placeholder="Scanning...">
-                        <div class="invalid-feedback">
-                            Please enter an 8-digit valid and unique RFID number.
-                        </div>
-                    </div> --}}
                     <div class="col-md-4">
                         <label for="first_name" class="form-label">First Name</label>
                         <input type="text" class="form-control" name="first_name" required>
@@ -130,11 +123,6 @@
                         @csrf
                         @method('PUT')
                         <div class="col-md-3">
-                            <label for="rfid_number" class="form-label">RFID No.</label>
-                            <input type="text" class="form-control" name="rfid_number"
-                                value="{{ $user->rfid_number }}" readonly>
-                        </div>
-                        <div class="col-md-3">
                             <label for="first_name" class="form-label">First Name</label>
                             <input type="text" class="form-control" name="first_name"
                                 value="{{ $user->first_name }}" required>
@@ -154,6 +142,19 @@
                             <label for="last_name" class="form-label">Last Name</label>
                             <input type="text" class="form-control" name="last_name"
                                 value="{{ $user->last_name }}" required>
+                            <div class="invalid-feedback">
+                                Please enter a valid last name.
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" required="" name="status">
+                                <option selected="" disabled="" value="">Choose...</option>
+                                <option value="active" {{ $user->status == 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ $user->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                <option value="dropped" {{ $user->status == 'dropped' ? 'selected' : '' }}>Dropped</option>
+                                <option value="inactive" {{ $user->status == 'inactive' ? 'selected' : '' }}>On Leave</option>
+                            </select>
                             <div class="invalid-feedback">
                                 Please enter a valid last name.
                             </div>
@@ -184,6 +185,9 @@
                                 <option value="instructor" {{ $user->role == 'instructor' ? 'selected' : '' }}>
                                     Instructor
                                 </option>
+                                <option value="student" {{ $user->role == 'student' ? 'selected' : '' }}>
+                                    Student
+                                </option>
                             </select>
                             <div class="invalid-feedback">
                                 Please select a role.
@@ -192,7 +196,7 @@
                         <div class="col-md-3 col-sm-6">
                             <label for="phone" class="form-label">Phone</label>
                             <input type="tel" class="form-control" name="phone" value="{{ $user->phone }}"
-                                pattern="[0-9]{11}" required>
+                                pattern="[0-9]{11}">
                             <div class="invalid-feedback">
                                 Please provide a valid phone number with 11 digits.
                             </div>
@@ -200,13 +204,11 @@
                         <div class="col-md-3 col-sm-6">
                             <label for="birthdate" class="form-label">Birthdate</label>
                             <input type="date" class="form-control" name="birthdate"
-                                value="{{ $user->birthdate }}" required>
+                                value="{{ $user->birthdate }}">
                             <div class="invalid-feedback">
                                 Please provide a birthdate.
                             </div>
                         </div>
-
-                        {{-- @livewire('userdropdown') --}}
 
                         <div class="col-md-3 col-sm-6">
                             <label for="college_id" class="form-label

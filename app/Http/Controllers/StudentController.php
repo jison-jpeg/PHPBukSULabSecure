@@ -87,6 +87,7 @@ class StudentController extends Controller
             'section_id' => $request->section_id,
             'birthdate' => $request->birthdate,
             'phone' => $request->phone,
+            'status' => 'active',
             'password' => Hash::make($plainPassword), 
         ]);
 
@@ -131,6 +132,7 @@ class StudentController extends Controller
         $user->section_id = $request->section_id;
         $user->birthdate = $request->birthdate;
         $user->phone = $request->phone;
+        $user->status = $request->status;
 
         if ($user->save()) {
             return redirect(route('students'))->with("success", "Student updated successfully");

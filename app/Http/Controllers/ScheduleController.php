@@ -25,6 +25,9 @@ class ScheduleController extends Controller
         $subjects = Subject::all();
         $users = User::all();
         $instructors = User::where('role', 'instructor')->get();
+
+        // View the status of the laboratory if it is available, occupied, or locked
+
         return view('pages.schedule', compact('schedules', 'departments', 'colleges', 'sections', 'laboratories', 'subjects', 'instructors', 'users'));
     }
 

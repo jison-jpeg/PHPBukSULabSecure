@@ -77,7 +77,9 @@
                                 </div>
                                 <div class="ps-3">
                                     <h6>
-                                        {{ $user->schedules->count() ?? 0 }}
+                                        {{ $user->schedules->sum(function ($schedule) {
+                                            return $schedule->section->students->count();
+                                        }) ?? 0 }}
                                     </h6>
                                     <span class="text-muted small pt-2 ps-1">total</span>
 
