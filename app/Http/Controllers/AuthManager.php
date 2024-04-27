@@ -30,6 +30,8 @@ class AuthManager extends Controller
             // Redirect users based on their role
             if ($user->role === 'instructor') {
                 return redirect('/attendance');
+            } elseif ($user->role === 'student') {
+                return redirect('/attendance');
             } else {
                 return redirect()->intended('dashboard');
             }

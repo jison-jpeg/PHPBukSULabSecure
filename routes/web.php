@@ -119,7 +119,7 @@ Route::group(['middleware' => ['auth', 'role:admin,support']], function () {
 });
 
 // Routes for Admin, Support and Instructor roles
-Route::group(['middleware' => ['auth', 'role:admin,instructor,support']], function () {
+Route::group(['middleware' => ['auth', 'role:admin,student,instructor,support']], function () {
 
     // Attendance Routes
     Route::group(['prefix' => 'attendance'], function () {

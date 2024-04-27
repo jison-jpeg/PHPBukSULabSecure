@@ -104,14 +104,6 @@ class UsersController extends Controller
         return view('pages.report', compact('user', 'uniqueAttendances'));
     }
 
-    //GET ARCHIVED USERS
-    function viewArchivedUsers()
-    {
-        $users = User::onlyTrashed()->get();
-        return view('archivedUsers', compact('users'));
-    }
-
-
     //CREATE USERS
     function usersPost(Request $request)
     {
@@ -142,6 +134,7 @@ class UsersController extends Controller
             'role' => $request->role,
             'birthdate' => $request->birthdate,
             'username' => $request->username,
+            'status' => 'active',
             'password' => Hash::make($plainPassword)
         ]);
 
@@ -189,6 +182,7 @@ class UsersController extends Controller
         $user->role = $request->role;
         $user->birthdate = $request->birthdate;
         $user->username = $request->username;
+        $user->status = $request->status;
 
         if ($user->save()) {
 

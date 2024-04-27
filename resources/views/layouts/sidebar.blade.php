@@ -9,7 +9,7 @@
 
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-heading">HOME</li>
-        @if (Auth::user()->role !== 'instructor' && Auth::user()->role !== 'dean' && Auth::user()->role !== 'chairperson')
+        @if (Auth::user()->role !== 'instructor' && Auth::user()->role !== 'dean' && Auth::user()->role !== 'chairperson' && Auth::user()->role !== 'student')
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('dashboard*') ? '' : 'collapsed' }}" href="{{ url('/dashboard') }}">
                     <i class="bi bi-grid"></i>
@@ -47,7 +47,7 @@
 
 
 
-        @if (Auth::user()->role !== 'instructor' && Auth::user()->role !== 'dean' && Auth::user()->role !== 'chairperson')
+        @if (Auth::user()->role !== 'instructor' && Auth::user()->role !== 'dean' && Auth::user()->role !== 'chairperson' && Auth::user()->role !== 'student')
             <li class="nav-heading">INSTITUTION</li>
 
             <li class="nav-item">
@@ -98,7 +98,7 @@
             </a>
         </li>
 
-        @if (Auth::user()->role !== 'instructor' && Auth::user()->role !== 'dean' && Auth::user()->role !== 'chairperson')
+        @if (Auth::user()->role !== 'instructor' && Auth::user()->role !== 'dean' && Auth::user()->role !== 'chairperson' && Auth::user()->role !== 'student')
             <li class="nav-heading">SETTINGS</li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('logs') ? '' : 'collapsed' }}" href="{{ url('/logs') }}">

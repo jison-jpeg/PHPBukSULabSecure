@@ -27,6 +27,7 @@ return new class extends Migration
             $table->foreignId('department_id')->nullable()->constrained('departments')->onDelete('set null');
             $table->unsignedBigInteger('section_id')->nullable()->constrained('sections')->onDelete('set null');
             $table->rememberToken();
+            $table->string('status')->default('active');
             $table->timestamps();
         }); 
     }

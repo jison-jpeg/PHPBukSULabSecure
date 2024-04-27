@@ -23,6 +23,7 @@
                         @endif
                         <th scope="col">College</th>
                         <th scope="col">Department</th>
+                        <th scope="col">Status</th>
                         @if (!request()->is('students') && !request()->is('faculties'))
                             <th scope="col">Phone</th>
                             <th scope="col">Birthdate</th>
@@ -75,6 +76,13 @@
                             <td>{{ $user->college ? $user->college->collegeName : 'N/A' }}</td>
                             <!-- Check if college is null -->
                             <td>{{ $user->department ? $user->department->departmentName : 'N/A' }}</td>
+                            <td>
+                                @if ($user->status === 'active')
+                                    <span class="badge rounded-pill bg-success">{{ $user->status }}</span>
+                                @else
+                                    <span class="badge rounded-pill bg-danger">{{ $user->status }}</span>
+                                @endif
+                            </td>
                             <!-- Check if department is null -->
                             @if (!request()->is('students') && !request()->is('faculties'))
                                 <td>{{ $user->phone ? $user->phone : 'N/A' }}</td>
