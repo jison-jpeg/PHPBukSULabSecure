@@ -41,10 +41,10 @@
                         </div>
                         <div class="row mt-5">
                             <div class="col-12">
-                                <span>{{ $lab->label }}:</span>
+                                <span class="fw-bold">{{ $lab->label }}:</span>
                             </div>
                             <div class="col-12">
-                                <span class="text-muted small">
+                                <span class="text small">
                                     {{ Str::limit($lab->recentUser, 18, '...') }}
                                 </span>
                             </div>

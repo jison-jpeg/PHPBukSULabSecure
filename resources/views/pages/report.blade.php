@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="card-body pb-0">
-                        <h5 class="card-title">Website Traffic <span>| Today</span></h5>
+                        <h5 class="card-title">Attendance Overview <span>| Today</span></h5>
 
                         <div id="donutChart" style="min-height: 350px;" class="echart"></div>
 

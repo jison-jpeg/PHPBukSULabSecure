@@ -130,7 +130,8 @@ class AttendanceController extends Controller
                     'schedule_id' => null,
                     'time_in' => null,
                     'time_out' => null,
-                    'date' => null, // Add date to dummy attendance
+                    'created_at' => now(),
+                    
                 ]);
                 $uniqueAttendances->push($dummyAttendance);
             }

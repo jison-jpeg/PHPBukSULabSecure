@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -59,4 +60,9 @@ class Attendance extends Model
     {
         return $this->belongsTo(Section::class);
     }
+
+    public function getDateAttribute($value)
+{
+    return Carbon::parse($value)->format('Y-m-d'); // Adjust the format according to your preference
+}
 }
