@@ -60,9 +60,4 @@ class Attendance extends Model
     {
         return $this->belongsTo(Section::class);
     }
-
-    public function getDateAttribute($value)
-{
-    return Carbon::parse($value)->format('Y-m-d'); // Adjust the format according to your preference
-}
 }

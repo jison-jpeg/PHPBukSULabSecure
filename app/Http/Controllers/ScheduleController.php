@@ -10,6 +10,7 @@ use App\Models\Laboratory;
 use App\Models\Schedule;
 use App\Models\Subject;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -17,6 +18,7 @@ class ScheduleController extends Controller
     // GET SCHEDULES
     function viewSchedules()
     {
+        $date = Carbon::today()->format('Y-m-d');
         $schedules = Schedule::all();
         $departments = Department::all();
         $colleges = College::all();
@@ -28,7 +30,7 @@ class ScheduleController extends Controller
 
         // View the status of the laboratory if it is available, occupied, or locked
 
-        return view('pages.schedule', compact('schedules', 'departments', 'colleges', 'sections', 'laboratories', 'subjects', 'instructors', 'users'));
+        return view('pages.schedule', compact('schedules', 'departments', 'colleges', 'sections', 'laboratories', 'subjects', 'instructors', 'users', 'date'));
     }
 
     //CREATE SCHEDULES

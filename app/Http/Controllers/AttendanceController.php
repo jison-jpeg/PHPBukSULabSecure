@@ -16,24 +16,33 @@ use Illuminate\Support\Facades\Validator;
 class AttendanceController extends Controller
 {
     // View Attendance
-    public function viewAttendance()
+    public function viewAttendance(Request $request)
     {
         // Get the authenticated user
         $user = Auth::user();
 
+        // Get the date from the request
+        $date = $request->input('date');
+
         // Check if the authenticated user is an instructor
         if ($user->role === 'instructor') {
             // Fetch unique attendance records for the authenticated instructor user only
-            $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
+            $query = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
                 ->where('user_id', $user->id) // Filter by authenticated user's ID
-                ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
-                ->get();
+                ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date');
         } else {
             // If the authenticated user is not an instructor, display all attendance records
-            $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
-                ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
-                ->get();
+            $query = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
+                ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date');
         }
+
+        // If date is provided, apply the date filter
+        if ($date) {
+            $query->whereDate('created_at', $date);
+        }
+
+        // Get the unique attendance records based on the query
+        $uniqueAttendances = $query->get();
 
         // Calculate the total duration spent in the laboratory for each attendance record
         foreach ($uniqueAttendances as $attendance) {
@@ -85,17 +94,16 @@ class AttendanceController extends Controller
                 } else {
                     $attendance->status = 'Present';
                 }
-                               
             }
             // Add section code to the attendance record
             $attendance->section_code = $schedule->section->sectionCode;
         }
 
-        return view('pages.attendance', compact('uniqueAttendances'));
+        return view('pages.attendance', compact('uniqueAttendances', 'date'));
     }
 
     // VIEW UNIQUE ATTENDANCE OF STUDENT BY SUBJECT IN THE SCHEDULE BASED ON SECTION. IF STUDENT DONT HAVE ATTENDANCE, DISPLAY ABSENT IN THE STATUS
-    public function viewStudentAttendance($sectionId, $subjectId)
+    public function viewStudentAttendance($sectionId, $subjectId, Request $request)
     {
         // Get the authenticated user
         $user = Auth::user();
@@ -110,11 +118,15 @@ class AttendanceController extends Controller
             ->where('section_id', $sectionId)
             ->first();
 
+        // Get the date from the request or use the current date if not provided
+        $date = $request->input('date', now()->format('Y-m-d'));
+
         // Fetch unique attendance records for the schedule associated with the specified section and subject
         $uniqueAttendances = collect();
         foreach ($students as $student) {
             $attendance = Attendance::where('user_id', $student->id)
                 ->where('subject_id', $subjectId)
+                ->whereDate('created_at', $date)
                 ->first();
 
             // If the attendance record exists, add it to the collection
@@ -131,8 +143,9 @@ class AttendanceController extends Controller
                     'time_in' => null,
                     'time_out' => null,
                     'created_at' => now(),
-                    
+
                 ]);
+                $dummyAttendance->date = $date;
                 $uniqueAttendances->push($dummyAttendance);
             }
         }
@@ -200,7 +213,7 @@ class AttendanceController extends Controller
         }
 
         // return view('pages.attendance', compact('uniqueAttendances'));
-        return view('pages.attendance', compact('uniqueAttendances', 'sectionId', 'subjectId'));
+        return view('pages.attendance', compact('uniqueAttendances', 'sectionId', 'subjectId', 'date'));
     }
 
 

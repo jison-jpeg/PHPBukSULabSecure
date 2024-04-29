@@ -2,6 +2,14 @@
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-title">Attendance</h5>
+            <form action="{{ isset($sectionId) ? route('attendance.student', ['sectionId' => $sectionId, 'subjectId' => $subjectId, 'date' => $date ?? '']) : route('attendance', ['date' => $date ?? '']) }}" method="GET" class="d-flex">
+                @if(isset($sectionId))
+                    <input type="hidden" name="subjectId" value="{{ $subjectId }}">
+                    <input type="hidden" name="sectionId" value="{{ $sectionId }}">
+                @endif
+                <input type="date" name="date" class="form-control" value="{{ $date ?? '' }}">
+                <button type="submit" class="btn btn-primary ms-2">Filter</button>
+            </form>
             <button type="button" class="btn btn-primary" id="exportButton">Export</button>
         </div>
         <!-- Table with hoverable rows -->

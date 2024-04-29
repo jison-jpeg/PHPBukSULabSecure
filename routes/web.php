@@ -124,7 +124,7 @@ Route::group(['middleware' => ['auth', 'role:admin,student,instructor,support']]
     // Attendance Routes
     Route::group(['prefix' => 'attendance'], function () {
         Route::get('/', [AttendanceController::class, 'viewAttendance'])->name('attendance');
-        Route::get('/{sectionId}/{subjectId}', [AttendanceController::class, 'viewStudentAttendance'])->name('attendance.student');
+        Route::get('/{sectionId?}/{subjectId?}', [AttendanceController::class, 'viewStudentAttendance'])->name('attendance.student');
     });
 
     // Subjects Route
