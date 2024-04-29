@@ -1,4 +1,4 @@
-<div class="col-xxl-4 col-md-4">
+<div class="col-xxl-3 col-md-4">
     <div class="card info-card sales-card">
 
         <div class="card-body">
@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<div class="col-xxl-4 col-md-4">
+<div class="col-xxl-3 col-md-4">
     <div class="card info-card student-card">
 
         <div class="card-body">
@@ -43,7 +43,7 @@
     </div>
 </div>
 
-<div class="col-xxl-4 col-md-4">
+<div class="col-xxl-3 col-md-4">
     <div class="card info-card revenue-card">
 
         <div class="card-body">
@@ -66,7 +66,7 @@
     </div>
 </div>
 
-<div class="col-xxl-12 col-md-12">
+<div class="col-xxl-3 col-md-12">
     <div class="card info-card customers-card">
 
         <div class="card-body">

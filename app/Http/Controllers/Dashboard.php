@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\Laboratory;
 use Illuminate\Http\Request;
 use App\Models\Logs;
@@ -13,17 +14,16 @@ class Dashboard extends Controller
     // View Dashboard
     function viewDashboard(){
 
-        // Get all total users
+        // Get total users, total students, total instructors, and total laboratories
         $totalUsers = User::count();
-
-        // Get all total users with role of student
         $totalStudents = User::where('role', 'student')->count();
-
-        // Get all total users with role of instructor
         $totalInstructors = User::where('role', 'instructor')->count();
-
-        // Get all total laboratories
         $totalLaboratories = Laboratory::count();
+
+        // Fetch unique attendance records
+        $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
+            ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
+            ->get();
 
         $logs = Logs::orderBy('created_at', 'desc')->take(10)->get();
 

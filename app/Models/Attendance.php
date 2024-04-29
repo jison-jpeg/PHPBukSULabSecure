@@ -30,6 +30,16 @@ class Attendance extends Model
     }
 
     /**
+     * Get the user's full name.
+     *
+     * @return string
+     */
+    public function getUserNameAttribute()
+    {
+        return $this->user->full_name; // Assuming you have defined the full name attribute in your User model
+    }
+
+    /**
      * Get the laboratory that the attendance belongs to.
      */
     public function laboratory()
@@ -60,4 +70,6 @@ class Attendance extends Model
     {
         return $this->belongsTo(Section::class);
     }
+
+    
 }

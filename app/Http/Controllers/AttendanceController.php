@@ -216,7 +216,6 @@ class AttendanceController extends Controller
         return view('pages.attendance', compact('uniqueAttendances', 'sectionId', 'subjectId', 'date'));
     }
 
-
     // Record Attendance
     public function recordAttendance(Request $request)
     {
