@@ -9,7 +9,7 @@
 
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-heading">HOME</li>
-        @if (Auth::user()->role !== 'instructor' && Auth::user()->role !== 'dean' && Auth::user()->role !== 'chairperson' && Auth::user()->role !== 'student')
+        @if (Auth::user()->role !== 'instructor' && Auth::user()->role !== 'student')
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('dashboard*') ? '' : 'collapsed' }}" href="{{ url('/dashboard') }}">
                     <i class="bi bi-grid"></i>
@@ -18,8 +18,6 @@
             </li>
 
             <li class="nav-heading">MENU</li>
-
-            {{-- Hide if user is instructoror dean or chairperson --}}
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('laboratories*') ? '' : 'collapsed' }}"
                     href="{{ url('/laboratories') }}">
@@ -36,20 +34,16 @@
             </li>
         @endif
 
-        @if (Auth::user()->role !== 'support')
         <li class="nav-item">
             <a class="nav-link {{ request()->is('attendance*') ? '' : 'collapsed' }}" href="{{ url('/attendance') }}">
                 <i class="bi bi-clipboard2-check"></i>
                 <span>Attendance</span>
             </a>
         </li>
-        @endif
 
+        <li class="nav-heading">INSTITUTION</li>
 
-
-        @if (Auth::user()->role !== 'instructor' && Auth::user()->role !== 'dean' && Auth::user()->role !== 'chairperson' && Auth::user()->role !== 'student')
-            <li class="nav-heading">INSTITUTION</li>
-
+        @if (Auth::user()->role !== 'instructor' && Auth::user()->role !== 'student')
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('colleges*') ? '' : 'collapsed' }}" href="{{ url('/colleges') }}">
                     <i class="bi bi-bank"></i>
@@ -72,23 +66,20 @@
                 </a>
             </li>
 
-            @if (Auth::user()->role !== 'support')
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('subjects*') ? '' : 'collapsed' }}" href="{{ url('/subjects') }}">
                     <i class="bi bi-book"></i>
                     <span>Subject Management</span>
                 </a>
             </li>
-            @endif
         @endif
-        @if (Auth::user()->role !== 'support')
+
         <li class="nav-item">
             <a class="nav-link {{ request()->is('schedules*') ? '' : 'collapsed' }}" href="{{ url('/schedules') }}">
                 <i class="bi bi-calendar2-week"></i>
                 <span>Class Schedule</span>
             </a>
         </li>
-        @endif
 
         <li class="nav-heading">USER</li>
         <li class="nav-item">
@@ -98,7 +89,7 @@
             </a>
         </li>
 
-        @if (Auth::user()->role !== 'instructor' && Auth::user()->role !== 'dean' && Auth::user()->role !== 'chairperson' && Auth::user()->role !== 'student')
+        @if (Auth::user()->role !== 'instructor' && Auth::user()->role !== 'student')
             <li class="nav-heading">SETTINGS</li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('logs') ? '' : 'collapsed' }}" href="{{ url('/logs') }}">

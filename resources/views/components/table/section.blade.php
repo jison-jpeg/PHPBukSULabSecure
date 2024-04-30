@@ -9,7 +9,7 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Department Name</th>
+                        <th scope="col">Section Code</th>
                         <th scope="col">Description</th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>

@@ -28,7 +28,11 @@
                             <th scope="col">Phone</th>
                             <th scope="col">Birthdate</th>
                         @endif
-                        <th scope="col" class="text-center">Action</th>
+
+                        {{-- hide action if request is users but show if authenticated user is admin --}}
+                        @if ((!request()->is('users') && !request()->is('students') && !request()->is('faculties')) || Auth::user()->role === 'admin')                            <th scope="col" class="text-center">Action</th>
+                        @endif
+                        {{-- <th scope="col" class="text-center">Action</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -93,6 +97,7 @@
                                 <td>{{ $user->birthdate ? $user->birthdate : 'N/A' }}</td>
                             @endif
                             <td>
+                                @if ((!request()->is('users') && !request()->is('students') && !request()->is('faculties')) || Auth::user()->role === 'admin')
                                 <div class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#updateModal{{ $user->id }}">
@@ -104,6 +109,7 @@
                                         Delete
                                     </button>
                                 </div>
+                                @endif
                             </td>
                         </tr>
                     @endforeach

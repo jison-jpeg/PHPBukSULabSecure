@@ -4,7 +4,10 @@
             <div class="card-link">
                 <div class="card lab-card">
                     <div class="filter">
+                        {{-- If authenticated user is not admin, hide the button --}}
+                        @if (Auth::user()->role === 'admin')
                         <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        @endif
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                             <li class="dropdown-header text-start">
                                 <h6>OPTIONS</h6>

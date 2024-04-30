@@ -12,9 +12,11 @@
     </div>
 
     <div class="mt-3 mb-3">
+        @if (Auth::user()->role === 'admin')
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
             Add Laboratory
         </button>
+        @endif
     </div>
     @include('components.modals.laboratory')
 

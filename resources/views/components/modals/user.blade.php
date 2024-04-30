@@ -49,7 +49,8 @@
                         <select class="form-select" id="role" required="" name="role">
                             <option selected="" disabled="" value="">Choose...</option>
                             <option value="admin">Admin</option>
-                            <option value="support">Support</option>
+                            <option value="college-dean">College Dean</option>
+                            <option value="chairpeson">Chairpeson</option>
                             <option value="instructor">Instructor</option>
                         </select>
                         <div class="invalid-feedback">
@@ -180,14 +181,10 @@
                             <select class="form-select" id="role" required="" name="role">
                                 <option selected="" disabled="" value="">Choose...</option>
                                 <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="support" {{ $user->role == 'support' ? 'selected' : '' }}>Support
-                                </option>
-                                <option value="instructor" {{ $user->role == 'instructor' ? 'selected' : '' }}>
-                                    Instructor
-                                </option>
-                                <option value="student" {{ $user->role == 'student' ? 'selected' : '' }}>
-                                    Student
-                                </option>
+                                <option value="college-dean" {{ $user->role == 'college-dean' ? 'selected' : '' }}>College Dean</option>
+                                <option value="chairpeson" {{ $user->role == 'chairpeson' ? 'selected' : '' }}>Chairpeson
+                                <option value="instructor" {{ $user->role == 'instructor' ? 'selected' : '' }}>Instructor</option>
+                                <option value="student" {{ $user->role == 'student' ? 'selected' : '' }}>Student</option>
                             </select>
                             <div class="invalid-feedback">
                                 Please select a role.

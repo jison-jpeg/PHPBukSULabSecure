@@ -12,6 +12,7 @@ use App\Models\Subject;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
 {
@@ -19,7 +20,19 @@ class ScheduleController extends Controller
     function viewSchedules()
     {
         $date = Carbon::today()->format('Y-m-d');
-        $schedules = Schedule::all();
+        $user = Auth::user(); // Get the authenticated user
+        $role = $user->role;
+
+        if ($role === 'admin' || $role === 'college-dean' || $role === 'chairperson') {
+            $schedules = Schedule::all();
+        } elseif ($role === 'instructor') {
+            $instructor_id = $user->id;
+            $schedules = Schedule::where('user_id', $instructor_id)->get();
+        } elseif ($role === 'student') {
+            $section_id = $user->section_id;
+            $schedules = Schedule::where('section_id', $section_id)->get();
+        }
+        
         $departments = Department::all();
         $colleges = College::all();
         $sections = Section::all();
@@ -141,7 +154,7 @@ class ScheduleController extends Controller
             ->where('days', implode(',', $request->days))
             ->where('id', '!=', $id)
             ->exists();
-            
+
         if ($existingSchedule) {
             return redirect(route('schedules'))->with("error", "The same schedule already exists.");
         }

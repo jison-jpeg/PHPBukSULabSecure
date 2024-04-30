@@ -188,8 +188,8 @@
                             <div class="card lab-card">
                                 <div class="card-body">
                                     <div class="card-badge d-flex justify-content-between align-items-center">
-                                        <span
-                                            class="badge rounded-pill bg-{{ $laboratory->occupancyStatus == 'Available' ? 'success' : 'danger' }}">{{ $laboratory->occupancyStatus }}</span>
+                                        <span class="badge rounded-pill bg-{{ $laboratory->occupancyStatus == 'Available' ? 'success' : 'danger' }}">{{ $laboratory->occupancyStatus }}</span>
+                                        @if (Auth::user()->role === 'admin')
                                         <div class="form-check form-switch mb-0">
                                             <input class="form-check-input" type="checkbox"
                                                 id="toggleSwitch{{ $laboratory->id }}"
@@ -204,6 +204,7 @@
                                                     value="{{ $laboratory->lockStatus ? 0 : 1 }}">
                                             </form>
                                         </div>
+                                        @endif
                                     </div>
                                     <div class="d-flex align-items-center mb-5">
                                         <div class="ps-0 mb-5">

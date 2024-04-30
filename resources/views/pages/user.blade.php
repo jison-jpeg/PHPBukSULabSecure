@@ -5,7 +5,7 @@
         Student Management
     @elseif (Request::is('faculties'))
         Faculty Management
-    @else 
+    @else
         User Management
     @endif
 @endsection
@@ -22,23 +22,29 @@
     </div>
 
     @if (Request::is('students'))
-        <div class="mt-3 mb-3">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                Add Student
-            </button>
-        </div>
+        @if (Auth::user()->role === 'admin')
+            <div class="mt-3 mb-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    Add Student
+                </button>
+            </div>
+        @endif
     @elseif (Request::is('faculties'))
-        <div class="mt-3 mb-3">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                Add Faculty
-            </button>
-        </div>
+        @if (Auth::user()->role === 'admin')
+            <div class="mt-3 mb-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    Add Faculty
+                </button>
+            </div>
+        @endif
     @else
-        <div class="mt-3 mb-3">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                Add User
-            </button>
-        </div>
+        @if (Auth::user()->role === 'admin')
+            <div class="mt-3 mb-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    Add User
+                </button>
+            </div>
+        @endif
     @endif
 
 
