@@ -12,7 +12,8 @@ use Carbon\Carbon;
 class Dashboard extends Controller
 {
     // View Dashboard
-    function viewDashboard(){
+    function viewDashboard()
+    {
 
         // Get total users, total students, total instructors, and total laboratories
         $totalUsers = User::count();
@@ -20,10 +21,55 @@ class Dashboard extends Controller
         $totalInstructors = User::where('role', 'instructor')->count();
         $totalLaboratories = Laboratory::count();
 
-        // Fetch unique attendance records
-        $uniqueAttendances = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
-            ->groupBy('user_id', 'laboratory_id', 'subject_id', 'date')
+        // Query to get total unique attendances of each instructor for each month
+        $attendanceCounts = Attendance::selectRaw('user_id, DATE_FORMAT(created_at, "%b %Y") as month_year, COUNT(*) as total_attendances')
+            ->whereHas('user', function ($query) {
+                $query->where('role', 'instructor');
+            })
+            ->whereRaw('created_at >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)') // Select data from the last two months
+            ->groupBy('user_id', 'month_year')
+            ->orderBy('month_year', 'asc')
             ->get();
+
+
+
+        // Prepare data for the chart
+        $chartData = [];
+        foreach ($attendanceCounts as $attendance) {
+            $instructorId = $attendance->user_id;
+            $instructor = User::find($instructorId);
+            $name = $instructor->full_name;
+            $monthYear = $attendance->month_year;
+            $totalAttendances = $attendance->total_attendances;
+
+            if (!isset($chartData[$instructorId])) {
+                $chartData[$instructorId] = [
+                    'name' => $name,
+                    'data' => []
+                ];
+            }
+
+            $chartData[$instructorId]['data'][$monthYear] = (int)$totalAttendances;
+        }
+
+        // Convert data to array format expected by the frontend
+        $formattedChartData = [];
+        foreach ($chartData as $instructorId => $data) {
+            $formattedChartData[] = [
+                'name' => $data['name'],
+                'data' => $data['data']
+            ];
+        }
+
+
+        // Get recent logs
+        $logs = Logs::orderBy('created_at', 'desc')->take(10)->get();
+
+        // Format time difference for logs
+        foreach ($logs as $log) {
+            $log->formatted_time_diff = Carbon::parse($log->created_at)->diffForHumans();
+        }
+
 
         $logs = Logs::orderBy('created_at', 'desc')->take(10)->get();
 
@@ -48,9 +94,7 @@ class Dashboard extends Controller
 
             $log->formatted_time_diff = $formattedTimeDiff;
         }
-        
-        return view('pages.dashboard', compact('logs', 'totalUsers', 'totalInstructors', 'totalLaboratories', 'totalStudents'));
-    }
 
-    
+        return view('pages.dashboard', compact('logs', 'totalUsers', 'totalInstructors', 'totalLaboratories', 'totalStudents', 'formattedChartData'));
+    }
 }

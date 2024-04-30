@@ -25,9 +25,15 @@ class AuthManager extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            // dd($user.attributes);
+
+            // Check if user is active
+            if ($user->status != 'active') {
+                Auth::logout();
+                return redirect(route('login'))->with("error", "Your account is no longer active. Please contact the administrator.");
+            }
+
             session(['user' => $user]);
-            // Redirect users based on their role
+
             if ($user->role === 'instructor') {
                 return redirect('/attendance');
             } elseif ($user->role === 'student') {

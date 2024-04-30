@@ -24,8 +24,8 @@ class AttendanceController extends Controller
         // Get the date from the request
         $date = $request->input('date');
 
-        // Check if the authenticated user is an instructor
-        if ($user->role === 'instructor') {
+        // Check if the authenticated user is an instructor or student
+        if ($user->role === 'instructor' || $user->role === 'student') {
             // Fetch unique attendance records for the authenticated instructor user only
             $query = Attendance::selectRaw('MIN(id) as id, user_id, laboratory_id, subject_id, MIN(time_in) as time_in, MAX(time_out) as time_out, DATE(created_at) as date')
                 ->where('user_id', $user->id) // Filter by authenticated user's ID
@@ -43,6 +43,7 @@ class AttendanceController extends Controller
 
         // Get the unique attendance records based on the query
         $uniqueAttendances = $query->get();
+        
 
         // Calculate the total duration spent in the laboratory for each attendance record
         foreach ($uniqueAttendances as $attendance) {

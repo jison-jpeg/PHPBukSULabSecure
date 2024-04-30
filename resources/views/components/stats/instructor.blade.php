@@ -22,62 +22,75 @@
 
         <script>
           document.addEventListener("DOMContentLoaded", () => {
-            new ApexCharts(document.querySelector("#reportsChart"), {
-              series: [{
-                name: 'Instructor 1',
-                data: [31, 40, 28, 51, 42, 82, 56],
-              }, {
-                name: 'Instructor 2',
-                data: [11, 32, 45, 32, 34, 52, 41]
-              }, {
-                name: 'Instructor 3',
-                data: [15, 11, 32, 18, 9, 24, 11]
-              }, {
-                name: 'Instructor 4',
-                data: [20, 12, 32, 34, 10, 27, 12]
-              }, {
-                name: 'Instructor 5',
-                data: [16, 9, 5, 10, 7, 2, 1]
-              }],
-              chart: {
-                height: 350,
-                type: 'area',
-                toolbar: {
-                  show: false
-                },
-              },
-              markers: {
-                size: 4
-              },
-              colors: ['#4154f1', '#2eca6a', '#ff771d'],
-              fill: {
-                type: "gradient",
-                gradient: {
-                  shadeIntensity: 1,
-                  opacityFrom: 0.3,
-                  opacityTo: 0.4,
-                  stops: [0, 90, 100]
-                }
-              },
-              dataLabels: {
-                enabled: false
-              },
-              stroke: {
-                curve: 'smooth',
-                width: 2
-              },
-              xaxis: {
-                type: 'datetime',
-                categories: ["2024-01-19T00:00:00.000Z", "2024-02-19T01:30:00.000Z", "2024-03-19T02:30:00.000Z", "2024-04-19T03:30:00.000Z", "2024-05-19T04:30:00.000Z", "2024-06-19T05:30:00.000Z", "2024-07-19T06:30:00.000Z"]
-              },
-              tooltip: {
-                x: {
-                  format: 'dd/MM/yy HH:mm'
-                },
-              }
-            }).render();
+              const chartData = @json($formattedChartData);
+      
+              // Extract unique months from the chart data
+              const uniqueMonths = [...new Set(chartData.flatMap(item => Object.keys(item.data)))];
+              
+              // Sort unique months chronologically
+              const sortedMonths = uniqueMonths.sort((a, b) => new Date(a) - new Date(b));
+      
+              // Sort instructors based on total data
+              chartData.sort((a, b) => {
+                  const totalDataA = Object.values(a.data).reduce((acc, cur) => acc + cur, 0);
+                  const totalDataB = Object.values(b.data).reduce((acc, cur) => acc + cur, 0);
+                  return totalDataB - totalDataA;
+              });
+      
+              new ApexCharts(document.querySelector("#reportsChart"), {
+                  series: chartData.map(item => ({
+                      name: item.name,
+                      data: sortedMonths.map(month => item.data[month] || 0) // Fill missing data with 0
+                  })),
+                  chart: {
+                      height: 350,
+                      type: 'area',
+                      toolbar: {
+                          show: false
+                      },
+                  },
+                  markers: {
+                      size: 4
+                  },
+                  colors: ['#4154f1', '#2eca6a', '#ff771d'],
+                  fill: {
+                      type: "gradient",
+                      gradient: {
+                          shadeIntensity: 1,
+                          opacityFrom: 0.3,
+                          opacityTo: 0.4,
+                          stops: [0, 90, 100]
+                      }
+                  },
+                  dataLabels: {
+                      enabled: false
+                  },
+                  stroke: {
+                      curve: 'smooth',
+                      width: 2
+                  },
+                  xaxis: {
+                      categories: sortedMonths.map(month => month.replace(/(\d{4})-(\d{2})/, '$2 $1')) // Format month and year
+                  },
+                  tooltip: {
+                      x: {
+                          format: 'MMM yyyy' // Format for displaying month and year only
+                      },
+                      y: {
+                          formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+                              // Get the instructor name
+                              const instructorName = w.globals.seriesNames[seriesIndex];
+                              return `${instructorName}: ${value}`; // Display tooltip with instructor name
+                          }
+                      }
+                  }
+              }).render();
           });
-        </script>
+      </script>
+      
+      
+        
+        
         <!-- End Line Chart -->
 
       </div>

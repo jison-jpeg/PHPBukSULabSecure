@@ -25,6 +25,11 @@ class GoogleController extends Controller
         if ($this->emailExists($email)) {
             $userModel = User::where('email', $email)->first();
 
+            // Check if user is active
+            if ($userModel->status != 'active') {
+                return redirect(route('login'))->with("error", "Your account is no longer active. Please contact the administrator.");
+            }
+
             // Authenticates user login
             auth()->login($userModel);
             session(['user' => $userModel]);

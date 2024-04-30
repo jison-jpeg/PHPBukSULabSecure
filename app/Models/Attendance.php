@@ -71,5 +71,15 @@ class Attendance extends Model
         return $this->belongsTo(Section::class);
     }
 
+    /**
+     * Get the total number of attendances for each user.
+     *
+     * @return int
+     */
+    public static function getTotalAttendancesPerUser($userId)
+    {
+        return self::where('user_id', $userId)->count();
+    }
+
     
 }
