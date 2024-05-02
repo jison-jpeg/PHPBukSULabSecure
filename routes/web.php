@@ -72,6 +72,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
         Route::get('/instructor/{id}', [ScheduleController::class, 'viewUserSchedules'])->name('schedules.user');
         Route::get('/section/{section_id}', [ScheduleController::class, 'viewSectionSchedules'])->name('schedules.section');
+        Route::post('/import/schedule', [ScheduleController::class, 'importSchedule'])->name('import.schedule');
     });
 
 

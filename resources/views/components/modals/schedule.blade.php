@@ -1,6 +1,6 @@
 {{-- Add Schedule Modal --}}
 <div class="modal fade" id="addModal" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Assign New Schedule</h5>
@@ -103,7 +103,7 @@
                         @foreach (['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as $day)
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="checkbox" name="days[]"
-                                    value="{{ $day }}" id="{{ $day }}">
+                                    value="{{ $day }}" id="{{ $day }}" required>
                                 <label class="form-check-label"
                                     for="{{ $day }}">{{ $day }}</label>
                             </div>
@@ -112,16 +112,12 @@
                             Please select at least one day.
                         </div>
                     </div>
-                    <div class="modal-footer d-flex justify-content-between">
-                        <button type="button" class="btn btn-primary">Import</button>
-                        <div>
-                            <button type="reset" class="btn btn-secondary me-2">Reset</button>
-                            <button type="submit" class="btn btn-primary">Confirm</button>
-                        </div>
-                    </div>
-                                       
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                    <button type="submit" class="btn btn-primary">Confirm</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -282,7 +278,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <p>Are you sure you want to delete this schedule for <br><strong>{{ $schedule->subject->subjectName }}</strong> ?</p>
+                    <p>Are you sure you want to delete this schedule for
+                        <br><strong>{{ $schedule->subject->subjectName }}</strong> ?
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -296,3 +294,33 @@
         </div>
     </div>
 @endforeach
+
+{{-- Import Schedule --}}
+<div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import Schedule</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="row g-3 needs-validation" method="POST"
+                    enctype="multipart/form-data" novalidate>
+                    @csrf
+                    <div class="col-md-12">
+                        <label for="file" class="form-label">Upload File</label>
+                        <input class="form-control" type="file" name="file" id="file" accept=".xlsx, .xls" required>
+                        <div class="invalid-feedback">
+                            Please upload a valid Excel file (.xlsx or .xls).
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
