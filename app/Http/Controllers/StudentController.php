@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\StudentImport;
 use App\Mail\StudentCredentialsMail;
 use App\Models\College;
 use App\Models\Department;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
@@ -154,6 +156,28 @@ class StudentController extends Controller
             return redirect(route('students'))->with("success", "Student deleted successfully");
         } else {
             return redirect(route('students'))->with("error", "Error deleting student. Please try again.");
+        }
+    }
+
+    // IMPORT STUDENTS
+    public function importStudents(Request $request)
+    {
+        $request->validate([
+            'file' => [
+                'required',
+                'file',
+                'mimes:xlsx,xls',
+            ]
+        ]);
+    
+        $file = $request->file('file');
+    
+        // Import data from Excel file
+        try {
+            Excel::import(new StudentImport, $file);
+            return redirect()->back()->with('success', 'Students imported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error importing students: ' . $e->getMessage());
         }
     }
 }

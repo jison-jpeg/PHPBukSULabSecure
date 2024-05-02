@@ -10,9 +10,12 @@ use App\Models\Laboratory;
 use App\Models\Schedule;
 use App\Models\Subject;
 use App\Models\User;
+use App\Imports\ScheduleImport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class ScheduleController extends Controller
 {
@@ -190,7 +193,7 @@ class ScheduleController extends Controller
         return redirect(route('schedules'))->with("success", "Schedule deleted successfully");
     }
 
-    // VIEW SCHEDULES BY USER
+    // VIEW SCHEDULES BY USE
     function viewUserSchedules($id)
     {
         $schedules = Schedule::where('user_id', $id)->get();
@@ -204,7 +207,6 @@ class ScheduleController extends Controller
         return view('pages.schedule', compact('schedules', 'departments', 'colleges', 'sections', 'laboratories', 'subjects', 'instructors', 'users'));
     }
 
-
     // VIEW SCHEDULES BY SECTION
     function viewSectionSchedules($section_id)
     {
@@ -217,5 +219,27 @@ class ScheduleController extends Controller
         $users = User::all();
         $instructors = User::where('role', 'instructor')->get();
         return view('pages.schedule', compact('schedules', 'departments', 'colleges', 'sections', 'laboratories', 'subjects', 'instructors', 'users'));
+    }
+
+    // IMPORT SCHEDULES
+    public function importSchedule(Request $request)
+    {
+        $request->validate([
+            'file' => [
+                'required',
+                'file',
+                'mimes:xlsx,xls',
+            ]
+        ]);
+    
+        $file = $request->file('file');
+    
+        // Import data from Excel file
+        try {
+            Excel::import(new ScheduleImport, $file);
+            return redirect()->back()->with('success', 'Schedule imported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error importing schedule: ' . $e->getMessage());
+        }
     }
 }

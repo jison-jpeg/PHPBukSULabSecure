@@ -27,6 +27,9 @@
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                     Add Student
                 </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
+                    Import Students
+                </button>
             </div>
         @endif
     @elseif (Request::is('faculties'))
@@ -35,6 +38,9 @@
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                     Add Faculty
                 </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
+                    Import Faculties
+                </button>
             </div>
         @endif
     @else
@@ -42,6 +48,9 @@
             <div class="mt-3 mb-3">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                     Add User
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
+                    Import Users
                 </button>
             </div>
         @endif

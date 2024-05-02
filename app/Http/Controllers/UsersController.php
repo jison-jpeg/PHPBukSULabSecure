@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\UserImport;
 use App\Mail\CredentialsMail;
 use App\Models\Attendance;
 use App\Models\User;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UsersController extends Controller
 {
@@ -134,16 +136,16 @@ class UsersController extends Controller
         $user = User::create([
 
             'rfid_number' => $request->rfid_number,
+            'username' => $request->username,
+            'email' => $request->email,
+            'last_name' => $request->last_name,
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
-            'last_name' => $request->last_name,
+            'role' => $request->role,
             'college_id' => $request->college_id,
             'department_id' => $request->department_id,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'role' => $request->role,
             'birthdate' => $request->birthdate,
-            'username' => $request->username,
+            'phone' => $request->phone,
             'status' => 'active',
             'password' => Hash::make($plainPassword)
         ]);
@@ -232,6 +234,28 @@ class UsersController extends Controller
             return redirect(route('users'))->with("success", "User deleted successfully!");
         } else {
             return redirect(route('users'))->with("error", "User deletion failed!");
+        }
+    }
+
+    // IMPORT USERS
+    public function importUsers(Request $request)
+    {
+        $request->validate([
+            'file' => [
+                'required',
+                'file',
+                'mimes:xlsx,xls',
+            ]
+        ]);
+    
+        $file = $request->file('file');
+    
+        // Import data from Excel file
+        try {
+            Excel::import(new UserImport, $file);
+            return redirect()->back()->with('success', 'Users imported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error importing users: ' . $e->getMessage());
         }
     }
 }

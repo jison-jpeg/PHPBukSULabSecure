@@ -72,7 +72,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::delete('/{id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
         Route::get('/instructor/{id}', [ScheduleController::class, 'viewUserSchedules'])->name('schedules.user');
         Route::get('/section/{section_id}', [ScheduleController::class, 'viewSectionSchedules'])->name('schedules.section');
-        Route::post('/import/schedule', [ScheduleController::class, 'importSchedule'])->name('import.schedule');
+        Route::post('/import', [ScheduleController::class, 'importSchedule'])->name('import.schedule');
     });
 
 
@@ -106,6 +106,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/{id}', [UsersController::class, 'usersPut'])->name('users.update');
         Route::delete('/{id}', [UsersController::class, 'usersDelete'])->name('users.delete');
         Route::get('/{id}', [UsersController::class, 'viewUserReports'])->name('user.report');
+        Route::post('/import', [UsersController::class, 'importUsers'])->name('import.users');
     });
 
     // Student Routes
@@ -115,6 +116,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/{id}', [StudentController::class, 'studentsPut'])->name('students.put');
         Route::delete('/{id}', [StudentController::class, 'studentsDelete'])->name('students.delete');
         Route::get('/instructor/{id}', [StudentController::class, 'viewStudentsByInstructor'])->name('students.instructor');
+        Route::post('/import', [StudentController::class, 'importStudents'])->name('import.students');
+
     });
 
     // College Management Route
@@ -139,6 +142,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/', [FacultyController::class, 'facultiesPost'])->name('faculties.post');
         Route::put('/{id}', [FacultyController::class, 'facultiesPut'])->name('faculties.put');
         Route::delete('/{id}', [FacultyController::class, 'facultiesDelete'])->name('faculties.delete');
+        Route::post('/import', [FacultyController::class, 'importFaculties'])->name('import.faculties');
     });
 
     // Logs Route

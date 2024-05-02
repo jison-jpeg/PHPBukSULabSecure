@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\FacultyImport;
 use App\Models\College;
 use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class FacultyController extends Controller
 {
@@ -114,6 +115,28 @@ class FacultyController extends Controller
             return redirect(route('faculties'))->with("success", "Faculty deleted successfully!");
         } else {
             return redirect(route('faculties'))->with("error", "Faculty deletion failed!");
+        }
+    }
+
+    // IMPORT FACULTIES
+    public function importFaculties(Request $request)
+    {
+        $request->validate([
+            'file' => [
+                'required',
+                'file',
+                'mimes:xlsx,xls',
+            ]
+        ]);
+    
+        $file = $request->file('file');
+    
+        // Import data from Excel file
+        try {
+            Excel::import(new FacultyImport, $file);
+            return redirect()->back()->with('success', 'Faculties imported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error importing faculties: ' . $e->getMessage());
         }
     }
 }

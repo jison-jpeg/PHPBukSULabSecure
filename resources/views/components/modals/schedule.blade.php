@@ -295,7 +295,7 @@
     </div>
 @endforeach
 
-{{-- Import Schedule --}}
+<!-- Import Schedule -->
 <div class="modal fade" id="importModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -304,7 +304,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="row g-3 needs-validation" method="POST"
+                <form class="row g-3 needs-validation" action="{{ route('import.schedule') }}" method="POST"
                     enctype="multipart/form-data" novalidate>
                     @csrf
                     <div class="col-md-12">
@@ -323,4 +323,5 @@
         </div>
     </div>
 </div>
+
 

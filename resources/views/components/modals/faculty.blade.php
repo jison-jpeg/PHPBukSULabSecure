@@ -199,3 +199,32 @@
         </div>
     </div>
 @endforeach
+
+{{-- Import Faculty Modal --}}
+<div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import Faculties</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="row g-3 needs-validation" action="{{ route('import.faculties') }}" method="POST"
+                    enctype="multipart/form-data" novalidate>
+                    @csrf
+                    <div class="col-md-12">
+                        <label for="file" class="form-label">Upload File</label>
+                        <input class="form-control" type="file" name="file" id="file" accept=".xlsx, .xls" required>
+                        <div class="invalid-feedback">
+                            Please upload a valid Excel file (.xlsx or .xls).
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

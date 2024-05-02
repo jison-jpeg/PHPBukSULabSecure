@@ -50,11 +50,9 @@
                             @if (!request()->is('students') && !request()->is('faculties'))
                                 <td>
                                     @switch($user->role)
-                                        @case('admin')
-                                        @case('dean')
-
+                                        
                                         @case('chairperson')
-                                            <span class="badge rounded-pill bg-red text-red">{{ $user->role }}</span>
+                                            <span class="badge rounded-pill bg-yellow text-yellow">{{ $user->role }}</span>
                                         @break
 
                                         @case('instructor')
@@ -62,8 +60,9 @@
                                             <span class="badge rounded-pill bg-info-2 text-blue ">{{ $user->role }}</span>
                                         @break
 
-                                        @case('support')
-                                            <span class="badge rounded-pill bg-yellow text-yellow ">{{ $user->role }}</span>
+                                        @case('college-dean')
+                                        @case('admin')
+                                            <span class="badge rounded-pill bg-red text-red">{{ $user->role }}</span>
                                         @break
 
                                         @default
