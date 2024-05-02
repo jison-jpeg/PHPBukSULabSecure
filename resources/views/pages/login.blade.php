@@ -2,6 +2,7 @@
 <html lang="en">
 
 <!-- ======= Header ======= -->
+@section('pageTitle', 'Login')
 @include('layouts.head')
 <!-- End Header -->
 
