@@ -21,6 +21,7 @@ use App\Http\Controllers\UserReportController;
 use App\Http\Controllers\SubjectReportController;
 use App\Http\Controllers\ScheduleReportController;
 use App\Http\Controllers\AttendanceReportController;
+use App\Http\Controllers\LogsReportController;
 
 
 Route::get('/', function () {
@@ -159,6 +160,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/student', [StudentReportController::class, 'index'])->name('student.tableReport');
         Route::get('/user', [UserReportController::class, 'index'])->name('user.tableReport');
         Route::get('/subject', [SubjectReportController::class, 'index'])->name('subject.tableReport');
+        Route::get('/logs', [LogsReportController::class, 'index'])->name('logs.tableReport');
         // Route::get('/schedule', [ScheduleReportController::class, 'index'])->name('schedule.tableReport');
         // Route::get('/attendance', [AttendanceReportController::class, 'index'])->name('attendance.tableReport');
         // Route::get('/attendance/{sectionId}/{subjectId}', [AttendanceReportController::class, 'viewStudentAttendance'])->name('attendanceStudent.tableReport');

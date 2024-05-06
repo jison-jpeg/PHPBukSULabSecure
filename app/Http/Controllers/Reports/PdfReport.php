@@ -90,6 +90,10 @@ class PdfReport extends FPDF
         //Get string width
         $str_width=$this->GetStringWidth($txt);
 
+        if ($str_width == 0) {
+            $str_width = 1; // Set a default value to prevent division by zero
+        }
+
         //Calculate ratio to fit cell
         if($w==0)
             $w = $this->w-$this->rMargin-$this->x;
