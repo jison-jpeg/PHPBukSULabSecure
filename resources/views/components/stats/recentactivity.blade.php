@@ -20,15 +20,34 @@
             @foreach ($logs as $log)
                 <div class="activity-item d-flex">
                     <div class="activite-label">{{ $log->formatted_time_diff }}</div>
-                    <i
-                        class='bi bi-circle-fill activity-badge text-{{ $log->action == 'Create' ? 'success' : ($log->action == 'Update' ? 'primary' : 'danger') }} align-self-start'></i>
+                    @php
+                        $badgeColor = '';
+                        switch ($log->action) {
+                            case 'CREATE':
+                                $badgeColor = 'success';
+                                break;
+                            case 'OUT':
+                                $badgeColor = 'warning';
+                                break;
+                            case 'DELETE':
+                                $badgeColor = 'danger';
+                                break;
+                            case 'UPDATE':
+                                $badgeColor = 'info';
+                                break;
+                            default:
+                                $badgeColor = 'primary';
+                                break;
+                        }
+                    @endphp
+                    <i class='bi bi-circle-fill activity-badge text-{{ $badgeColor }} align-self-start'></i>
                     <div class="activity-content">
                         {!! nl2br(e($log->description)) !!}
                     </div>
                 </div>
             @endforeach
-
         </div>
+        
 
     </div>
 </div>
