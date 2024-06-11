@@ -16,7 +16,7 @@ class FacultyReportController extends Controller
         // $pdf->AddPage();
         $pdf->AliasNbPages();
        
-        $header = ['#', 'Name', 'Username', 'Email', 'College', 'Department', 'Phone', 'Birthdate'];
+        $header = ['#', 'Name', 'Username', 'Email', 'College', 'Department', 'Status'];
 
         $data = $this->prepareJsonData();
         // $this->coverPage($pdf);
@@ -56,7 +56,7 @@ class FacultyReportController extends Controller
         $pdf->SetLineWidth(.3);
         $pdf->SetFont('Arial','B', 10);
         // Header
-        $w = array(5, 50, 22, 55, 50, 50, 25, 20);
+        $w = array(5, 55, 25, 60, 55, 55, 20);
         for($i=0;$i<count($header);$i++)
             $pdf->Cell($w[$i],7,$header[$i],1,0,'C',true);
         $pdf->Ln();
@@ -74,8 +74,7 @@ class FacultyReportController extends Controller
             $pdf->CellFitScale($w[3],6,$user->email,'LR',0,'L',$fill);
             $pdf->CellFitScale($w[4],6,$user->college->collegeName,'LR',0,'L',$fill);
             $pdf->CellFitScale($w[5],6,$user->department->departmentName,'LR',0,'L',$fill);
-            $pdf->CellFitScale($w[6],6,$user->phone,'LR',0,'L',$fill);
-            $pdf->CellFitScale($w[7],6,$user->birthdate,'LR',0,'L',$fill);
+            $pdf->CellFitScale($w[6],6,$user->status,'LR',0,'L',$fill);
             $pdf->Ln();
 
             $rowNumber++; // Increment the row number for the next iteration

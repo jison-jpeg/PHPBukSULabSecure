@@ -17,7 +17,7 @@ class StudentReportController extends Controller
         // $pdf->AddPage();
         $pdf->AliasNbPages();
        
-        $header = ['#', 'Name', 'Username', 'Email', 'Section', 'College', 'Department'];
+        $header = ['#', 'Name', 'Username', 'Email', 'Section', 'College', 'Department', 'Status'];
 
 
         $data = $this->prepareJsonData();
@@ -30,20 +30,43 @@ class StudentReportController extends Controller
     function prepareJsonData() {
         $users = User::where('role', 'student')->with(['college', 'department', 'section'])->get();
    
+        // foreach ($users as $user) {
+        //     // Fetch colleges related to the user's department
+        //     $colleges = College::join('departments', 'colleges.id', '=', 'departments.college_id')
+        //         ->where('departments.id', $user->department->id)
+        //         ->get(['colleges.collegeName']);
+   
+        //     // Fetch sections related to the user
+        //     $sections = Section::where('id', $user->section->id)
+        //         ->get(['sectionCode']);
+   
+        //     // Assign colleges and sections to the user object
+        //     $user->colleges = $colleges;
+        //     $user->sections = $sections;
+        // }
+
         foreach ($users as $user) {
             // Fetch colleges related to the user's department
             $colleges = College::join('departments', 'colleges.id', '=', 'departments.college_id')
                 ->where('departments.id', $user->department->id)
                 ->get(['colleges.collegeName']);
-   
-            // Fetch sections related to the user
-            $sections = Section::where('id', $user->section->id)
-                ->get(['sectionCode']);
-   
-            // Assign colleges and sections to the user object
+        
+            // Check if $user->section is not null before accessing its properties
+            if ($user->section) {
+                // Fetch sections related to the user
+                $sections = Section::where('id', $user->section->id)
+                    ->get(['sectionCode']);
+        
+                // Assign sections to the user object
+                $user->sections = $sections;
+            } else {
+                // If $user->section is null, assign an empty array to $user->sections
+                $user->sections = [];
+            }
+        
+            // Assign colleges to the user object
             $user->colleges = $colleges;
-            $user->sections = $sections;
-        }
+        }        
    
         return $users;
     }
@@ -60,7 +83,7 @@ class StudentReportController extends Controller
         $pdf->SetLineWidth(.3);
         $pdf->SetFont('Arial','B', 10);
         // Header
-        $w = array(5, 50, 25, 60, 20, 60, 60);
+        $w = array(5, 50, 25, 62, 15, 52, 52, 15);
         for($i=0;$i<count($header);$i++)
             $pdf->Cell($w[$i],7,$header[$i],1,0,'C',true);
         $pdf->Ln();
@@ -76,9 +99,16 @@ class StudentReportController extends Controller
             $pdf->CellFitScale($w[1],6,$user->last_name . ', ' . $user->first_name . ' ' . $user->middle_name,'LR',0,'L',$fill);
             $pdf->CellFitScale($w[2],6,$user->username,'LR',0,'L',$fill);
             $pdf->CellFitScale($w[3],6,$user->email,'LR',0,'L',$fill);
-            $pdf->CellFitScale($w[4],6,$user->section->sectionCode,'LR',0,'L',$fill);
+            // $pdf->CellFitScale($w[4],6,$user->section->sectionCode,'LR',0,'L',$fill);
+            if ($user->section) {
+                $pdf->CellFitScale($w[4],6,$user->section->sectionCode,'LR',0,'L',$fill);
+            } else {
+                $pdf->CellFitScale($w[4],6,'','LR',0,'L',$fill); // Output empty string if $user->section is null
+            }
+
             $pdf->CellFitScale($w[5],6,$user->college->collegeName,'LR',0,'L',$fill);
             $pdf->CellFitScale($w[6],6,$user->department->departmentName,'LR',0,'L',$fill);
+            $pdf->CellFitScale($w[7],6,$user->status,'LR',0,'L',$fill);
             $pdf->Ln();
 
             $rowNumber++; // Increment the row number for the next iteration
