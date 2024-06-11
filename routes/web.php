@@ -32,7 +32,7 @@ Route::get('/', function () {
 // });
 
 
-Route::group(['middleware' => 'web'], function () {
+Route::group(['middleware' => 'web', 'throttle:login'], function () {
     Route::get('/login', [AuthManager::class, 'login'])->name('login')->middleware('guest');
     Route::post('/login', [AuthManager::class, 'loginPost'])->name('loginPost')->middleware('guest');
     Route::get('/google', [GoogleController::class, 'loginWithGoogle'])->name('google');

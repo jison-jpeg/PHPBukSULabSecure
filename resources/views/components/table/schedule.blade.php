@@ -35,7 +35,10 @@
                         <th scope="col">Days</th>
                         <th scope="col">Start Time</th>
                         <th scope="col">End Time</th>
+                        {{-- hide if the auth user is not admin --}}
+                        @if (Auth::user()->role == 'admin')
                         <th scope="col" class="text-center">Action</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -62,17 +65,18 @@
                             @endif
                             <td>Comlab {{ $schedule->laboratory->roomNumber }}</td>
                             <td>
-                                @if($schedule->laboratory->lockStatus)
-        <span class="badge rounded-pill bg-danger">Locked</span>
-    @elseif($schedule->laboratory->occupancyStatus == 'On-Going')
-        <span class="badge rounded-pill bg-primary">Occupied</span>
-    @else
-        <span class="badge rounded-pill bg-success">Available</span>
-    @endif
+                                @if ($schedule->laboratory->lockStatus)
+                                    <span class="badge rounded-pill bg-danger">Locked</span>
+                                @elseif($schedule->laboratory->occupancyStatus == 'On-Going')
+                                    <span class="badge rounded-pill bg-primary">Occupied</span>
+                                @else
+                                    <span class="badge rounded-pill bg-success">Available</span>
+                                @endif
                             </td>
                             <td>{{ $schedule->days }}</td>
                             <td>{{ date('h:i A', strtotime($schedule->start_time)) }}</td>
                             <td>{{ date('h:i A', strtotime($schedule->end_time)) }}</td>
+                            @if (Auth::user()->role == 'admin')
                             <td>
                                 <div class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
@@ -86,6 +90,7 @@
                                     </button>
                                 </div>
                             </td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

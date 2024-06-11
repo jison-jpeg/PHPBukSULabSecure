@@ -16,7 +16,7 @@
     </div>
 
     {{-- Hide button if request is subjects and if auth user is instructor --}}
-    @if (!Request::is('subjects/user/*') && Auth::user()->role !== 'instructor')
+    @if (!Request::is('subjects/user/*') && Auth::user()->role !== 'instructor' && Auth::user()->role !== 'student')
         <div class="mt-3 mb-3">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                 Add Schedule

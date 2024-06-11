@@ -35,7 +35,7 @@ class ScheduleController extends Controller
             $section_id = $user->section_id;
             $schedules = Schedule::where('section_id', $section_id)->get();
         }
-        
+
         $departments = Department::all();
         $colleges = College::all();
         $sections = Section::all();
@@ -77,6 +77,15 @@ class ScheduleController extends Controller
             if ($conflictingSchedule) {
                 return redirect(route('schedules'))->with("error", "There is a conflicting schedule for an instructor on $day.");
             }
+        }
+
+        // Check if the schedule has already assigned an instructor to the subject in the section
+        $existingAssignment = Schedule::where('subject_id', $request->subject_id)
+            ->where('section_id', $request->section_id)
+            ->exists();
+
+        if ($existingAssignment) {
+            return redirect(route('schedules'))->with("error", "The subject in this section already has an assigned instructor.");
         }
 
         // Check if the same schedule already exists
@@ -231,9 +240,9 @@ class ScheduleController extends Controller
                 'mimes:xlsx,xls',
             ]
         ]);
-    
+
         $file = $request->file('file');
-    
+
         // Import data from Excel file
         try {
             Excel::import(new ScheduleImport, $file);
